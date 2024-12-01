@@ -3,9 +3,6 @@ package wtd.slotsengine.slots.machines;
 import wtd.slotsengine.slots.exceptions.SlotUserException;
 import wtd.slotsengine.slots.machines.abstracts.AbstractSlotMachine;
 
-import java.util.ArrayList;
-import java.util.List;
-
 final public class BasicSlotMachine extends AbstractSlotMachine {
     private final VirtualReel reel;
 
