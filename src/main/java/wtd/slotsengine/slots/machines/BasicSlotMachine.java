@@ -1,4 +1,4 @@
-package wtd.slotsengine.slots;
+package wtd.slotsengine.slots.machines;
 
 import wtd.slotsengine.slots.exceptions.InsufficientFundsException;
 import wtd.slotsengine.slots.interfaces.SlotMachine;
