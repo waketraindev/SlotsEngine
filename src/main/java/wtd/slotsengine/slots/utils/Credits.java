@@ -3,12 +3,12 @@ package wtd.slotsengine.slots.utils;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class Credits implements Serializable, Comparable<Credits> {
+public class Credits implements Serializable {
     private final String name;
-    private final Integer unitSize;
-    private final Long value;
+    private final int unitSize;
+    private final long value;
 
-    public Credits(String name, Integer minUnit, Long value) {
+    public Credits(String name, int minUnit, long value) {
         this.name = name;
         this.unitSize = minUnit;
         this.value = value;
@@ -30,25 +30,19 @@ public class Credits implements Serializable, Comparable<Credits> {
         return Credits.displayString(name, unitSize, value);
     }
 
-    public static String displayString(String name, Integer unitSize, Long value) {
-        return String.format("%.2f%s", (value / unitSize.doubleValue()), name);
-
+    public static String displayString(String name, int unitSize, long value) {
+        return String.format("%.2f%s", (value / (double) unitSize), name);
     }
 
     public String getName() {
         return name;
     }
 
-    public Integer getUnitSize() {
+    public int getUnitSize() {
         return unitSize;
     }
 
-    public Long getValue() {
+    public long getValue() {
         return value;
-    }
-
-    @Override
-    public int compareTo(Credits o) {
-        return this.getValue().compareTo(o.getValue());
     }
 }
