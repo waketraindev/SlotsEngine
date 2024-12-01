@@ -7,6 +7,6 @@ public interface SlotMachine {
 
     public void withdraw(long amount);
 
-    public long creditBalance();
+    public long getBalance();
 
 }

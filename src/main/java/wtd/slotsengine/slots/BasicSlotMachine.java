@@ -1,29 +1,37 @@
 package wtd.slotsengine.slots;
 
+import wtd.slotsengine.slots.exceptions.InsufficientFundsException;
 import wtd.slotsengine.slots.interfaces.SlotMachine;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-public class BasicSlotMachine implements SlotMachine {
-    private AtomicLong credits = new AtomicLong(0);
+final public class BasicSlotMachine implements SlotMachine {
+    private final AtomicLong credits = new AtomicLong(0);
 
     @Override
     public void spin(long betAmount) {
+        assertFunds(betAmount, "spin");
         credits.addAndGet(betAmount);
     }
 
     @Override
-    public void deposit(long amount) {
-        credits.addAndGet(amount);
+    public void deposit(long depositAmount) {
+        credits.addAndGet(depositAmount);
     }
 
     @Override
-    public void withdraw(long amount) {
-        credits.addAndGet(-amount);
+    public void withdraw(long withdrawAmount) {
+        assertFunds(withdrawAmount, "withdraw");
+        credits.addAndGet(-withdrawAmount);
+    }
+
+    private void assertFunds(long requiredAmount, String actionName) {
+        if (requiredAmount > credits.get())
+            throw new InsufficientFundsException("Insufficient credits to %s. Required: %d Have: %d".formatted(actionName, requiredAmount, credits.get()));
     }
 
     @Override
-    public long creditBalance() {
+    public long getBalance() {
         return credits.get();
     }
 }
