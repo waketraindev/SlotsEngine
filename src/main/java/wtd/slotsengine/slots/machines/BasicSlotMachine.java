@@ -3,19 +3,54 @@ package wtd.slotsengine.slots.machines;
 import wtd.slotsengine.slots.exceptions.SlotUserException;
 import wtd.slotsengine.slots.machines.abstracts.AbstractSlotMachine;
 
+/**
+ * The BasicSlotMachine class represents a simple slot machine with a single virtual reel.
+ * It extends the AbstractSlotMachine to provide a basic implementation of a slot machine
+ * with spinning functionality and payout calculation.
+ * <p>
+ * This class allows users to spin the reel by invoking the doSpin method with a specified
+ * bet amount. The result of the spin is based on random selection and predefined payout rules.
+ * <p>
+ * The class also provides a method to calculate the theoretical Return to Player (RTP)
+ * percentage based on the symbols present on the virtual reel.
+ */
 final public class BasicSlotMachine extends AbstractSlotMachine {
     private final VirtualReel reel;
 
+    /**
+     * Constructs a BasicSlotMachine instance with a default virtual reel.
+     * <p>
+     * This constructor initializes the BasicSlotMachine by creating a VirtualReel
+     * with default symbols pre-encoded in a compressed Base64 format. The reel
+     * is set up to provide the necessary symbol data for the slot machine's operation.
+     *
+     * @see wtd.slotsengine.utils.SlotUtils
+     */
     public BasicSlotMachine() {
         super();
         reel = new VirtualReel("H4sIAAAAAAAA/2NgGAW0A4zYARMmYEYHLMiAFQHYIIAdBDg4ODg5uQARLQflwwEAAA==");
     }
 
+    /**
+     * Constructs a BasicSlotMachine with the specified virtual reel.
+     *
+     * @param reel the VirtualReel to be used in this slot machine for spinning and payout calculations.
+     *             This parameter provides the symbol data necessary for the slot machine's operations.
+     */
     public BasicSlotMachine(final VirtualReel reel) {
         super();
         this.reel = reel;
     }
 
+    /**
+     * Executes a spin on the slot machine using the provided bet amount.
+     * It determines a random position on the reel, calculates the resulting
+     * winning amount based on the position and bet amount, updates the
+     * credits if there is a win, and returns the win amount.
+     *
+     * @param betAmount the amount of credits wagered for this spin.
+     * @return the amount of credits won from the spin. Returns zero if there is no win.
+     */
     @Override
     public long doSpin(long betAmount) {
         int position = getRandom().nextInt(reel.size());
@@ -26,6 +61,14 @@ final public class BasicSlotMachine extends AbstractSlotMachine {
         return winAmount;
     }
 
+    /**
+     * Calculates the win amount based on the result symbol at the specified position of the reel.
+     *
+     * @param position the index on the reel indicating the result symbol.
+     * @param betAmount the amount of credits wagered for this spin.
+     * @return the amount of credits won for the spin, calculated based on the symbol and bet amount.
+     * @throws SlotUserException if an invalid symbol is encountered at the given position.
+     */
     private long spinLogic(int position, long betAmount) {
         long winAmount;
         int res = reel.get(position);
@@ -48,6 +91,15 @@ final public class BasicSlotMachine extends AbstractSlotMachine {
         return winAmount;
     }
 
+    /**
+     * Calculates the Return to Player (RTP) of the slot machine. The RTP is determined
+     * by simulating full rotations over the virtual reel, where each position on the
+     * reel is considered for spin and payout calculation. The method iterates through
+     * the entire virtual reel, executing a spin at each position with a bet amount of 1
+     * and accumulates both the cost and the win amount associated with these spins.
+     *
+     * @return the calculated RTP value, which is the total win amount divided by the total cost.
+     */
     public double calculateRTP() {
         long cost = 0L;
         long winAmount = 0L;

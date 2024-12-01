@@ -37,7 +37,7 @@ public class LiveSubscriber {
         sendEvent(SseEmitter.event().name("PING").data(new PingMessage(now())).build());
     }
 
-    private void sendEvent(Set<ResponseBodyEmitter.DataWithMediaType> event) {
+    public void sendEvent(Set<ResponseBodyEmitter.DataWithMediaType> event) {
         try {
             emitter.send(event);
         } catch (IOException e) {
