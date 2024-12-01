@@ -16,6 +16,13 @@ public class VirtualReel {
         addElementsFromString(dataString);
     }
 
+    public void addElementsFromString(String dataString) {
+        byte[] reelBytes = SlotUtils.decodeGzipBase64(dataString);
+        for (int i = 0; i < reelBytes.length; i++) {
+            data.add((int) reelBytes[i]);
+        }
+    }
+
     public void addSymbol(int sym, int times) {
         for (int i = 0; i < times; i++) {
             data.add(sym);
@@ -26,6 +33,10 @@ public class VirtualReel {
         return data.get(position % data.size());
     }
 
+    public String encodeToString() {
+        return SlotUtils.encodeGzipBase64(toByteArray());
+    }
+
     public byte[] toByteArray() {
         int len = data.size();
         byte[] result = new byte[len];
@@ -33,17 +44,6 @@ public class VirtualReel {
             result[i] = data.get(i).byteValue();
         }
         return result;
-    }
-
-    public String encodeToString() {
-        return SlotUtils.encodeGzipBase64(toByteArray());
-    }
-
-    public void addElementsFromString(String dataString) {
-        byte[] reelBytes = SlotUtils.decodeGzipBase64(dataString);
-        for (int i = 0; i < reelBytes.length; i++) {
-            data.add((int) reelBytes[i]);
-        }
     }
 
     public int size() {
