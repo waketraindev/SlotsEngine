@@ -11,7 +11,6 @@ final public class BasicSlotMachine extends AbstractSlotMachine {
 
     public BasicSlotMachine() {
         super();
-        //47, 19, 17, 13
         reel = new VirtualReel("H4sIAAAAAAAA/2NgGLGAETtgwgTM6IAFGbAiABsEsIMABwcHJycAeu3AxV8BAAA=");
     }
 
