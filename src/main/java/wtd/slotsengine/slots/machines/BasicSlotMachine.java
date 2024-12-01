@@ -3,15 +3,25 @@ package wtd.slotsengine.slots.machines;
 import wtd.slotsengine.slots.exceptions.InsufficientFundsException;
 import wtd.slotsengine.slots.interfaces.SlotMachine;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 
 final public class BasicSlotMachine implements SlotMachine {
     private final AtomicLong credits = new AtomicLong(0);
     private final Random rng;
+    private final List<Integer> reel = new ArrayList<Integer>();
 
     public BasicSlotMachine() {
         this.rng = new Random();
+
+    }
+
+    public void addSymbol(int sym, int times) {
+        for (int i = 0; i < times; i++) {
+            reel.add(sym);
+        }
     }
 
     @Override
@@ -19,19 +29,37 @@ final public class BasicSlotMachine implements SlotMachine {
         assertFunds(betAmount, "spin");
         credits.addAndGet(-betAmount);
 
-        long winAmount = spinLogic(betAmount);
+        int position = rng.nextInt(reel.size());
+        long winAmount = spinLogic(position, betAmount);
         if (winAmount > 0) {
             credits.addAndGet(winAmount);
         }
         return winAmount;
     }
 
-    private long spinLogic(long betAmount) {
+    public double testLogic() {
+        long cost = 0L;
         long winAmount = 0L;
 
-        long rnd = rng.nextLong(1000);
+        for (int i = 0; i < reel.size(); i++) {
+            winAmount += spinLogic(i, 1);
+            cost += 1;
+        }
 
-        if (rnd > 510) winAmount = betAmount * 2;
+        return winAmount / (double) cost;
+    }
+
+    private long spinLogic(int position, long betAmount) {
+        long winAmount = 0L;
+        int res = reel.get(position);
+
+        switch (res) {
+            case 0 -> winAmount = 0;
+            case 1 -> winAmount = betAmount * 1;
+            case 2 -> winAmount = betAmount * 2;
+            case 3 -> winAmount = betAmount * 3;
+            default -> winAmount = 0;
+        }
 
         return winAmount;
     }
