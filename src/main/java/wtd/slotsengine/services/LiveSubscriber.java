@@ -14,7 +14,7 @@ import java.util.UUID;
 import static wtd.slotsengine.utils.SlotUtils.now;
 
 public class LiveSubscriber {
-    private final SseEmitter emitter;
+    private final transient SseEmitter emitter;
     private final UUID uuid;
 
     public LiveSubscriber(SseEmitter emitter, UUID uuid) {
@@ -26,7 +26,7 @@ public class LiveSubscriber {
         return uuid;
     }
 
-    public SseEmitter getEmitter() {
+    public SseEmitter emitter() {
         return emitter;
     }
 

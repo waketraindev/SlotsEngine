@@ -38,7 +38,7 @@ public class LiveEventsManager implements InitializingBean, DisposableBean {
 
     public void subscribe(LiveSubscriber sub) {
         subscribers.add(sub);
-        sub.getEmitter().onCompletion(() -> subscribers.remove(sub));
+        sub.emitter().onCompletion(() -> subscribers.remove(sub));
         sub.sendWelcome();
     }
 
