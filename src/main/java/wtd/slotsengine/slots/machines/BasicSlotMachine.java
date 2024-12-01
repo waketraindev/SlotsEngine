@@ -9,20 +9,22 @@ final public class BasicSlotMachine implements SlotMachine {
     private final AtomicLong credits = new AtomicLong(0);
 
     @Override
-    public void spin(long betAmount) {
+    public long spin(long betAmount) {
+        long winAmount = 0L;
         assertFunds(betAmount, "spin");
         credits.addAndGet(betAmount);
+        return winAmount;
     }
 
     @Override
-    public void deposit(long depositAmount) {
-        credits.addAndGet(depositAmount);
+    public long deposit(long depositAmount) {
+        return credits.addAndGet(depositAmount);
     }
 
     @Override
-    public void withdraw(long withdrawAmount) {
+    public long withdraw(long withdrawAmount) {
         assertFunds(withdrawAmount, "withdraw");
-        credits.addAndGet(-withdrawAmount);
+        return credits.addAndGet(-withdrawAmount);
     }
 
     private void assertFunds(long requiredAmount, String actionName) {
