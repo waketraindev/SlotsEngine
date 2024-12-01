@@ -11,18 +11,18 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import wtd.slotsengine.rest.exceptions.AbortedConnectionException;
 import wtd.slotsengine.rest.exceptions.InvalidSubscriberException;
 
-import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.*;
 
 @Service
 public class LiveEventsManager implements InitializingBean, DisposableBean {
     private static final Logger log = LoggerFactory.getLogger(LiveEventsManager.class);
     private final ScheduledExecutorService scheduler;
     private final List<LiveSubscriber> subscribers = new CopyOnWriteArrayList<>();
-    private final Map<UUID, LiveSubscriber> subscriberMap = new HashMap<>();
+    private final Map<UUID, LiveSubscriber> subscriberMap = new ConcurrentHashMap<>();
 
     public LiveEventsManager() {
         log.info("Live events manager is initializing.");
