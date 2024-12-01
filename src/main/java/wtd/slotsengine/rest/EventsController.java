@@ -11,6 +11,8 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import wtd.slotsengine.services.LiveEventsManager;
 import wtd.slotsengine.services.LiveSubscriber;
 
+import java.util.UUID;
+
 @RestController
 public class EventsController {
     private static final Logger log = LoggerFactory.getLogger(EventsController.class);
