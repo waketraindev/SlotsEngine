@@ -30,6 +30,7 @@ public class EventsController {
         return newEmitter;
     }
 
+    @SuppressWarnings("EmptyMethod")
     @ExceptionHandler(AsyncRequestTimeoutException.class)
     public void asyncTimeoutExceptionHandler(AsyncRequestTimeoutException e) {
         //log.warn("Subscriber timed out: " + e.getMessage());

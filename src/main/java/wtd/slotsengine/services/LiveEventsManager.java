@@ -67,12 +67,11 @@ public class LiveEventsManager implements InitializingBean, DisposableBean {
     private void addSubscriber(LiveSubscriber sub) {
         subscribers.add(sub);
         subscriberMap.put(sub.getUid(), sub);
-        log.info("New subscriber: " + sub.getUid());
+        log.info("New subscriber: {}", sub.getUid());
     }
 
-    private boolean removeSubscriber(UUID uid) throws InvalidSubscriberException {
+    private void removeSubscriber(UUID uid) throws InvalidSubscriberException {
         LiveSubscriber sub = getSubscriberByUID(uid);
-        return false;
     }
 
     public LiveSubscriber getSubscriberByUID(UUID uid) throws InvalidSubscriberException {
@@ -86,12 +85,12 @@ public class LiveEventsManager implements InitializingBean, DisposableBean {
     private void removeSubscriber(LiveSubscriber sub) {
         subscribers.remove(sub);
         subscriberMap.remove(sub.getUid());
-        log.info("Subscriber unsubscribed: " + sub.getUid());
+        log.info("Subscriber unsubscribed: {}", sub.getUid());
     }
 
     private void pingSubscribers() {
         try {
-            log.info("Pinging subscribers: " + subscribers.size());
+            log.info("Pinging subscribers: {}", subscribers.size());
             subscribers.forEach(LiveSubscriber::sendPing);
         } catch (AbortedConnectionException le) {
             log.warn("Subscriber aborted connection");

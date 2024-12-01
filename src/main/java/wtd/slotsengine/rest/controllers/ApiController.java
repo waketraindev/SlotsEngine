@@ -27,13 +27,11 @@ public class ApiController implements InitializingBean {
     private static final ServerVersionMessage SERVER_BANNER = new ServerVersionMessage(SlotUtils.PROJECT_VERSION);
     private static final Logger log = LoggerFactory.getLogger(ApiController.class);
     private final LiveEventsManager live;
-    private final SlotManager sm;
     private final SlotMachine machine;
 
     public ApiController(LiveEventsManager liveEventsManager, SlotManager slotManager) {
         log.info("API controller is initializing");
         this.live = liveEventsManager;
-        this.sm = slotManager;
         this.machine = slotManager.getSlotMachine();
     }
 

@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @Disabled
 class SlotsEngineApplicationTests {
 
+    @SuppressWarnings("EmptyMethod")
     @Test
     void contextLoads() {
     }
