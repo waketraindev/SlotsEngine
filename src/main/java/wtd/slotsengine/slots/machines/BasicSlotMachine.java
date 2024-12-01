@@ -7,12 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 final public class BasicSlotMachine extends AbstractSlotMachine {
-    private final List<Integer> reel = new ArrayList<>();
+    private final VirtualReel reel;
 
-    public void addSymbol(int sym, int times) {
-        for (int i = 0; i < times; i++) {
-            reel.add(sym);
-        }
+    public BasicSlotMachine() {
+        super();
+        //47, 19, 17, 13
+        reel = new VirtualReel("030122000002000000000023200003020103012021102102112200031312210103020013133010000122000010133013");
     }
 
     @Override
@@ -34,7 +34,7 @@ final public class BasicSlotMachine extends AbstractSlotMachine {
             case 1 -> winAmount = betAmount;
             case 2 -> winAmount = betAmount * 2;
             case 3 -> winAmount = betAmount * 3;
-            default -> throw new SlotUserException("Invalid symbol");
+            default -> throw new SlotUserException("Invalid symbol " + res);
         }
 
         return winAmount;
