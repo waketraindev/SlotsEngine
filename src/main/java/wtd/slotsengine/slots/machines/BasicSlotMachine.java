@@ -3,16 +3,36 @@ package wtd.slotsengine.slots.machines;
 import wtd.slotsengine.slots.exceptions.InsufficientFundsException;
 import wtd.slotsengine.slots.interfaces.SlotMachine;
 
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 
 final public class BasicSlotMachine implements SlotMachine {
     private final AtomicLong credits = new AtomicLong(0);
+    private final Random rng;
+
+    public BasicSlotMachine() {
+        this.rng = new Random();
+    }
 
     @Override
     public long spin(long betAmount) {
-        long winAmount = 0L;
         assertFunds(betAmount, "spin");
-        credits.addAndGet(betAmount);
+        credits.addAndGet(-betAmount);
+
+        long winAmount = spinLogic(betAmount);
+        if (winAmount > 0) {
+            credits.addAndGet(winAmount);
+        }
+        return winAmount;
+    }
+
+    private long spinLogic(long betAmount) {
+        long winAmount = 0L;
+
+        long rnd = rng.nextLong(1000);
+
+        if (rnd > 510) winAmount = betAmount * 2;
+
         return winAmount;
     }
 
