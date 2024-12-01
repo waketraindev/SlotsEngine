@@ -6,6 +6,7 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 import wtd.slotsengine.rest.exceptions.AbortedConnectionException;
+import wtd.slotsengine.rest.exceptions.InvalidSubscriberException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +51,7 @@ public class LiveEventsManager implements InitializingBean, DisposableBean {
         removeSubscriber(sub);
     }
 
-    public void unsubscribe(UUID uid) {
+    public void unsubscribe(UUID uid) throws InvalidSubscriberException {
         removeSubscriber(uid);
     }
 
@@ -60,13 +61,17 @@ public class LiveEventsManager implements InitializingBean, DisposableBean {
         log.info("New subscriber: " + sub.getUid());
     }
 
-    private boolean removeSubscriber(UUID uid) {
-        LiveSubscriber sub = subscriberMap.get(uid);
-        if (sub != null) {
-            removeSubscriber(sub);
-            return true;
-        }
+    private boolean removeSubscriber(UUID uid) throws InvalidSubscriberException {
+        LiveSubscriber sub = getSubscriberByUID(uid);
         return false;
+    }
+
+    public LiveSubscriber getSubscriberByUID(UUID uid) throws InvalidSubscriberException {
+        LiveSubscriber res = subscriberMap.get(uid);
+        if (res == null) {
+            throw new InvalidSubscriberException("Invalid subscriber");
+        }
+        return res;
     }
 
     private void removeSubscriber(LiveSubscriber sub) {
