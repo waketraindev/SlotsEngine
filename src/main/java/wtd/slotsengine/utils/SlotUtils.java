@@ -9,7 +9,11 @@ import java.util.zip.GZIPOutputStream;
 
 public class SlotUtils {
     public static final String PROJECT_VERSION = "0.0.1";
-    
+
+    public static Long now() {
+        return System.currentTimeMillis();
+    }
+
     public static String encodeGzipBase64(byte[] data) {
         try {
             ByteArrayOutputStream output = new ByteArrayOutputStream();
