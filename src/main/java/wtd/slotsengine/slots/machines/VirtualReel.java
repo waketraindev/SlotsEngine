@@ -42,7 +42,7 @@ public class VirtualReel {
     public void addElementsFromString(String dataString) {
         byte[] reelBytes = SlotUtils.decodeGzipBase64(dataString);
         for (int i = 0; i < reelBytes.length; i++) {
-            data.add(i);
+            data.add((int) reelBytes[i]);
         }
     }
 
