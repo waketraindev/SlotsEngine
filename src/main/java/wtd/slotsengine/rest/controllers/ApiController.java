@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.http.HttpStatusCode;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +19,8 @@ import wtd.slotsengine.slots.interfaces.SlotMachine;
 import wtd.slotsengine.utils.SlotUtils;
 
 import java.util.UUID;
+
+import static wtd.slotsengine.utils.SlotUtils.now;
 
 @RestController
 public class ApiController implements InitializingBean {
@@ -53,8 +54,8 @@ public class ApiController implements InitializingBean {
         result.append("You won ").append(winAmount).append(" credits.").append("\n");
         result.append("Balance: ").append(machine.getBalance()).append("\n");
 
-        SpinResultMessage spinResult = new SpinResultMessage(1, winAmount, machine.getBalance());
-        live.broadcast(SseEmitter.event().name("SPIN_RESULT").data(spinResult, MediaType.APPLICATION_JSON));
+        SpinResultMessage spinResult = new SpinResultMessage(now(), 1, winAmount, machine.getBalance());
+        live.broadcast(SseEmitter.event().name("SPIN_RESULT").data(spinResult));
         return result.toString();
     }
 
