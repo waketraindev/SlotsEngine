@@ -53,4 +53,8 @@ public class VirtualReel {
     public void shuffle() {
         Collections.shuffle(data);
     }
+
+    public void sort() {
+        Collections.sort(data);
+    }
 }
