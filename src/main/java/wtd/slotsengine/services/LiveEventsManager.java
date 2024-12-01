@@ -6,8 +6,12 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 import wtd.slotsengine.rest.exceptions.AbortedConnectionException;
+import wtd.slotsengine.rest.exceptions.InvalidSubscriberException;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -18,6 +22,7 @@ public class LiveEventsManager implements InitializingBean, DisposableBean {
     private static final Logger log = LoggerFactory.getLogger(LiveEventsManager.class);
     private final ScheduledExecutorService scheduler;
     private final List<LiveSubscriber> subscribers = new CopyOnWriteArrayList<>();
+    private final Map<UUID, LiveSubscriber> subscriberMap = new HashMap<>();
 
     public LiveEventsManager() {
         log.info("Live events manager is initializing.");
@@ -37,16 +42,42 @@ public class LiveEventsManager implements InitializingBean, DisposableBean {
     }
 
     public void subscribe(LiveSubscriber sub) {
-        subscribers.add(sub);
-        sub.emitter().onCompletion(() -> subscribers.remove(sub));
+        addSubscriber(sub);
+        sub.emitter().onCompletion(() -> this.removeSubscriber(sub));
         sub.sendWelcome();
     }
 
-
-    private void noop() {
+    public void unsubscribe(LiveSubscriber sub) {
+        removeSubscriber(sub);
     }
 
-    private void noop(Throwable throwable) {
+    public void unsubscribe(UUID uid) throws InvalidSubscriberException {
+        removeSubscriber(uid);
+    }
+
+    private void addSubscriber(LiveSubscriber sub) {
+        subscribers.add(sub);
+        subscriberMap.put(sub.getUid(), sub);
+        log.info("New subscriber: " + sub.getUid());
+    }
+
+    private boolean removeSubscriber(UUID uid) throws InvalidSubscriberException {
+        LiveSubscriber sub = getSubscriberByUID(uid);
+        return false;
+    }
+
+    public LiveSubscriber getSubscriberByUID(UUID uid) throws InvalidSubscriberException {
+        LiveSubscriber res = subscriberMap.get(uid);
+        if (res == null) {
+            throw new InvalidSubscriberException("Invalid subscriber");
+        }
+        return res;
+    }
+
+    private void removeSubscriber(LiveSubscriber sub) {
+        subscribers.remove(sub);
+        subscriberMap.remove(sub.getUid());
+        log.info("Subscriber unsubscribed: " + sub.getUid());
     }
 
     private void pingSubscribers() {

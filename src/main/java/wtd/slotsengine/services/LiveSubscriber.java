@@ -2,7 +2,6 @@ package wtd.slotsengine.services;
 
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import wtd.slotsengine.rest.exceptions.AbortedConnectionException;
 import wtd.slotsengine.rest.records.PingMessage;
 import wtd.slotsengine.rest.records.ServerBannerMessage;
 import wtd.slotsengine.utils.SlotUtils;
@@ -45,7 +44,7 @@ public class LiveSubscriber {
             try {
                 emitter.completeWithError(e);
             } catch (IllegalStateException aborted) { // Try catch voodoo
-                throw new AbortedConnectionException("Failed to send event to subscriber.");
+                //throw new AbortedConnectionException("Failed to send event to subscriber.");
             }
         }
     }
