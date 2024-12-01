@@ -2,9 +2,11 @@ package wtd.slotsengine.rest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import wtd.slotsengine.services.LiveEventsManager;
 import wtd.slotsengine.services.LiveSubscriber;
@@ -24,5 +26,10 @@ public class EventsController {
         LiveSubscriber sub = new LiveSubscriber(newEmitter);
         events.subscribe(sub);
         return newEmitter;
+    }
+
+    @ExceptionHandler(AsyncRequestTimeoutException.class)
+    public void asyncTimeoutExceptionHandler(AsyncRequestTimeoutException e) {
+        log.warn("Subscriber timed out: " + e.getMessage());
     }
 }

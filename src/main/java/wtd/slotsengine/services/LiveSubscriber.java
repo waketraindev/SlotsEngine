@@ -3,8 +3,10 @@ package wtd.slotsengine.services;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import wtd.slotsengine.rest.ApiController;
+import wtd.slotsengine.rest.exceptions.ExceptionLite;
 import wtd.slotsengine.rest.records.PingMessage;
 
+import java.io.IOException;
 import java.util.Set;
 
 import static wtd.slotsengine.utils.SlotUtils.now;
@@ -31,7 +33,12 @@ public class LiveSubscriber {
     private void sendEvent(Set<ResponseBodyEmitter.DataWithMediaType> event) {
         try {
             emitter.send(event);
-        } catch (Exception e) {
+        } catch (IOException e) {
+            try {
+                emitter.completeWithError(e);
+            } catch (Exception ignored) { // Try catch voodoo
+                throw new ExceptionLite("Failed to send event to subscriber.");
+            }
         }
     }
 
