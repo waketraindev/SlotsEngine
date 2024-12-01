@@ -1,5 +1,7 @@
 package wtd.slotsengine.slots.machines;
 
+import wtd.slotsengine.slots.utils.SlotUtils;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -8,13 +10,10 @@ public class VirtualReel {
     private final List<Integer> data = new ArrayList<>();
 
     public VirtualReel() {
-
     }
 
-    public VirtualReel(String dataList) {
-        for (int i = 0; i < dataList.length(); i++) {
-            data.add(Integer.parseInt(dataList.substring(i, i + 1)));
-        }
+    public VirtualReel(String dataString) {
+        addElementsFromString(dataString);
     }
 
     public void addSymbol(int sym, int times) {
@@ -27,13 +26,24 @@ public class VirtualReel {
         return data.get(position % data.size());
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (Integer e : data) {
-            sb.append(e);
+    public byte[] toByteArray() {
+        int len = data.size();
+        byte[] result = new byte[len];
+        for (int i = 0; i < len; i++) {
+            result[i] = data.get(i).byteValue();
         }
-        return sb.toString();
+        return result;
+    }
+
+    public String encodeToString() {
+        return SlotUtils.encodeGzipBase64(toByteArray());
+    }
+
+    public void addElementsFromString(String dataString) {
+        byte[] reelBytes = SlotUtils.decodeGzipBase64(dataString);
+        for (int i = 0; i < reelBytes.length; i++) {
+            data.add(i);
+        }
     }
 
     public int size() {
