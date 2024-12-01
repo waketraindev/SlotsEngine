@@ -13,7 +13,7 @@ import java.util.zip.GZIPOutputStream;
  * including encoding and decoding using Base64 and GZIP compression.
  */
 public class SlotUtils {
-    public static final String PROJECT_VERSION = "0.0.1";
+    public static final String PROJECT_VERSION = "0.0.2";
 
     public static Long now() {
         return System.currentTimeMillis();
