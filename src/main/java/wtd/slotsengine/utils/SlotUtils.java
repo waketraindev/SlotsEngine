@@ -1,4 +1,4 @@
-package wtd.slotsengine.slots.utils;
+package wtd.slotsengine.utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -8,6 +8,8 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 public class SlotUtils {
+    public static final String PROJECT_VERSION = "0.0.1";
+    
     public static String encodeGzipBase64(byte[] data) {
         try {
             ByteArrayOutputStream output = new ByteArrayOutputStream();

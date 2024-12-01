@@ -1,6 +1,6 @@
 package wtd.slotsengine.slots.machines;
 
-import wtd.slotsengine.slots.utils.SlotUtils;
+import wtd.slotsengine.utils.SlotUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;

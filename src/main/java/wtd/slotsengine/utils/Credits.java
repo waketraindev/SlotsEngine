@@ -1,4 +1,4 @@
-package wtd.slotsengine.slots.utils;
+package wtd.slotsengine.utils;
 
 import java.io.Serializable;
 import java.util.Objects;
