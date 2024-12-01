@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
-import wtd.slotsengine.rest.exceptions.ExceptionLite;
+import wtd.slotsengine.rest.exceptions.AbortedConnectionException;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -53,7 +53,8 @@ public class LiveEventsManager implements InitializingBean, DisposableBean {
         try {
             log.info("Pinging subscribers: " + subscribers.size());
             subscribers.forEach(LiveSubscriber::sendPing);
-        } catch (ExceptionLite le) {
+        } catch (AbortedConnectionException le) {
+            log.warn("Subscriber aborted connection");
         } catch (Exception e) {
             log.warn("Error while pinging subscribers", e);
         }

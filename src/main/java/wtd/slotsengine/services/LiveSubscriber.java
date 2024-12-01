@@ -3,7 +3,7 @@ package wtd.slotsengine.services;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import wtd.slotsengine.rest.ApiController;
-import wtd.slotsengine.rest.exceptions.ExceptionLite;
+import wtd.slotsengine.rest.exceptions.AbortedConnectionException;
 import wtd.slotsengine.rest.records.PingMessage;
 
 import java.io.IOException;
@@ -36,8 +36,8 @@ public class LiveSubscriber {
         } catch (IOException e) {
             try {
                 emitter.completeWithError(e);
-            } catch (Exception ignored) { // Try catch voodoo
-                throw new ExceptionLite("Failed to send event to subscriber.");
+            } catch (IllegalStateException aborted) { // Try catch voodoo
+                throw new AbortedConnectionException("Failed to send event to subscriber.");
             }
         }
     }
