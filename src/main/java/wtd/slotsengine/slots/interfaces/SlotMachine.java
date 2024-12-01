@@ -7,6 +7,12 @@ public interface SlotMachine {
 
     long withdraw(long amount);
 
+    default boolean hasCredits() {
+        return hasCredits(0);
+    }
+
+    boolean hasCredits(long amount);
+
     long getBalance();
 
 }

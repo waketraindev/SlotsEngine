@@ -36,13 +36,17 @@ public abstract class AbstractSlotMachine implements SlotMachine {
         return credits.addAndGet(-withdrawAmount);
     }
 
+    public boolean hasCredits(long amount) {
+        return getBalance() > amount;
+    }
+
     @Override
     public long getBalance() {
         return credits.get();
     }
 
     protected void assertFunds(long requiredAmount, String actionName) {
-        if (requiredAmount > credits.get())
+        if (requiredAmount > getBalance())
             throw new InsufficientFundsException("Insufficient credits to %s. Required: %d Have: %d".formatted(actionName, requiredAmount, credits.get()));
     }
 
