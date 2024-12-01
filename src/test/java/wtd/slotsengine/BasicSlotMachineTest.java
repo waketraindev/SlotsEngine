@@ -3,7 +3,7 @@ package wtd.slotsengine;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
-import wtd.slotsengine.slots.BasicSlotMachine;
+import wtd.slotsengine.slots.machines.BasicSlotMachine;
 
 import java.util.Random;
 
