@@ -12,7 +12,12 @@ final public class BasicSlotMachine extends AbstractSlotMachine {
     public BasicSlotMachine() {
         super();
         //47, 19, 17, 13
-        reel = new VirtualReel("030122000002000000000023200003020103012021102102112200031312210103020013133010000122000010133013");
+        reel = new VirtualReel("H4sIAAAAAAAA/2MAAI3vAtIBAAAA");
+    }
+
+    public BasicSlotMachine(final VirtualReel reel) {
+        super();
+        this.reel = reel;
     }
 
     @Override
@@ -34,6 +39,12 @@ final public class BasicSlotMachine extends AbstractSlotMachine {
             case 1 -> winAmount = betAmount;
             case 2 -> winAmount = betAmount * 2;
             case 3 -> winAmount = betAmount * 3;
+            case 4 -> winAmount = betAmount * 4;
+            case 5 -> winAmount = betAmount * 5;
+            case 6 -> winAmount = betAmount * 6;
+            case 7 -> winAmount = betAmount * 7;
+            case 8 -> winAmount = betAmount * 8;
+            case 9 -> winAmount = betAmount * 9;
             default -> throw new SlotUserException("Invalid symbol " + res);
         }
 

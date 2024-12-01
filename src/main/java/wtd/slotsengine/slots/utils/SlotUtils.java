@@ -15,14 +15,22 @@ public class SlotUtils {
             comp.write(data, 0, data.length);
             comp.close();
             output.close();
-            return Base64.getEncoder().encodeToString(output.toByteArray());
+            return encodeBase64(output.toByteArray());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
+    public static String encodeBase64(byte[] data) {
+        return Base64.getEncoder().encodeToString(data);
+    }
+
+    public static byte[] decodeBase64(String data) {
+        return Base64.getDecoder().decode(data);
+    }
+
     public static byte[] decodeGzipBase64(String dataString) {
-        try (GZIPInputStream comp = new GZIPInputStream(new ByteArrayInputStream(Base64.getDecoder().decode(dataString)))) {
+        try (GZIPInputStream comp = new GZIPInputStream(new ByteArrayInputStream(decodeBase64(dataString)))) {
             return comp.readAllBytes();
         } catch (IOException e) {
             throw new RuntimeException(e);
