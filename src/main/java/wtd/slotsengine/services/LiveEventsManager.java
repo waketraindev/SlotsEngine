@@ -4,14 +4,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import wtd.slotsengine.rest.exceptions.AbortedConnectionException;
 import wtd.slotsengine.rest.exceptions.InvalidSubscriberException;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -49,6 +49,15 @@ public class LiveEventsManager implements InitializingBean, DisposableBean {
 
     public void unsubscribe(LiveSubscriber sub) {
         removeSubscriber(sub);
+    }
+
+    public void broadcast(SseEmitter.SseEventBuilder message) {
+        final Set<ResponseBodyEmitter.DataWithMediaType> bMessage = message.build();
+        subscribers.forEach((sub) -> sub.sendEvent(bMessage));
+    }
+
+    public void sendDebugText(String text) {
+        broadcast(SseEmitter.event().name("DEBUG_TEXT").data(text, MediaType.TEXT_PLAIN));
     }
 
     public void unsubscribe(UUID uid) throws InvalidSubscriberException {

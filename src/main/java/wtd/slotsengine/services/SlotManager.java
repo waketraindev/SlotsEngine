@@ -10,6 +10,7 @@ public class SlotManager {
 
     public SlotManager() {
         sm = new BasicSlotMachine();
+        sm.deposit(1000);
     }
 
     public SlotMachine getSlotMachine() {
