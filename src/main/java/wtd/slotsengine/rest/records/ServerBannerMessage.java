@@ -1,7 +1,6 @@
 package wtd.slotsengine.rest.records;
 
-public record ServerBannerMessage(String version) implements IRestMessage {
-    public ServerBannerMessage(String version) {
-        this.version = version;
-    }
+import java.util.UUID;
+
+public record ServerBannerMessage(String version, UUID uid) implements IRestMessage {
 }

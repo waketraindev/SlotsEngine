@@ -25,13 +25,14 @@ public class EventsController {
     @RequestMapping("/events")
     public SseEmitter subscribe(@RequestHeader(value = "Last-Event-ID", required = false) String lastEventId) {
         SseEmitter newEmitter = new SseEmitter();
-        LiveSubscriber sub = new LiveSubscriber(newEmitter);
+        LiveSubscriber sub = new LiveSubscriber(newEmitter, UUID.randomUUID());
         events.subscribe(sub);
         return newEmitter;
     }
 
     @ExceptionHandler(AsyncRequestTimeoutException.class)
     public void asyncTimeoutExceptionHandler(AsyncRequestTimeoutException e) {
-        log.warn("Subscriber timed out: " + e.getMessage());
+        //log.warn("Subscriber timed out: " + e.getMessage());
+        //At the moment ignore these types of exceptions
     }
 }

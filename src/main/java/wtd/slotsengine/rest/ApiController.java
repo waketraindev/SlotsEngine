@@ -5,13 +5,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import wtd.slotsengine.rest.records.ServerBannerMessage;
+import wtd.slotsengine.rest.records.ServerVersionMessage;
 import wtd.slotsengine.services.LiveEventsManager;
 import wtd.slotsengine.utils.SlotUtils;
 
 @RestController
 public class ApiController implements InitializingBean {
-    public static final ServerBannerMessage SERVER_BANNER = new ServerBannerMessage(SlotUtils.PROJECT_VERSION);
+    private static final ServerVersionMessage SERVER_BANNER = new ServerVersionMessage(SlotUtils.PROJECT_VERSION);
     private static final Logger log = LoggerFactory.getLogger(ApiController.class);
     private final LiveEventsManager live;
 
@@ -22,7 +22,7 @@ public class ApiController implements InitializingBean {
 
 
     @GetMapping("/api")
-    public ServerBannerMessage indexAction() {
+    public ServerVersionMessage indexAction() {
         return SERVER_BANNER;
     }
 
