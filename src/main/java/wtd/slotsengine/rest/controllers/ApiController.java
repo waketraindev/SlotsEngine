@@ -2,7 +2,6 @@ package wtd.slotsengine.rest.controllers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +22,7 @@ import java.util.UUID;
 import static wtd.slotsengine.utils.SlotUtils.now;
 
 @RestController
-public class ApiController implements InitializingBean {
+public class ApiController {
     private static final ServerVersionMessage SERVER_BANNER = new ServerVersionMessage(SlotUtils.PROJECT_VERSION);
     private static final Logger log = LoggerFactory.getLogger(ApiController.class);
     private final LiveEventsManager live;
@@ -33,11 +32,6 @@ public class ApiController implements InitializingBean {
         log.info("API controller is initializing");
         this.live = liveEventsManager;
         this.machine = slotManager.getSlotMachine();
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        log.info("API controller is initialized");
     }
 
     @GetMapping("/api")
