@@ -1,6 +1,5 @@
 package wtd.slotsengine.rest.controllers;
 
-import jakarta.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import wtd.slotsengine.services.LiveEventsManager;
-import wtd.slotsengine.services.LiveSubscriber;
+import wtd.slotsengine.services.subs.LiveSubscriber;
 
 import java.util.UUID;
 
@@ -35,10 +34,5 @@ public class EventsController {
     @ExceptionHandler(AsyncRequestTimeoutException.class)
     public void asyncTimeoutHandler(AsyncRequestTimeoutException e) {
         log.warn("Async request timed out");
-    }
-
-    @PreDestroy
-    public void destroy() {
-        events.destroy();
     }
 }

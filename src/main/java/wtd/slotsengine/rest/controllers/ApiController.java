@@ -12,7 +12,7 @@ import wtd.slotsengine.rest.exceptions.InvalidSubscriberException;
 import wtd.slotsengine.rest.records.ServerVersionMessage;
 import wtd.slotsengine.rest.records.SpinResultMessage;
 import wtd.slotsengine.services.LiveEventsManager;
-import wtd.slotsengine.services.LiveSubscriber;
+import wtd.slotsengine.services.subs.LiveSubscriber;
 import wtd.slotsengine.services.SlotManager;
 import wtd.slotsengine.slots.interfaces.SlotMachine;
 import wtd.slotsengine.utils.SlotUtils;

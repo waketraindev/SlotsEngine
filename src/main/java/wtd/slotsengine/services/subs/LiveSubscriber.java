@@ -1,4 +1,4 @@
-package wtd.slotsengine.services;
+package wtd.slotsengine.services.subs;
 
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
