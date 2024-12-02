@@ -12,36 +12,16 @@ import wtd.slotsengine.services.LiveSubscriber;
 import java.util.UUID;
 import java.util.concurrent.ScheduledExecutorService;
 
-/**
- * Controller for managing server-sent events (SSE) connections and interactions.
- * Provides endpoints to subscribe to event streams and handles specific exceptions related to asynchronous requests.
- */
 @RestController
 public class EventsController {
     private static final Logger log = LoggerFactory.getLogger(EventsController.class);
-    /**
-     * An instance of LiveEventsManager that manages live event subscriptions and broadcasts
-     * for server-sent events (SSE) within the application.
-     * It is responsible for handling the addition and removal of subscribers,
-     * as well as managing the delivery of events to subscribers.
-     */
     private final LiveEventsManager events;
-    private final LiveEventsManager liveEventsManager;
     private ScheduledExecutorService scheduler;
 
-    public EventsController(LiveEventsManager events, LiveEventsManager liveEventsManager) {
+    public EventsController(LiveEventsManager events) {
         this.events = events;
-        this.liveEventsManager = liveEventsManager;
     }
 
-    /**
-     * Subscribes a client to server-sent events (SSE) by creating a new {@link SseEmitter}
-     * and a {@link LiveSubscriber}. The subscriber is registered to receive events.
-     *
-     * @param lastEventId an optional header containing the ID of the last event received by the client
-     *                    for handling reconnection scenarios. May be null if not provided.
-     * @return a new {@link SseEmitter} instance through which events will be sent to the client
-     */
     @RequestMapping("/events")
     public SseEmitter subscribe(@RequestHeader(value = "Last-Event-ID", required = false) String lastEventId) {
         SseEmitter newEmitter = new SseEmitter(0L);
