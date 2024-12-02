@@ -1,0 +1,6 @@
+{
+  "scripts": {
+    "build": "tailwindcss -i main.css  -o ../static/tailwind.css --watch --minify",
+    "watch": "tailwindcss -i main.css  -o ../static/tailwind.css --watch"
+  }
+}
