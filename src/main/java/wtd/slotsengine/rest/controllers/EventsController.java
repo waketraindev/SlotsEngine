@@ -1,20 +1,15 @@
 package wtd.slotsengine.rest.controllers;
 
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import wtd.slotsengine.services.LiveEventsManager;
 import wtd.slotsengine.services.LiveSubscriber;
 
 import java.util.UUID;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 /**
@@ -49,34 +44,9 @@ public class EventsController {
      */
     @RequestMapping("/events")
     public SseEmitter subscribe(@RequestHeader(value = "Last-Event-ID", required = false) String lastEventId) {
-        SseEmitter newEmitter = new SseEmitter();
+        SseEmitter newEmitter = new SseEmitter(0L);
         LiveSubscriber sub = new LiveSubscriber(newEmitter, UUID.randomUUID());
         events.subscribe(sub);
         return newEmitter;
-    }
-
-    @PostConstruct
-    void init() {
-        scheduler = Executors.newSingleThreadScheduledExecutor();
-        scheduler.scheduleAtFixedRate(liveEventsManager::pingSubscribers, 0, 5, java.util.concurrent.TimeUnit.SECONDS);
-
-    }
-
-    @PreDestroy
-    void destroy() {
-        scheduler.shutdown();
-    }
-
-    /**
-     * Handles exceptions of type AsyncRequestTimeoutException that occur during asynchronous request processing.
-     * This method currently ignores these types of exceptions.
-     *
-     * @param e the AsyncRequestTimeoutException that was thrown
-     */
-    @SuppressWarnings("EmptyMethod")
-    @ExceptionHandler(AsyncRequestTimeoutException.class)
-    public void asyncTimeoutExceptionHandler(AsyncRequestTimeoutException e) {
-        //log.warn("Subscriber timed out: " + e.getMessage());
-        //At the moment ignore these types of exceptions
     }
 }

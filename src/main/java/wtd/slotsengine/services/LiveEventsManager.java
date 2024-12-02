@@ -3,6 +3,8 @@ package wtd.slotsengine.services;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -22,6 +24,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * The class implements the Spring framework interfaces InitializingBean and DisposableBean for lifecycle management.
  */
 @Service
+@EnableScheduling
 public class LiveEventsManager {
     private static final Logger log = LoggerFactory.getLogger(LiveEventsManager.class);
     private final List<LiveSubscriber> subscribers = new CopyOnWriteArrayList<>();
@@ -150,6 +153,11 @@ public class LiveEventsManager {
         log.info("Subscriber unsubscribed: {}", sub.getUid());
     }
 
+    @Scheduled(fixedRate = 5000)
+    public void pingSubscribersScheduled() {
+        pingSubscribers();
+    }
+
     /**
      * Sends a ping to all current subscribers. The method logs the total number of subscribers
      * being pinged and attempts to send a ping message to each subscriber in the list.
@@ -163,7 +171,13 @@ public class LiveEventsManager {
     public void pingSubscribers() {
         try {
             log.info("Pinging subscribers: {}", subscribers.size());
-            subscribers.forEach(LiveSubscriber::sendPing);
+            subscribers.forEach((s) -> {
+                try {
+                    s.sendPing();
+                } catch (Exception e) {
+                    log.warn("Error while pinging subscriber", e);
+                }
+            });
         } catch (AbortedConnectionException le) {
             log.warn("Subscriber aborted connection");
         } catch (Exception e) {
