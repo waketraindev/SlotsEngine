@@ -2,6 +2,7 @@ package wtd.slotsengine.slots.machines;
 
 import wtd.slotsengine.slots.exceptions.SlotUserException;
 import wtd.slotsengine.slots.machines.abstracts.AbstractSlotMachine;
+import wtd.slotsengine.slots.machines.utils.VirtualReel;
 
 /**
  * The BasicSlotMachine class represents a simple slot machine with a single virtual reel.
