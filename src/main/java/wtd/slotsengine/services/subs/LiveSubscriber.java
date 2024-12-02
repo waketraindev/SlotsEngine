@@ -1,4 +1,4 @@
-package wtd.slotsengine.services;
+package wtd.slotsengine.services.subs;
 
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -40,12 +40,7 @@ public class LiveSubscriber {
     public void sendEvent(Set<ResponseBodyEmitter.DataWithMediaType> event) {
         try {
             emitter.send(event);
-        } catch (IOException e) {
-            try {
-                emitter.completeWithError(e);
-            } catch (IllegalStateException aborted) { // Try catch voodoo
-                //throw new AbortedConnectionException("Failed to send event to subscriber.");
-            }
+        } catch (IOException ignored) {
         }
     }
 

@@ -10,7 +10,7 @@
     </parent>
     <groupId>wtd</groupId>
     <artifactId>SlotsEngine</artifactId>
-    <version>0.0.4</version>
+    <version>0.0.5</version>
     <name>SlotsEngine</name>
     <description>SlotsEngine</description>
     <url/>
@@ -52,6 +52,10 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
     </dependencies>
 
