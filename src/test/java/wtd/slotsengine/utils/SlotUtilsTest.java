@@ -43,9 +43,7 @@ public class SlotUtilsTest {
     void testEncodeGzipBase64_withLargeData() {
         // Initialize large input data.
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < 10000; i++) {
-            sb.append("data");
-        }
+        sb.append("data".repeat(10000));
         byte[] inputData = sb.toString().getBytes();
 
         // Encode and decode back to verify.

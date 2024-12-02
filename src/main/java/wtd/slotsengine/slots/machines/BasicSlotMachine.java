@@ -2,6 +2,8 @@ package wtd.slotsengine.slots.machines;
 
 import wtd.slotsengine.slots.exceptions.SlotUserException;
 import wtd.slotsengine.slots.machines.abstracts.AbstractSlotMachine;
+import wtd.slotsengine.slots.machines.utils.VirtualReel;
+import wtd.slotsengine.utils.SlotUtils;
 
 /**
  * The BasicSlotMachine class represents a simple slot machine with a single virtual reel.
@@ -18,17 +20,13 @@ final public class BasicSlotMachine extends AbstractSlotMachine {
     private final VirtualReel reel;
 
     /**
-     * Constructs a BasicSlotMachine instance with a default virtual reel.
-     * <p>
-     * This constructor initializes the BasicSlotMachine by creating a VirtualReel
-     * with default symbols pre-encoded in a compressed Base64 format. The reel
-     * is set up to provide the necessary symbol data for the slot machine's operation.
-     *
-     * @see wtd.slotsengine.utils.SlotUtils
+     * Constructs a BasicSlotMachine with a default virtual reel configuration.
+     * This constructor initializes the slot machine by setting up a virtual reel
+     * using predefined symbol data from the `SlotUtils.DEMO_MACHINE` constant.
      */
     public BasicSlotMachine() {
         super();
-        reel = new VirtualReel("H4sIAAAAAAAA/2NgGAW0A4zYARMmYEYHLMiAFQHYIIAdBDg4ODg5uQARLQflwwEAAA==");
+        reel = new VirtualReel(SlotUtils.DEMO_MACHINE);
     }
 
     /**
@@ -64,7 +62,7 @@ final public class BasicSlotMachine extends AbstractSlotMachine {
     /**
      * Calculates the win amount based on the result symbol at the specified position of the reel.
      *
-     * @param position the index on the reel indicating the result symbol.
+     * @param position  the index on the reel indicating the result symbol.
      * @param betAmount the amount of credits wagered for this spin.
      * @return the amount of credits won for the spin, calculated based on the symbol and bet amount.
      * @throws SlotUserException if an invalid symbol is encountered at the given position.

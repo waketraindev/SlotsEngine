@@ -10,7 +10,7 @@
     </parent>
     <groupId>wtd</groupId>
     <artifactId>SlotsEngine</artifactId>
-    <version>0.0.3</version>
+    <version>0.0.4</version>
     <name>SlotsEngine</name>
     <description>SlotsEngine</description>
     <url/>
@@ -47,6 +47,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
         </dependency>
     </dependencies>
 
