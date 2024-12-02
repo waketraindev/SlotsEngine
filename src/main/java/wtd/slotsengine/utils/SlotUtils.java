@@ -14,6 +14,7 @@ import java.util.zip.GZIPOutputStream;
  */
 public class SlotUtils {
     public static final String PROJECT_VERSION = "0.0.3";
+    public static final String DEMO_MACHINE = "H4sIAAAAAAAA/2NgGAW0A4zYARMmYEYHLMiAFQHYIIAdBDg4ODg5uQARLQflwwEAAA==";
 
     public static Long now() {
         return System.currentTimeMillis();
