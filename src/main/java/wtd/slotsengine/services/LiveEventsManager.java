@@ -3,7 +3,9 @@ package wtd.slotsengine.services;
 import jakarta.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -21,7 +23,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 @Service
 @EnableScheduling
-public class LiveEventsManager {
+@EnableAsync
+public class LiveEventsManager implements DisposableBean {
     private static final Logger log = LoggerFactory.getLogger(LiveEventsManager.class);
     private final List<LiveSubscriber> subscribers = new CopyOnWriteArrayList<>();
     private final Map<UUID, LiveSubscriber> subscriberMap = new ConcurrentHashMap<>();
@@ -32,6 +35,7 @@ public class LiveEventsManager {
 
     @PreDestroy
     public void destroy() {
+        log.info("Live events manager is shutting down.");
         subscribers.forEach(sub -> sub.emitter().complete());
     }
 
@@ -77,9 +81,10 @@ public class LiveEventsManager {
     }
 
     private void removeSubscriber(LiveSubscriber sub) {
+        sub.emitter().complete();
         subscribers.remove(sub);
         subscriberMap.remove(sub.getUid());
-        log.info("Subscriber unsubscribed: {}", sub.getUid());
+        log.info("Subscriber removed: {}", sub.getUid());
     }
 
     @Scheduled(fixedRate = 5000)
@@ -88,11 +93,14 @@ public class LiveEventsManager {
     }
 
     public void pingSubscribers() {
-        try {
-            log.info("Pinging subscribers: {}", subscribers.size());
-            subscribers.forEach(LiveSubscriber::sendPing);
-        } catch (Exception e) {
-            log.warn("Exception occurred during ping", e);
+        log.info("Pinging subscribers: {}", subscribers.size());
+        for (LiveSubscriber sub : subscribers) {
+            try {
+                sub.sendPing();
+            } catch (Exception e) {
+                log.warn("Failed to send ping to subscriber: {}", sub.getUid());
+            }
         }
+        //subscribers.forEach(LiveSubscriber::sendPing);
     }
 }

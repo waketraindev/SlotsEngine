@@ -6,6 +6,7 @@ import wtd.slotsengine.rest.records.PingMessage;
 import wtd.slotsengine.rest.records.ServerBannerMessage;
 import wtd.slotsengine.utils.SlotUtils;
 
+import java.io.IOException;
 import java.util.Set;
 import java.util.UUID;
 
@@ -39,7 +40,7 @@ public class LiveSubscriber {
     public void sendEvent(Set<ResponseBodyEmitter.DataWithMediaType> event) {
         try {
             emitter.send(event);
-        } catch (Exception e) {
+        } catch (IOException e) {
             emitter.complete();
         }
     }
