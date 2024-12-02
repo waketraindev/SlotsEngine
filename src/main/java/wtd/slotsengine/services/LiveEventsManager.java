@@ -45,8 +45,25 @@ public class LiveEventsManager implements DisposableBean {
         sub.sendWelcome();
     }
 
+    private void addSubscriber(LiveSubscriber sub) {
+        subscribers.add(sub);
+        subscriberMap.put(sub.getUid(), sub);
+        log.info("New subscriber: {}", sub.getUid());
+    }
+
+    private void removeSubscriber(LiveSubscriber sub) {
+        sub.emitter().complete();
+        subscribers.remove(sub);
+        subscriberMap.remove(sub.getUid());
+        log.info("Subscriber removed: {}", sub.getUid());
+    }
+
     public void unsubscribe(LiveSubscriber sub) {
         removeSubscriber(sub);
+    }
+
+    public void sendDebugText(String text) {
+        broadcast(SseEmitter.event().name("DEBUG_TEXT").data(text, MediaType.TEXT_PLAIN));
     }
 
     public void broadcast(SseEmitter.SseEventBuilder message) {
@@ -54,18 +71,8 @@ public class LiveEventsManager implements DisposableBean {
         subscribers.forEach((sub) -> sub.sendEvent(bMessage));
     }
 
-    public void sendDebugText(String text) {
-        broadcast(SseEmitter.event().name("DEBUG_TEXT").data(text, MediaType.TEXT_PLAIN));
-    }
-
     public void unsubscribe(UUID uid) throws InvalidSubscriberException {
         removeSubscriber(uid);
-    }
-
-    private void addSubscriber(LiveSubscriber sub) {
-        subscribers.add(sub);
-        subscriberMap.put(sub.getUid(), sub);
-        log.info("New subscriber: {}", sub.getUid());
     }
 
     private void removeSubscriber(UUID uid) throws InvalidSubscriberException {
@@ -78,13 +85,6 @@ public class LiveEventsManager implements DisposableBean {
             throw new InvalidSubscriberException("Invalid subscriber");
         }
         return res;
-    }
-
-    private void removeSubscriber(LiveSubscriber sub) {
-        sub.emitter().complete();
-        subscribers.remove(sub);
-        subscriberMap.remove(sub.getUid());
-        log.info("Subscriber removed: {}", sub.getUid());
     }
 
     @Scheduled(fixedRate = 5000)
