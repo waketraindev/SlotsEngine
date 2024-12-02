@@ -1,6 +1,7 @@
 package wtd.slotsengine.rest.controllers;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -61,6 +62,7 @@ public class EventsController {
 
     }
 
+    @PreDestroy
     void destroy() {
         scheduler.shutdown();
     }
