@@ -1,5 +1,6 @@
 package wtd.slotsengine.services;
 
+import jakarta.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -8,7 +9,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import wtd.slotsengine.rest.exceptions.AbortedConnectionException;
 import wtd.slotsengine.rest.exceptions.InvalidSubscriberException;
 
 import java.util.List;
@@ -45,6 +45,11 @@ public class LiveEventsManager {
         log.info("Live events manager is initializing.");
     }
 
+
+    @PreDestroy
+    public void destroy() {
+        subscribers.forEach(sub -> sub.emitter().complete());
+    }
 
     /**
      * Subscribes a new LiveSubscriber to the event manager. This method adds the subscriber
@@ -171,17 +176,9 @@ public class LiveEventsManager {
     public void pingSubscribers() {
         try {
             log.info("Pinging subscribers: {}", subscribers.size());
-            subscribers.forEach((s) -> {
-                try {
-                    s.sendPing();
-                } catch (Exception e) {
-                    log.warn("Error while pinging subscriber", e);
-                }
-            });
-        } catch (AbortedConnectionException le) {
-            log.warn("Subscriber aborted connection");
+            subscribers.forEach(LiveSubscriber::sendPing);
         } catch (Exception e) {
-            log.warn("Error while pinging subscribers", e);
+            log.warn("Exception occurred during ping", e);
         }
     }
 }
