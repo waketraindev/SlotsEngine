@@ -1,5 +1,6 @@
 package wtd.slotsengine.rest.controllers;
 
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,6 +13,8 @@ import wtd.slotsengine.services.LiveEventsManager;
 import wtd.slotsengine.services.LiveSubscriber;
 
 import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * Controller for managing server-sent events (SSE) connections and interactions.
@@ -27,9 +30,11 @@ public class EventsController {
      * as well as managing the delivery of events to subscribers.
      */
     private final LiveEventsManager events;
+    private final LiveEventsManager liveEventsManager;
 
-    public EventsController(LiveEventsManager events) {
+    public EventsController(LiveEventsManager events, LiveEventsManager liveEventsManager) {
         this.events = events;
+        this.liveEventsManager = liveEventsManager;
     }
 
     /**
@@ -46,6 +51,13 @@ public class EventsController {
         LiveSubscriber sub = new LiveSubscriber(newEmitter, UUID.randomUUID());
         events.subscribe(sub);
         return newEmitter;
+    }
+
+    @PostConstruct
+    void init() {
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+        scheduler.scheduleAtFixedRate(() -> liveEventsManager.pingSubscribers(), 0, 5, java.util.concurrent.TimeUnit.SECONDS);
+
     }
 
     /**

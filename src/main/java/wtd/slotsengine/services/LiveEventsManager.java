@@ -2,8 +2,6 @@ package wtd.slotsengine.services;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
@@ -15,7 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * The LiveEventsManager class is responsible for managing live event subscriptions and broadcasting messages
@@ -23,60 +22,26 @@ import java.util.concurrent.*;
  * The class implements the Spring framework interfaces InitializingBean and DisposableBean for lifecycle management.
  */
 @Service
-public class LiveEventsManager implements InitializingBean, DisposableBean {
+public class LiveEventsManager {
     private static final Logger log = LoggerFactory.getLogger(LiveEventsManager.class);
-    private final ScheduledExecutorService scheduler;
     private final List<LiveSubscriber> subscribers = new CopyOnWriteArrayList<>();
     private final Map<UUID, LiveSubscriber> subscriberMap = new ConcurrentHashMap<>();
 
     /**
      * Constructs a new instance of LiveEventsManager.
-     *
+     * <p>
      * Upon initialization, this constructor logs an info message indicating
      * that the Live Events Manager is initializing. It also initializes
      * a single-threaded scheduled executor service which can be used for
      * scheduling and executing tasks asynchronously.
-     *
+     * <p>
      * The scheduled executor is implemented using `Executors.newSingleThreadScheduledExecutor()`,
      * which ensures that tasks are executed sequentially in a single dedicated thread.
      */
     public LiveEventsManager() {
         log.info("Live events manager is initializing.");
-        this.scheduler = Executors.newSingleThreadScheduledExecutor();
     }
 
-    /**
-     * Shuts down the live events manager, releasing any resources and stopping
-     * scheduled tasks. This method is intended to perform necessary cleanup
-     * before the live events manager is terminated.
-     *
-     * @throws Exception If an error occurs during the shutdown process.
-     */
-    @Override
-    public void destroy() throws Exception {
-        log.info("Live events manager is shutting down.");
-        scheduler.shutdown();
-    }
-
-    /**
-     * Initializes the live events manager by setting up necessary resources and scheduling tasks.
-     *
-     * This method is called after the properties of the bean are set, allowing for any
-     * custom initialization required post-property configuration.
-     *
-     * The method logs an informational message indicating the successful initialization of
-     * the live events manager. It then schedules a task to run at a fixed rate of every
-     * 5 seconds. The scheduled task is responsible for invoking the pingSubscribers method,
-     * which ensures subscribers are periodically checked or updated according to
-     * the application's requirements.
-     *
-     * @throws Exception if any error occurs during the initialization or scheduling process
-     */
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        log.info("Live events manager is initialized.");
-        scheduler.scheduleAtFixedRate(this::pingSubscribers, 0, 5, TimeUnit.SECONDS);
-    }
 
     /**
      * Subscribes a new LiveSubscriber to the event manager. This method adds the subscriber
@@ -188,14 +153,14 @@ public class LiveEventsManager implements InitializingBean, DisposableBean {
     /**
      * Sends a ping to all current subscribers. The method logs the total number of subscribers
      * being pinged and attempts to send a ping message to each subscriber in the list.
-     *
+     * <p>
      * If a subscriber terminates the connection abruptly, it catches the
      * AbortedConnectionException and logs a warning message indicating the connection was aborted.
-     *
+     * <p>
      * If any other type of exception occurs during the process, it catches the exception and
      * logs a warning with the exception details.
      */
-    private void pingSubscribers() {
+    public void pingSubscribers() {
         try {
             log.info("Pinging subscribers: {}", subscribers.size());
             subscribers.forEach(LiveSubscriber::sendPing);
