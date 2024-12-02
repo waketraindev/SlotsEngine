@@ -20,13 +20,9 @@ final public class BasicSlotMachine extends AbstractSlotMachine {
     private final VirtualReel reel;
 
     /**
-     * Constructs a BasicSlotMachine instance with a default virtual reel.
-     * <p>
-     * This constructor initializes the BasicSlotMachine by creating a VirtualReel
-     * with default symbols pre-encoded in a compressed Base64 format. The reel
-     * is set up to provide the necessary symbol data for the slot machine's operation.
-     *
-     * @see wtd.slotsengine.utils.SlotUtils
+     * Constructs a BasicSlotMachine with a default virtual reel configuration.
+     * This constructor initializes the slot machine by setting up a virtual reel
+     * using predefined symbol data from the `SlotUtils.DEMO_MACHINE` constant.
      */
     public BasicSlotMachine() {
         super();
