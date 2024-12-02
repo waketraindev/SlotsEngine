@@ -2,6 +2,7 @@ package wtd.slotsengine.rest.controllers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -14,6 +15,7 @@ import wtd.slotsengine.services.subs.LiveSubscriber;
 import java.util.UUID;
 
 @RestController
+@EnableAsync
 public class EventsController {
     private static final Logger log = LoggerFactory.getLogger(EventsController.class);
     private final LiveEventsManager events;
