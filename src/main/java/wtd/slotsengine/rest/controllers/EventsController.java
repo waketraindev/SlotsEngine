@@ -3,8 +3,8 @@ package wtd.slotsengine.rest.controllers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -22,7 +22,7 @@ public class EventsController {
         this.events = events;
     }
 
-    @RequestMapping("/events")
+    @GetMapping(path = "/events", produces = "text/event-stream")
     public SseEmitter subscribe(@RequestHeader(value = "Last-Event-ID", required = false) String lastEventId) {
         SseEmitter newEmitter = new SseEmitter(0L);
         newEmitter.onTimeout(newEmitter::complete);

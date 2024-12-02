@@ -2,6 +2,7 @@ package wtd.slotsengine.services.subs;
 
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import wtd.slotsengine.rest.exceptions.AbortedConnectionException;
 import wtd.slotsengine.rest.records.PingMessage;
 import wtd.slotsengine.rest.records.ServerBannerMessage;
 import wtd.slotsengine.utils.SlotUtils;
@@ -41,7 +42,7 @@ public class LiveSubscriber {
         try {
             emitter.send(event);
         } catch (IOException e) {
-            emitter.complete();
+            throw new AbortedConnectionException("Connection aborted");
         }
     }
 

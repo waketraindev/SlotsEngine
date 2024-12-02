@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import wtd.slotsengine.rest.exceptions.AbortedConnectionException;
 import wtd.slotsengine.rest.exceptions.InvalidSubscriberException;
 import wtd.slotsengine.services.subs.LiveSubscriber;
 
@@ -90,8 +91,8 @@ public class LiveEventsManager {
         for (LiveSubscriber sub : subscribers) {
             try {
                 sub.sendPing();
-            } catch (Exception e) {
-                log.warn("Failed to send ping to subscriber: {}", sub.getUid());
+            } catch (AbortedConnectionException e) {
+                log.warn("Failed to send ping to subscriber: {} ", sub.getUid());
             }
         }
         //subscribers.forEach(LiveSubscriber::sendPing);
