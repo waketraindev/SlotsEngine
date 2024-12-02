@@ -31,6 +31,7 @@ public class EventsController {
      */
     private final LiveEventsManager events;
     private final LiveEventsManager liveEventsManager;
+    private ScheduledExecutorService scheduler;
 
     public EventsController(LiveEventsManager events, LiveEventsManager liveEventsManager) {
         this.events = events;
@@ -55,9 +56,13 @@ public class EventsController {
 
     @PostConstruct
     void init() {
-        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-        scheduler.scheduleAtFixedRate(() -> liveEventsManager.pingSubscribers(), 0, 5, java.util.concurrent.TimeUnit.SECONDS);
+        scheduler = Executors.newSingleThreadScheduledExecutor();
+        scheduler.scheduleAtFixedRate(liveEventsManager::pingSubscribers, 0, 5, java.util.concurrent.TimeUnit.SECONDS);
 
+    }
+
+    void destroy() {
+        scheduler.shutdown();
     }
 
     /**
