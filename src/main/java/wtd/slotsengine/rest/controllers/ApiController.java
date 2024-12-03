@@ -44,11 +44,15 @@ public class ApiController {
 
     @PostMapping("/api/spin/{amount}")
     public SpinResultMessage spin(@PathVariable("amount") Long amount) {
-        log.info("Spin request received: {} result {}", amount, machine.getResult());
-        try {
-            long winAmount = machine.spin(amount);
-            return new SpinResultMessage(now(), amount, winAmount, machine.getBalance(), machine.getResult());
-        } catch (InsufficientFundsException ex) {
+        if (amount > 0) {
+            log.info("Spin request received: {} result {}", amount, machine.getResult());
+            try {
+                long winAmount = machine.spin(amount);
+                return new SpinResultMessage(now(), amount, winAmount, machine.getBalance(), machine.getResult());
+            } catch (InsufficientFundsException ex) {
+                return new SpinResultMessage(now(), amount, 0L, machine.getBalance(), 0);
+            }
+        } else {
             return new SpinResultMessage(now(), amount, 0L, machine.getBalance(), 0);
         }
     }
@@ -56,26 +60,25 @@ public class ApiController {
 
     @RequestMapping(value = "/api/deposit/{amount}")
     public BalanceMessage deposit(@PathVariable("amount") Long amount) {
-        log.info("Deposit request received: {}", amount);
-        return new BalanceMessage(machine.deposit(amount));
-    }
-
-    @RequestMapping("/api/withdraw/{amount}")
-    public BalanceMessage withdrawh(@PathVariable("amount") Long amount) {
-        log.info("Withdraw request received: {}", amount);
-        try {
-            return new BalanceMessage(machine.withdraw(amount));
-        } catch (InsufficientFundsException e) {
+        if (amount > 0) {
+            log.info("Deposit request received: {}", amount);
+            return new BalanceMessage(machine.deposit(amount));
+        } else {
             return new BalanceMessage(machine.getBalance());
         }
     }
 
-    @GetMapping("/api/{uid}")
-    public LiveSubscriber eventsAction(@PathVariable("uid") String userid) {
-        try {
-            return live.getSubscriberByUID(UUID.fromString(userid));
-        } catch (InvalidSubscriberException e) {
-            throw new ResponseStatusException(HttpStatusCode.valueOf(404));
+    @RequestMapping("/api/withdraw/{amount}")
+    public BalanceMessage withdrawh(@PathVariable("amount") Long amount) {
+        if (amount > 0) {
+            log.info("Withdraw request received: {}", amount);
+            try {
+                return new BalanceMessage(machine.withdraw(amount));
+            } catch (InsufficientFundsException e) {
+                return new BalanceMessage(machine.getBalance());
+            }
+        } else {
+            return new BalanceMessage(machine.getBalance());
         }
     }
 }
