@@ -17,6 +17,9 @@ let machineState = {
     balance: 0, betAmount: 1
 };
 
+let betRange = [1, 10, 15, 25, 50, 100, 200, 500, 1000, 2000, 5000, 10000];
+let betPos = 0
+
 function spin() {
     btnSpin.disabled = true;
     fetch('/api/spin/' + machineState.betAmount, {
@@ -73,15 +76,20 @@ function calcBetValues() {
 }
 
 btnIncBet.addEventListener('click', () => {
-    machineState.betAmount += 1;
+    betPos = Math.min((betPos + 1), betRange.length - 1);
+    betValue = betRange[betPos];
+    machineState.betAmount = betValue;
+    //machineState.betAmount += 1;
     lblBetAmount.innerText = machineState.betAmount;
     calcBetValues();
 });
+
 btnDecBet.addEventListener('click', () => {
-    if (machineState.betAmount > 1) {
-        machineState.betAmount -= 1;
-        lblBetAmount.innerText = machineState.betAmount;
-    }
+    betPos = Math.max((betPos - 1), 0);
+    betValue = betRange[betPos];
+    machineState.betAmount = betValue;
+    //machineState.betAmount += 1;
+    lblBetAmount.innerText = machineState.betAmount;
     calcBetValues();
 });
 
