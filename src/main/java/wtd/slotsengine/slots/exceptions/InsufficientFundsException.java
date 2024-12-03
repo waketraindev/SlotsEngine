@@ -1,6 +1,6 @@
 package wtd.slotsengine.slots.exceptions;
 
-public class InsufficientFundsException extends SlotUserException {
+public class InsufficientFundsException extends Exception {
     public InsufficientFundsException(String message) {
         super(message);
     }

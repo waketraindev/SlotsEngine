@@ -3,13 +3,10 @@ package wtd.slotsengine.rest.controllers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatusCode;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import wtd.slotsengine.rest.exceptions.InvalidSubscriberException;
+import wtd.slotsengine.rest.records.BalanceMessage;
 import wtd.slotsengine.rest.records.ServerVersionMessage;
 import wtd.slotsengine.rest.records.SpinResultMessage;
 import wtd.slotsengine.services.LiveEventsManager;
@@ -52,7 +49,24 @@ public class ApiController {
             long winAmount = machine.spin(amount);
             return new SpinResultMessage(now(), amount, winAmount, machine.getBalance(), machine.getResult());
         } catch (InsufficientFundsException ex) {
-            return new SpinResultMessage(now(), amount, 0L, 0L, 0);
+            return new SpinResultMessage(now(), amount, 0L, machine.getBalance(), 0);
+        }
+    }
+
+
+    @RequestMapping(value = "/api/deposit/{amount}")
+    public BalanceMessage deposit(@PathVariable("amount") Long amount) {
+        log.info("Deposit request received: {}", amount);
+        return new BalanceMessage(machine.deposit(amount));
+    }
+
+    @RequestMapping("/api/withdraw/{amount}")
+    public BalanceMessage withdrawh(@PathVariable("amount") Long amount) {
+        log.info("Withdraw request received: {}", amount);
+        try {
+            return new BalanceMessage(machine.withdraw(amount));
+        } catch (InsufficientFundsException e) {
+            return new BalanceMessage(machine.getBalance());
         }
     }
 
