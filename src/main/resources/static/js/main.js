@@ -18,6 +18,7 @@ let machineState = {
 };
 
 function spin() {
+    btnSpin.disabled = true;
     fetch('/api/spin/' + machineState.betAmount, {
         method: 'POST'
     }).then(response => response.json()).then(data => {
@@ -25,7 +26,7 @@ function spin() {
         lblBetAmount.innerText = data.betAmount;
         lblBalanceAmount.innerText = data.balance;
         lblDisplay.innerText = data.result;
-        console.log(data);
+        btnSpin.disabled = false;
     })
 }
 
