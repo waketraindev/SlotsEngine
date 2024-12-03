@@ -18,7 +18,7 @@ let machineState = {
 };
 
 let betRange = [1, 10, 15, 25, 50, 100, 200, 500, 1000, 2000, 5000, 10000];
-let betPos = 0
+let betPos = 0;
 
 function spin() {
     btnSpin.disabled = true;
@@ -48,13 +48,13 @@ document.addEventListener('keyup', (e) => {
 });
 
 btnDeposit.addEventListener('click', () => {
-    let value = prompt("Enter deposit amount", 1000);
+    let value = prompt("Enter deposit amount", "1000");
     fetch('/api/deposit/' + value, {}).then(response => response.json()).then(data => {
         lblBalanceAmount.innerText = data.balance;
     })
 });
 btnWithdraw.addEventListener('click', () => {
-    let value = prompt("Enter withdrawal amount", 1000);
+    let value = prompt("Enter withdrawal amount", "1000");
     fetch('/api/withdraw/' + value, {}).then(response => response.json()).then(data => {
         lblBalanceAmount.innerText = data.balance;
     })
@@ -77,8 +77,7 @@ function calcBetValues() {
 
 btnIncBet.addEventListener('click', () => {
     betPos = Math.min((betPos + 1), betRange.length - 1);
-    betValue = betRange[betPos];
-    machineState.betAmount = betValue;
+    machineState.betAmount = betRange[betPos];
     //machineState.betAmount += 1;
     lblBetAmount.innerText = machineState.betAmount;
     calcBetValues();
@@ -86,8 +85,7 @@ btnIncBet.addEventListener('click', () => {
 
 btnDecBet.addEventListener('click', () => {
     betPos = Math.max((betPos - 1), 0);
-    betValue = betRange[betPos];
-    machineState.betAmount = betValue;
+    machineState.betAmount = betRange[betPos];
     //machineState.betAmount += 1;
     lblBetAmount.innerText = machineState.betAmount;
     calcBetValues();
