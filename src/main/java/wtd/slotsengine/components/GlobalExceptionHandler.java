@@ -1,4 +1,4 @@
-package wtd.slotsengine.rest.components;
+package wtd.slotsengine.components;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
