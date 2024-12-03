@@ -47,12 +47,12 @@ public class ApiController {
 
     @PostMapping("/api/spin/{amount}")
     public SpinResultMessage spin(@PathVariable("amount") Long amount) {
-        log.info("Spin request received: {}", amount);
+        log.info("Spin request received: {} result {}", amount, machine.getResult());
         try {
             long winAmount = machine.spin(amount);
             return new SpinResultMessage(now(), amount, winAmount, machine.getBalance(), machine.getResult());
         } catch (InsufficientFundsException ex) {
-            return new SpinResultMessage(now(), 0L, 0L, 0L, 0);
+            return new SpinResultMessage(now(), amount, 0L, 0L, 0);
         }
     }
 
