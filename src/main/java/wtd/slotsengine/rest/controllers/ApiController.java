@@ -27,10 +27,6 @@ public class ApiController {
     private final LiveEventsManager live;
     private final SlotMachine machine;
 
-    static class SpinParams {
-        public long amount;
-    }
-
     public ApiController(LiveEventsManager liveEventsManager, SlotManager slotManager) {
         log.info("API controller is initializing");
         this.live = liveEventsManager;
@@ -57,7 +53,6 @@ public class ApiController {
         }
     }
 
-
     @RequestMapping(value = "/api/deposit/{amount}")
     public BalanceMessage deposit(@PathVariable("amount") Long amount) {
         if (amount > 0) {
@@ -80,5 +75,9 @@ public class ApiController {
         } else {
             return new BalanceMessage(machine.getBalance());
         }
+    }
+
+    static class SpinParams {
+        public long amount;
     }
 }
