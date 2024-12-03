@@ -39,6 +39,13 @@ public class ApiController {
         return SERVER_BANNER;
     }
 
+    @GetMapping("/api/spin")
+    public SpinResultMessage spin() {
+        long winAmount = machine.spin(1L);
+        SpinResultMessage result = new SpinResultMessage(now(), 1L, winAmount, machine.getBalance());
+        return result;
+    }
+
     @GetMapping("/api/debugspin")
     public String debugSspin() {
         StringBuilder result = new StringBuilder();
