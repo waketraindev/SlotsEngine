@@ -55,6 +55,7 @@ btnDeposit.addEventListener('click', () => {
     fetch('/api/deposit/' + value, {}).then(response => response.json()).then(data => {
         lblBalanceAmount.innerText = data.balance;
         machineState.balance = data.balance;
+        btnSpin.disabled = machineState.betAmount > machineState.balance;
     })
 });
 btnWithdraw.addEventListener('click', () => {
@@ -62,6 +63,7 @@ btnWithdraw.addEventListener('click', () => {
     fetch('/api/withdraw/' + value, {}).then(response => response.json()).then(data => {
         lblBalanceAmount.innerText = data.balance;
         machineState.balance = data.balance;
+        btnSpin.disabled = machineState.betAmount > machineState.balance;
     })
 });
 btnSpin.addEventListener('click', () => {
