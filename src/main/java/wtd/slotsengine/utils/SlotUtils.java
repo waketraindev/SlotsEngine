@@ -12,10 +12,7 @@ import java.util.zip.GZIPOutputStream;
  * Utility class providing methods for working with binary data,
  * including encoding and decoding using Base64 and GZIP compression.
  */
-public class SlotUtils {
-    public static final String PROJECT_VERSION = "0.0.8";
-    public static final String DEMO_MACHINE = "H4sIAAAAAAAA/2NgGAW0A4zYARMmYEYHLMiAFQHYIIAdBDg4ODg5uQARLQflwwEAAA==";
-
+public final class SlotUtils {
     public static Long now() {
         return System.currentTimeMillis();
     }
