@@ -14,7 +14,7 @@ let lblDisplay = document.getElementById('lblDisplay');
 let lastSpin;
 
 let machineState = {
-    balance: 0, betAmount: 1
+    balance: 1, betAmount: 1
 };
 
 let betRange = [1, 10, 15, 25, 50, 100, 200, 500, 1000, 2000, 5000, 10000];
@@ -30,6 +30,9 @@ function spin() {
         lblBalanceAmount.innerText = data.balance;
         lblDisplay.innerText = data.result;
         btnSpin.disabled = false;
+
+        machineState.balance = data.balance;
+        btnSpin.disabled = machineState.betAmount > machineState.balance;
     })
 }
 
@@ -51,12 +54,14 @@ btnDeposit.addEventListener('click', () => {
     let value = prompt("Enter deposit amount", "1000");
     fetch('/api/deposit/' + value, {}).then(response => response.json()).then(data => {
         lblBalanceAmount.innerText = data.balance;
+        machineState.balance = data.balance;
     })
 });
 btnWithdraw.addEventListener('click', () => {
     let value = prompt("Enter withdrawal amount", "1000");
     fetch('/api/withdraw/' + value, {}).then(response => response.json()).then(data => {
         lblBalanceAmount.innerText = data.balance;
+        machineState.balance = data.balance;
     })
 });
 btnSpin.addEventListener('click', () => {
@@ -78,17 +83,17 @@ function calcBetValues() {
 btnIncBet.addEventListener('click', () => {
     betPos = Math.min((betPos + 1), betRange.length - 1);
     machineState.betAmount = betRange[betPos];
-    //machineState.betAmount += 1;
     lblBetAmount.innerText = machineState.betAmount;
     calcBetValues();
+    btnSpin.disabled = machineState.betAmount > machineState.balance;
 });
 
 btnDecBet.addEventListener('click', () => {
     betPos = Math.max((betPos - 1), 0);
     machineState.betAmount = betRange[betPos];
-    //machineState.betAmount += 1;
     lblBetAmount.innerText = machineState.betAmount;
     calcBetValues();
+    btnSpin.disabled = !(machineState.balance > machineState.betAmount);
 });
 
 
