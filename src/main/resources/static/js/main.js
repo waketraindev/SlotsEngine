@@ -107,6 +107,7 @@ window.addEventListener('load', () => {
             lblBalanceAmount.innerText = data.balance;
             lblBetAmount.innerText = data.betAmount;
             lblDisplay.innerText = data.result;
+            btnSpin.disabled = machineState.betAmount > machineState.balance;
         }
     ).then(() =>
         appwindow.classList.remove('d-none'));
