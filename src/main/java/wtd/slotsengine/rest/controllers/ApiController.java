@@ -2,7 +2,9 @@ package wtd.slotsengine.rest.controllers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import wtd.slotsengine.rest.records.BalanceMessage;
 import wtd.slotsengine.rest.records.ServerVersionMessage;
 import wtd.slotsengine.rest.records.SpinResultMessage;
@@ -36,40 +38,31 @@ public class ApiController {
 
     @PostMapping("/api/spin/{amount}")
     public SpinResultMessage spin(@PathVariable("amount") Long amount) {
-        if (amount > 0) {
-            log.info("Spin request received: {} result {}", amount, machine.getResult());
-            try {
-                long winAmount = machine.spin(amount);
-                return new SpinResultMessage(now(), amount, winAmount, machine.getBalance(), machine.getResult());
-            } catch (InsufficientFundsException ex) {
-                return new SpinResultMessage(now(), amount, 0L, machine.getBalance(), 0);
-            }
-        } else {
-            return new SpinResultMessage(now(), amount, 0L, machine.getBalance(), 0);
+        log.info("Spin request received: {} result {}", amount, machine.getResult());
+        try {
+            long winAmount = machine.spin(amount);
+            return new SpinResultMessage(now(), amount, winAmount, machine.getBalance(), machine.getResult());
+        } catch (InsufficientFundsException ex) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(400), "Insufficient funds to spin. Required: %d Have: %d".formatted(amount, machine.getBalance()));
         }
     }
 
     @RequestMapping(value = "/api/deposit/{amount}")
     public BalanceMessage deposit(@PathVariable("amount") Long amount) {
-        if (amount > 0) {
-            log.info("Deposit request received: {}", amount);
-            return new BalanceMessage(machine.deposit(amount));
-        } else {
-            return new BalanceMessage(machine.getBalance());
+        if (amount < 0) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(400), "Only positive numbers are allowed.");
         }
+        log.info("Deposit request received: {}", amount);
+        return new BalanceMessage(machine.deposit(amount));
     }
 
     @RequestMapping("/api/withdraw/{amount}")
     public BalanceMessage withdraw(@PathVariable("amount") Long amount) {
-        if (amount > 0) {
-            log.info("Withdraw request received: {}", amount);
-            try {
-                return new BalanceMessage(machine.withdraw(amount));
-            } catch (InsufficientFundsException e) {
-                return new BalanceMessage(machine.getBalance());
-            }
-        } else {
-            return new BalanceMessage(machine.getBalance());
+        log.info("Withdraw request received: {}", amount);
+        try {
+            return new BalanceMessage(machine.withdraw(amount));
+        } catch (InsufficientFundsException e) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(400), "Insufficient funds to spin. Required: %d Have: %d".formatted(amount, machine.getBalance()));
         }
     }
 }
