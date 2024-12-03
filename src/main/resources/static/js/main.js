@@ -2,20 +2,25 @@ let appwindow = document.getElementById('appwin');
 let btnSpin = document.getElementById('btnSpin');
 let btnIncBet = document.getElementById('btnIncrementBet');
 let btnDecBet = document.getElementById('btnDecrementBet');
+let lblBalanceAmount = document.getElementById('lblBalanceAmount');
+let lblBetAmount = document.getElementById('lblBetAmount');
 
+let lastSpin;
 
 function spin() {
-    fetch('/api/spin').then(response => response.text()).then(data => {
-        console.log(data);
+    fetch('/api/spin').then(response => response.json()).then(data => {
+        lastSpin = data;
+        lblBetAmount.innerText = data.betAmount;
+        lblBalanceAmount.innerText = data.balance;
     })
 }
 
 document.addEventListener('keyup', (e) => {
     switch (e.key) {
-        case 'a':
+        case 's':
             btnSpin.click();
             break;
-        case 's':
+        case 'a':
             btnIncBet.click();
             break;
         case 'd':
