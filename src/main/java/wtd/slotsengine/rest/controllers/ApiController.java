@@ -29,6 +29,11 @@ public class ApiController {
         return SERVER_BANNER;
     }
 
+    @GetMapping("/api/load")
+    public SpinResultMessage load() {
+        return new SpinResultMessage(now(), 0, 0, machine.getBalance(), 0);
+    }
+
     @PostMapping("/api/spin/{amount}")
     public SpinResultMessage spin(@PathVariable("amount") Long amount) {
         if (amount > 0) {
