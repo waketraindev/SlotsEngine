@@ -15,3 +15,15 @@ document.addEventListener('keyup', (e) => {
             break;
     }
 });
+
+btnSpin.addEventListener('click',
+    () => {
+        console.log("Spin");
+    }
+);
+btnIncBet.addEventListener('click', () => {
+    console.log("Increment");
+})
+btnDecBet.addEventListener('click', () => {
+    console.log("Decrement");
+})
