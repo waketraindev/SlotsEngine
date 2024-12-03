@@ -26,21 +26,25 @@ function setButtonsState(state) {
 
 function spin() {
     setButtonsState(true);
+    let count = 0;
     let animateDisplay = setInterval(() => {
-        lblDisplay.innerText = Math.floor(Math.random() * 10).toFixed(0)
+        if (count++ < 7) {
+            lblDisplay.innerText = Math.floor(Math.random() * 10).toFixed(0)
+        } else {
+            fetch('/api/spin/' + machineState.betAmount, {
+                method: 'POST'
+            }).then(response => response.json()).then(data => {
+                clearInterval(animateDisplay);
+                lastSpin = data;
+                lblBetAmount.innerText = data.betAmount;
+                lblBalanceAmount.innerText = data.balance;
+                lblDisplay.innerText = data.result;
+                machineState.balance = data.balance;
+                setButtonsState(false);
+                btnSpin.disabled = machineState.betAmount > machineState.balance;
+            })
+        }
     }, 150);
-    setTimeout(() => fetch('/api/spin/' + machineState.betAmount, {
-        method: 'POST'
-    }).then(response => response.json()).then(data => {
-        clearInterval(animateDisplay);
-        lastSpin = data;
-        lblBetAmount.innerText = data.betAmount;
-        lblBalanceAmount.innerText = data.balance;
-        lblDisplay.innerText = data.result;
-        machineState.balance = data.balance;
-        setButtonsState(false);
-        btnSpin.disabled = machineState.betAmount > machineState.balance;
-    }), 1350);
 }
 
 document.addEventListener('keyup', (e) => {
