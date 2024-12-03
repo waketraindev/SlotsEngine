@@ -70,7 +70,7 @@ function calcBetValues() {
     for (let i = 0; i < rows.length; i++) {
         let cells = rows[i].getElementsByTagName("td");
         let value = cells[1];
-        value.innerText = i * machineState.betAmount;
+        value.innerText = ((i >= 10) ? 100 : i) * machineState.betAmount;
     }
 
 }
