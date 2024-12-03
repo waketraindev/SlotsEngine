@@ -9,13 +9,13 @@ import wtd.slotsengine.rest.records.SpinResultMessage;
 import wtd.slotsengine.services.SlotManager;
 import wtd.slotsengine.slots.exceptions.InsufficientFundsException;
 import wtd.slotsengine.slots.interfaces.SlotMachine;
-import wtd.slotsengine.utils.SlotUtils;
+import wtd.slotsengine.utils.SlotConstants;
 
 import static wtd.slotsengine.utils.SlotUtils.now;
 
 @RestController
 public class ApiController {
-    private static final ServerVersionMessage SERVER_BANNER = new ServerVersionMessage(SlotUtils.PROJECT_VERSION);
+    private static final ServerVersionMessage SERVER_BANNER = new ServerVersionMessage(SlotConstants.PROJECT_VERSION);
     private static final Logger log = LoggerFactory.getLogger(ApiController.class);
     private final SlotMachine machine;
 
