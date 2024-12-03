@@ -33,7 +33,7 @@ public class ApiController {
 
     @GetMapping("/api/load")
     public SpinResultMessage load() {
-        return new SpinResultMessage(now(), 0, 0, machine.getBalance(), 0);
+        return new SpinResultMessage(now(), 1, 0, machine.getBalance(), 0);
     }
 
     @PostMapping("/api/spin/{amount}")
