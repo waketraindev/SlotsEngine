@@ -15,6 +15,7 @@ import wtd.slotsengine.rest.records.SpinResultMessage;
 import wtd.slotsengine.services.LiveEventsManager;
 import wtd.slotsengine.services.SlotManager;
 import wtd.slotsengine.services.subs.LiveSubscriber;
+import wtd.slotsengine.slots.exceptions.InsufficientFundsException;
 import wtd.slotsengine.slots.interfaces.SlotMachine;
 import wtd.slotsengine.utils.SlotUtils;
 
@@ -47,8 +48,12 @@ public class ApiController {
     @PostMapping("/api/spin/{amount}")
     public SpinResultMessage spin(@PathVariable("amount") Long amount) {
         log.info("Spin request received: {}", amount);
-        long winAmount = machine.spin(amount);
-        return new SpinResultMessage(now(), amount, winAmount, machine.getBalance(), machine.getResult());
+        try {
+            long winAmount = machine.spin(amount);
+            return new SpinResultMessage(now(), amount, winAmount, machine.getBalance(), machine.getResult());
+        } catch (InsufficientFundsException ex) {
+            return new SpinResultMessage(now(), 0L, 0L, 0L, 0);
+        }
     }
 
     @GetMapping("/api/{uid}")
