@@ -106,6 +106,7 @@ window.addEventListener('load', () => {
             machineState.betAmount = 1;
             lblBalanceAmount.innerText = data.balance;
             lblBetAmount.innerText = data.betAmount;
+            lblDisplay.innerText = data.result;
         }
     ).then(() =>
         appwindow.classList.remove('d-none'));
