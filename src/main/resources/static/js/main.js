@@ -3,6 +3,13 @@ let btnSpin = document.getElementById('btnSpin');
 let btnIncBet = document.getElementById('btnIncrementBet');
 let btnDecBet = document.getElementById('btnDecrementBet');
 
+
+function spin() {
+    fetch('/api/spin').then(response => response.text()).then(data => {
+        console.log(data);
+    })
+}
+
 document.addEventListener('keyup', (e) => {
     switch (e.key) {
         case 'a':
@@ -19,6 +26,7 @@ document.addEventListener('keyup', (e) => {
 
 btnSpin.addEventListener('click', () => {
     console.log("Spin");
+    spin();
 });
 btnIncBet.addEventListener('click', () => {
     console.log("Increment");
