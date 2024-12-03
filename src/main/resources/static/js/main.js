@@ -101,5 +101,12 @@ btnDecBet.addEventListener('click', () => {
 
 // Display UI after loading
 window.addEventListener('load', () => {
-    appwindow.classList.remove('d-none');
+    fetch('/api/load').then(response => response.json()).then(data => {
+            machineState.balance = data.balance;
+            machineState.betAmount = 1;
+            lblBalanceAmount.innerText = data.balance;
+            lblBetAmount.innerText = data.betAmount;
+        }
+    ).then(() =>
+        appwindow.classList.remove('d-none'));
 })
