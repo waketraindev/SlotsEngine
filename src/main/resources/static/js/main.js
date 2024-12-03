@@ -26,6 +26,7 @@ function setButtonsState(state) {
 
 function spin() {
     setButtonsState(true);
+    lblDisplay.style.color = '';
     let count = 0;
     let animateDisplay = setInterval(() => {
         if (count++ < 7) {
@@ -50,6 +51,8 @@ function spin() {
                 newRow.innerHTML = `<td>${data.betAmount}</td><td>${data.winAmount}</td><td>${data.result}</td>` +
                     `<td><span class="badge ${data.winAmount > 0 ? 'text-bg-success' : 'text-bg-danger'}">${data.winAmount > 0 ? 'Win' : 'Loss'}</span></td>`;
                 tabBody.prepend(newRow);
+
+                lblDisplay.style.color = data.winAmount >0 ? 'green' : 'red';
             })
         }
     }, 150);
