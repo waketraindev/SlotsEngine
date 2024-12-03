@@ -13,7 +13,7 @@ import java.util.zip.GZIPOutputStream;
  * including encoding and decoding using Base64 and GZIP compression.
  */
 public class SlotUtils {
-    public static final String PROJECT_VERSION = "0.0.6";
+    public static final String PROJECT_VERSION = "0.0.7";
     public static final String DEMO_MACHINE = "H4sIAAAAAAAA/2NgGAW0A4zYARMmYEYHLMiAFQHYIIAdBDg4ODg5uQARLQflwwEAAA==";
 
     public static Long now() {
