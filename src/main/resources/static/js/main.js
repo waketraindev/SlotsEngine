@@ -22,9 +22,13 @@ let betPos = 0;
 
 function spin() {
     btnSpin.disabled = true;
-    fetch('/api/spin/' + machineState.betAmount, {
+    let animateDisplay = setInterval(() => {
+        lblDisplay.innerText = Math.floor(Math.random() * 10).toFixed(0)
+    }, 150);
+    setTimeout(() => fetch('/api/spin/' + machineState.betAmount, {
         method: 'POST'
     }).then(response => response.json()).then(data => {
+        clearInterval(animateDisplay);
         lastSpin = data;
         lblBetAmount.innerText = data.betAmount;
         lblBalanceAmount.innerText = data.balance;
@@ -33,7 +37,7 @@ function spin() {
 
         machineState.balance = data.balance;
         btnSpin.disabled = machineState.betAmount > machineState.balance;
-    })
+    }), 1350);
 }
 
 document.addEventListener('keyup', (e) => {
@@ -102,13 +106,11 @@ btnDecBet.addEventListener('click', () => {
 // Display UI after loading
 window.addEventListener('load', () => {
     fetch('/api/load').then(response => response.json()).then(data => {
-            machineState.balance = data.balance;
-            machineState.betAmount = 1;
-            lblBalanceAmount.innerText = data.balance;
-            lblBetAmount.innerText = data.betAmount;
-            lblDisplay.innerText = data.result;
-            btnSpin.disabled = machineState.betAmount > machineState.balance;
-        }
-    ).then(() =>
-        appwindow.classList.remove('d-none'));
+        machineState.balance = data.balance;
+        machineState.betAmount = 1;
+        lblBalanceAmount.innerText = data.balance;
+        lblBetAmount.innerText = data.betAmount;
+        lblDisplay.innerText = data.result;
+        btnSpin.disabled = machineState.betAmount > machineState.balance;
+    }).then(() => appwindow.classList.remove('d-none'));
 })
