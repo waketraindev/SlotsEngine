@@ -2,21 +2,15 @@ package wtd.slotsengine.rest.controllers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-import wtd.slotsengine.rest.exceptions.InvalidSubscriberException;
 import wtd.slotsengine.rest.records.BalanceMessage;
 import wtd.slotsengine.rest.records.ServerVersionMessage;
 import wtd.slotsengine.rest.records.SpinResultMessage;
 import wtd.slotsengine.services.LiveEventsManager;
 import wtd.slotsengine.services.SlotManager;
-import wtd.slotsengine.services.subs.LiveSubscriber;
 import wtd.slotsengine.slots.exceptions.InsufficientFundsException;
 import wtd.slotsengine.slots.interfaces.SlotMachine;
 import wtd.slotsengine.utils.SlotUtils;
-
-import java.util.UUID;
 
 import static wtd.slotsengine.utils.SlotUtils.now;
 
@@ -75,9 +69,5 @@ public class ApiController {
         } else {
             return new BalanceMessage(machine.getBalance());
         }
-    }
-
-    static class SpinParams {
-        public long amount;
     }
 }
