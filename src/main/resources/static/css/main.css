@@ -3,3 +3,21 @@
     font-weight: bolder;
     padding: .75em
 }
+
+#blkDisplay {
+    font-size: 150px;
+    border: 1px solid gray;
+}
+
+#lblDisplay {
+}
+
+#lblBalanceText {
+    font-size: 2em;
+}
+
+#btnIncrementBet, #btnDecrementBet {
+    font-size: 2em;
+    font-weight: bolder;
+    padding: .75em;
+}
