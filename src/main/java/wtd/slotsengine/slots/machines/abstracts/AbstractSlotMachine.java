@@ -51,6 +51,7 @@ public abstract class AbstractSlotMachine implements SlotMachine {
     }
 
     public abstract long doSpin(long betAmount);
+    public abstract int getResult();
 
     public long winCredits(long winAmount) {
         return credits.addAndGet(winAmount);

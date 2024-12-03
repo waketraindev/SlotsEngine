@@ -26,4 +26,6 @@ public interface SlotMachine {
 
     long getBalance();
 
+    int getResult();
+
 }

@@ -18,6 +18,7 @@ import wtd.slotsengine.utils.SlotUtils;
  */
 final public class BasicSlotMachine extends AbstractSlotMachine {
     private final VirtualReel reel;
+    private int lastResult;
 
     /**
      * Constructs a BasicSlotMachine with a default virtual reel configuration.
@@ -59,6 +60,11 @@ final public class BasicSlotMachine extends AbstractSlotMachine {
         return winAmount;
     }
 
+    @Override
+    public int getResult() {
+        return lastResult;
+    }
+
     /**
      * Calculates the win amount based on the result symbol at the specified position of the reel.
      *
@@ -70,6 +76,7 @@ final public class BasicSlotMachine extends AbstractSlotMachine {
     private long spinLogic(int position, long betAmount) {
         long winAmount;
         int res = reel.get(position);
+        this.lastResult = res;
 
         switch (res) {
             case 0 -> winAmount = 0;
