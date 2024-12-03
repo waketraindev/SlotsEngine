@@ -46,10 +46,16 @@ document.addEventListener('keyup', (e) => {
 
 btnDeposit.addEventListener('click', () => {
     let value = prompt("Enter deposit amount", 1000);
-})
+    fetch('/api/deposit/' + value, {}).then(response => response.json()).then(data => {
+        lblBalanceAmount.innerText = data.balance;
+    })
+});
 btnWithdraw.addEventListener('click', () => {
     let value = prompt("Enter withdrawal amount", 1000);
-})
+    fetch('/api/withdraw/' + value, {}).then(response => response.json()).then(data => {
+        lblBalanceAmount.innerText = data.balance;
+    })
+});
 btnSpin.addEventListener('click', () => {
     spin();
 });
