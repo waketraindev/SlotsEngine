@@ -24,8 +24,28 @@ function setButtonsState(state) {
     [btnSpin, btnIncBet, btnDecBet, btnDeposit, btnWithdraw].forEach((i) => i.disabled = state);
 }
 
+function updateMachineState(state) {
+    lastSpin = state;
+    lblBetAmount.innerText = state.betAmount;
+    lblBalanceAmount.innerText = state.balance;
+    lblDisplay.innerText = state.result;
+    machineState.balance = state.balance;
+    setButtonsState(false);
+    btnSpin.disabled = machineState.betAmount > machineState.balance;
+
+    let tabBody = document.querySelector("#historyTable tbody");
+    let rows = tabBody.getElementsByTagName("tr");
+    if (rows.length > 10) tabBody.querySelector("tr:last-child").remove();
+    let newRow = document.createElement('tr');
+    newRow.innerHTML = `<td>${state.betAmount}</td><td>${state.winAmount}</td><td>${state.result}</td>` + `<td><span class="badge ${state.winAmount > 0 ? 'text-bg-success' : 'text-bg-danger'}">${state.winAmount > 0 ? 'Win' : 'Loss'}</span></td>`;
+    tabBody.prepend(newRow);
+
+    lblDisplay.style.color = state.winAmount > 0 ? 'green' : 'red';
+}
+
 function spin() {
     setButtonsState(true);
+    lblDisplay.style.color = '';
     let count = 0;
     let animateDisplay = setInterval(() => {
         if (count++ < 7) {
@@ -35,13 +55,7 @@ function spin() {
                 method: 'POST'
             }).then(response => response.json()).then(data => {
                 clearInterval(animateDisplay);
-                lastSpin = data;
-                lblBetAmount.innerText = data.betAmount;
-                lblBalanceAmount.innerText = data.balance;
-                lblDisplay.innerText = data.result;
-                machineState.balance = data.balance;
-                setButtonsState(false);
-                btnSpin.disabled = machineState.betAmount > machineState.balance;
+                updateMachineState(data);
             })
         }
     }, 150);
@@ -109,15 +123,16 @@ btnDecBet.addEventListener('click', () => {
     btnSpin.disabled = !(machineState.balance > machineState.betAmount);
 });
 
-
+(function () {
 // Display UI after loading
-window.addEventListener('load', () => {
-    fetch('/api/load').then(response => response.json()).then(data => {
-        machineState.balance = data.balance;
-        machineState.betAmount = 1;
-        lblBalanceAmount.innerText = data.balance;
-        lblBetAmount.innerText = data.betAmount;
-        lblDisplay.innerText = data.result;
-        btnSpin.disabled = machineState.betAmount > machineState.balance;
-    }).then(() => appwindow.classList.remove('d-none'));
-})
+    window.addEventListener('load', () => {
+        fetch('/api/load').then(response => response.json()).then(data => {
+            machineState.balance = data.balance;
+            machineState.betAmount = 1;
+            lblBalanceAmount.innerText = data.balance;
+            lblBetAmount.innerText = data.betAmount;
+            lblDisplay.innerText = data.result;
+            btnSpin.disabled = machineState.betAmount > machineState.balance;
+        }).then(() => appwindow.classList.remove('d-none'));
+    });
+})();

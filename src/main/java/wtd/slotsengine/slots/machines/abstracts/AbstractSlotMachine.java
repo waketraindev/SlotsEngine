@@ -48,6 +48,9 @@ public abstract class AbstractSlotMachine implements SlotMachine {
     protected void assertFunds(long requiredAmount, String actionName) throws InsufficientFundsException {
         if (requiredAmount > getBalance())
             throw new InsufficientFundsException("Insufficient credits to %s. Required: %d Have: %d".formatted(actionName, requiredAmount, credits.get()));
+        if (requiredAmount < 0) {
+            throw new InsufficientFundsException("Only positive numbers are allowed.");
+        }
     }
 
     public abstract long doSpin(long betAmount);
