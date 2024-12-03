@@ -42,6 +42,13 @@ function spin() {
                 machineState.balance = data.balance;
                 setButtonsState(false);
                 btnSpin.disabled = machineState.betAmount > machineState.balance;
+
+                let tabBody = document.querySelector("#historyTable tbody");
+                let rows = tabBody.getElementsByTagName("tr");
+                if (rows.length > 10) tabBody.querySelector("tr:last-child").remove();
+                let newRow = document.createElement('tr');
+                newRow.innerHTML = `<td>${data.betAmount}</td><td>${data.winAmount} <span class="badge ${data.winAmount > 0 ? 'text-bg-success' : 'text-bg-danger'}">${data.winAmount > 0 ? 'Win' : 'Loss'}</span></td><td>${data.result}</td>`;
+                tabBody.prepend(newRow);
             })
         }
     }, 150);
