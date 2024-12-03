@@ -47,7 +47,8 @@ function spin() {
                 let rows = tabBody.getElementsByTagName("tr");
                 if (rows.length > 10) tabBody.querySelector("tr:last-child").remove();
                 let newRow = document.createElement('tr');
-                newRow.innerHTML = `<td>${data.betAmount}</td><td>${data.winAmount} <span class="badge ${data.winAmount > 0 ? 'text-bg-success' : 'text-bg-danger'}">${data.winAmount > 0 ? 'Win' : 'Loss'}</span></td><td>${data.result}</td>`;
+                newRow.innerHTML = `<td>${data.betAmount}</td><td>${data.winAmount}</td><td>${data.result}</td>` +
+                    `<td><span class="badge ${data.winAmount > 0 ? 'text-bg-success' : 'text-bg-danger'}">${data.winAmount > 0 ? 'Win' : 'Loss'}</span></td>`;
                 tabBody.prepend(newRow);
             })
         }
