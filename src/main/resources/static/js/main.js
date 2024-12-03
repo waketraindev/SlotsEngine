@@ -52,15 +52,30 @@ btnWithdraw.addEventListener('click', () => {
 btnSpin.addEventListener('click', () => {
     spin();
 });
+
+function calcBetValues() {
+    let tb = document.getElementById('payoutTable');
+    let body = tb.getElementsByTagName("tbody")[0];
+    let rows = body.getElementsByTagName("tr");
+    for (let i = 0; i < rows.length; i++) {
+        let cells = rows[i].getElementsByTagName("td");
+        let value = cells[1];
+        value.innerText = i * machineState.betAmount;
+    }
+
+}
+
 btnIncBet.addEventListener('click', () => {
     machineState.betAmount += 1;
     lblBetAmount.innerText = machineState.betAmount;
+    calcBetValues();
 });
 btnDecBet.addEventListener('click', () => {
     if (machineState.betAmount > 1) {
         machineState.betAmount -= 1;
         lblBetAmount.innerText = machineState.betAmount;
     }
+    calcBetValues();
 });
 
 
