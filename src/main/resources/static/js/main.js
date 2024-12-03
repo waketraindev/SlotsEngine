@@ -20,8 +20,12 @@ let machineState = {
 let betRange = [1, 10, 15, 25, 50, 100, 200, 500, 1000, 2000, 5000, 10000];
 let betPos = 0;
 
+function setButtonsState(state) {
+    [btnSpin, btnIncBet, btnDecBet, btnDeposit, btnWithdraw].forEach((i) => i.disabled = state);
+}
+
 function spin() {
-    btnSpin.disabled = true;
+    setButtonsState(true);
     let animateDisplay = setInterval(() => {
         lblDisplay.innerText = Math.floor(Math.random() * 10).toFixed(0)
     }, 150);
@@ -33,9 +37,8 @@ function spin() {
         lblBetAmount.innerText = data.betAmount;
         lblBalanceAmount.innerText = data.balance;
         lblDisplay.innerText = data.result;
-        btnSpin.disabled = false;
-
         machineState.balance = data.balance;
+        setButtonsState(false);
         btnSpin.disabled = machineState.betAmount > machineState.balance;
     }), 1350);
 }
