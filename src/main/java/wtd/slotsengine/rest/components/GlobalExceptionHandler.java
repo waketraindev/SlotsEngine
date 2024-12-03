@@ -1,4 +1,4 @@
-package wtd.slotsengine.rest.configurations;
+package wtd.slotsengine.rest.components;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +16,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(IOException.class)
-    public void handleException(Exception e, WebRequest req) {
+    public void handleException(Exception ignored, WebRequest req) {
         log.warn("Client connection aborted {}", req.toString());
     }
 }

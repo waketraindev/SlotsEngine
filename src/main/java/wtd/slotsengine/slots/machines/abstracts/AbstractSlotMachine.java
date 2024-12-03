@@ -19,7 +19,7 @@ public abstract class AbstractSlotMachine implements SlotMachine {
     }
 
     @Override
-    public long spin(long betAmount) {
+    public long spin(long betAmount) throws InsufficientFundsException {
         assertFunds(betAmount, "spin");
         credits.addAndGet(-betAmount);
         return doSpin(betAmount);
@@ -31,7 +31,7 @@ public abstract class AbstractSlotMachine implements SlotMachine {
     }
 
     @Override
-    public long withdraw(long withdrawAmount) {
+    public long withdraw(long withdrawAmount) throws InsufficientFundsException {
         assertFunds(withdrawAmount, "withdraw");
         return credits.addAndGet(-withdrawAmount);
     }
@@ -45,12 +45,14 @@ public abstract class AbstractSlotMachine implements SlotMachine {
         return credits.get();
     }
 
-    protected void assertFunds(long requiredAmount, String actionName) {
+    protected void assertFunds(long requiredAmount, String actionName) throws InsufficientFundsException {
         if (requiredAmount > getBalance())
             throw new InsufficientFundsException("Insufficient credits to %s. Required: %d Have: %d".formatted(actionName, requiredAmount, credits.get()));
     }
 
     public abstract long doSpin(long betAmount);
+
+    public abstract int getResult();
 
     public long winCredits(long winAmount) {
         return credits.addAndGet(winAmount);
