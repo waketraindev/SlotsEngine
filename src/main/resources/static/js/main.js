@@ -24,7 +24,7 @@ let betRange = [1, 10, 15, 25, 50, 100, 200, 500, 1000, 2000, 5000, 10000];
 let betPos = 0;
 
 function initApp() {
-    fetch('/api/load').then(response => response.json()).then(data => {
+    sendCall((data) => {
         bindListeners();
         machineState.balance = data.balance;
         machineState.betAmount = 1;
@@ -33,7 +33,17 @@ function initApp() {
         lblDisplay.innerText = data.result;
         btnSpin.disabled = machineState.betAmount > machineState.balance;
         setStatusLabel('Balance', machineState.balance);
-    }).then(() => appWindow.classList.remove('d-none'));
+    }, '/api/load').then(() => appWindow.classList.remove('d-none'));
+}
+
+function sendCall(callback, path, options) {
+    return fetch(path, options).then((rsp) => {
+        if (!rsp.ok) {
+            throw new Error();
+        }
+        return rsp;
+    }).then((response) => response.json())
+        .then(data => callback(data)).catch(e => alert(`Error running API call`));
 }
 
 function setStatusLabel(label, text, classes) {
@@ -69,10 +79,7 @@ function updateMachineState(state) {
 
     lblDisplay.style.color = isWin() ? 'green' : 'red';
 
-    if (isWin() > 0)
-        setStatusLabel('WIN', state.winAmount, 'text-bg-success');
-    else
-        setStatusLabel('LOSS', state.betAmount, 'text-bg-danger');
+    if (isWin() > 0) setStatusLabel('WIN', state.winAmount, 'text-bg-success'); else setStatusLabel('LOSS', state.betAmount, 'text-bg-danger');
 
 }
 
@@ -87,12 +94,12 @@ function spin() {
         if (count++ < 7) {
             lblDisplay.innerText = Math.floor(Math.random() * 10).toFixed(0)
         } else {
-            fetch(`/api/spin/${betAmount}`, {
-                method: 'POST'
-            }).then(response => response.json()).then(data => {
+            sendCall(data => {
                 clearInterval(animateDisplay);
                 updateMachineState(data);
-            })
+            }, `/api/spin/${betAmount}`, {
+                method: 'POST'
+            });
         }
     }, 150);
 }
@@ -126,19 +133,20 @@ function calcBetValues() {
 function bindListeners() {
     btnDeposit.addEventListener('click', () => {
         let value = prompt("Enter deposit amount", "1000");
-        fetch('/api/deposit/' + value, {}).then(response => response.json()).then(data => {
+        sendCall(data => {
             lblBalanceAmount.innerText = data.balance;
             machineState.balance = data.balance;
             btnSpin.disabled = machineState.betAmount > machineState.balance;
-        })
+        }, '/api/deposit/' + value);
+
     });
     btnWithdraw.addEventListener('click', () => {
         let value = prompt("Enter withdrawal amount", "1000");
-        fetch('/api/withdraw/' + value, {}).then(response => response.json()).then(data => {
+        sendCall(data => {
             lblBalanceAmount.innerText = data.balance;
             machineState.balance = data.balance;
             btnSpin.disabled = machineState.betAmount > machineState.balance;
-        })
+        }, '/api/withdraw/' + value, {});
     });
     btnSpin.addEventListener('click', () => {
         spin();
@@ -162,5 +170,5 @@ function bindListeners() {
 
 (function () {
 // Display UI after loading
-    window.addEventListener('load', initApp);
+    initApp()
 })();
