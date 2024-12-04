@@ -11,6 +11,9 @@ let lblBetAmount = document.getElementById('lblBetAmount');
 
 let lblDisplay = document.getElementById('lblDisplay');
 
+let lblRollResult = document.getElementById('lblRollResultText');
+let lblRollAmount = document.getElementById('lblRollResultAmount');
+
 let lastSpin;
 
 let machineState = {
@@ -29,7 +32,15 @@ function initApp() {
         lblBetAmount.innerText = data.betAmount;
         lblDisplay.innerText = data.result;
         btnSpin.disabled = machineState.betAmount > machineState.balance;
+        setStatusLabel('Balance', machineState.balance);
     }).then(() => appWindow.classList.remove('d-none'));
+}
+
+function setStatusLabel(label, text, classes) {
+    if (classes === undefined) classes = 'text-bg-info';
+    lblRollResult.className = `badge ${classes}`;
+    lblRollResult.innerText = label;
+    lblRollAmount.innerText = text;
 }
 
 function setButtonsState(state) {
@@ -53,17 +64,26 @@ function updateMachineState(state) {
     tabBody.prepend(newRow);
 
     lblDisplay.style.color = state.winAmount > 0 ? 'green' : 'red';
+
+    if (state.winAmount > 0)
+        setStatusLabel('WIN', state.winAmount, 'text-bg-success');
+    else
+        setStatusLabel('loss', state.betAmount, 'text-bg-danger');
+
 }
 
 function spin() {
     setButtonsState(true);
     lblDisplay.style.color = '';
+    let betAmount = machineState.betAmount;
+    setStatusLabel('Spin', machineState.betAmount, 'text-bg-warning');
+
     let count = 0;
     let animateDisplay = setInterval(() => {
         if (count++ < 7) {
             lblDisplay.innerText = Math.floor(Math.random() * 10).toFixed(0)
         } else {
-            fetch('/api/spin/' + machineState.betAmount, {
+            fetch(`/api/spin/${betAmount}`, {
                 method: 'POST'
             }).then(response => response.json()).then(data => {
                 clearInterval(animateDisplay);
