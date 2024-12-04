@@ -13,16 +13,12 @@ final public class BasicSlotMachine extends AbstractSlotMachine {
     public BasicSlotMachine() {
         super();
         reel = new VirtualReel(SlotConstants.DEMO_MACHINE);
-    }
-
-    public BasicSlotMachine(final VirtualReel reel) {
-        super();
-        this.reel = reel;
+        reel.shuffle();
     }
 
     @Override
     public SpinResult doSpin(final long betAmount) {
-        final int res = reel.get(counter++ % reel.size());
+        final int res = reel.get(counter++);
         final long winAmount = calculatePayout(betAmount, res);
         return new SpinResult(betAmount, winAmount, res);
     }
