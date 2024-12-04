@@ -11,6 +11,7 @@ import wtd.slotsengine.rest.records.SpinResultMessage;
 import wtd.slotsengine.services.SlotManager;
 import wtd.slotsengine.slots.exceptions.InsufficientFundsException;
 import wtd.slotsengine.slots.interfaces.SlotMachine;
+import wtd.slotsengine.slots.machines.SpinResult;
 import wtd.slotsengine.utils.SlotConstants;
 
 import static wtd.slotsengine.utils.SlotUtils.now;
@@ -40,8 +41,8 @@ public class ApiController {
     public SpinResultMessage spin(@PathVariable("amount") Long amount) {
         log.info("Spin request received: {} result {}", amount, machine.getResult());
         try {
-            long winAmount = machine.spin(amount);
-            return new SpinResultMessage(now(), amount, winAmount, machine.getBalance(), machine.getResult());
+            SpinResult spinResult = machine.spin(amount);
+            return new SpinResultMessage(now(), spinResult.betAmount(), spinResult.winAmount(), spinResult.balance(), spinResult.result());
         } catch (InsufficientFundsException ex) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(400), "Insufficient funds to spin. Required: %d Have: %d".formatted(amount, machine.getBalance()));
         }

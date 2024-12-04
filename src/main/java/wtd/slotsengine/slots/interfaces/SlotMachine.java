@@ -1,11 +1,12 @@
 package wtd.slotsengine.slots.interfaces;
 
 import wtd.slotsengine.slots.exceptions.InsufficientFundsException;
+import wtd.slotsengine.slots.machines.SpinResult;
 
 
 public interface SlotMachine {
 
-    long spin(long betAmount) throws InsufficientFundsException;
+    SpinResult spin(long betAmount) throws InsufficientFundsException;
 
     long deposit(long amount);
 

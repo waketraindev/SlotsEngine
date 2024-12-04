@@ -2,6 +2,7 @@ package wtd.slotsengine.slots.machines.abstracts;
 
 import wtd.slotsengine.slots.exceptions.InsufficientFundsException;
 import wtd.slotsengine.slots.interfaces.SlotMachine;
+import wtd.slotsengine.slots.machines.SpinResult;
 
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
@@ -19,12 +20,11 @@ public abstract class AbstractSlotMachine implements SlotMachine {
     }
 
     @Override
-    public long spin(long betAmount) throws InsufficientFundsException {
+    public SpinResult spin(long betAmount) throws InsufficientFundsException {
         assertFunds(betAmount, "spin");
         credits.addAndGet(-betAmount);
         long winAmount = doSpin(betAmount);
-        if (winAmount > 0) winCredits(winAmount);
-        return winAmount;
+        return new SpinResult(betAmount, winAmount, awardCredits(winAmount), getResult());
     }
 
     @Override
@@ -61,7 +61,7 @@ public abstract class AbstractSlotMachine implements SlotMachine {
 
     public abstract int getResult();
 
-    public long winCredits(long winAmount) {
+    public long awardCredits(long winAmount) {
         return credits.addAndGet(winAmount);
     }
 
