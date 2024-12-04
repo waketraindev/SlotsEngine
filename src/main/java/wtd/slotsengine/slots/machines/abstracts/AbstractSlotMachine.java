@@ -42,10 +42,6 @@ public abstract class AbstractSlotMachine implements SlotMachine {
         return credits.addAndGet(-withdrawAmount);
     }
 
-    public boolean hasCredits(long amount) {
-        return getBalance() > amount;
-    }
-
     @Override
     public long getBalance() {
         return credits.get();
