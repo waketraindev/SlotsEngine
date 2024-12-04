@@ -1,4 +1,4 @@
-let appwindow = document.getElementById('appwin');
+let appWindow = document.getElementById('appWindow');
 let btnSpin = document.getElementById('btnSpin');
 let btnIncBet = document.getElementById('btnIncrementBet');
 let btnDecBet = document.getElementById('btnDecrementBet');
@@ -29,7 +29,7 @@ function initApp() {
         lblBetAmount.innerText = data.betAmount;
         lblDisplay.innerText = data.result;
         btnSpin.disabled = machineState.betAmount > machineState.balance;
-    }).then(() => appwindow.classList.remove('d-none'));
+    }).then(() => appWindow.classList.remove('d-none'));
 }
 
 function setButtonsState(state) {
