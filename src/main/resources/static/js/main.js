@@ -47,6 +47,10 @@ function setButtonsState(state) {
     [btnSpin, btnIncBet, btnDecBet, btnDeposit, btnWithdraw].forEach((i) => i.disabled = state);
 }
 
+function isWin() {
+    return lastSpin.winAmount > 0;
+}
+
 function updateMachineState(state) {
     lastSpin = state;
     lblBetAmount.innerText = state.betAmount;
@@ -60,15 +64,15 @@ function updateMachineState(state) {
     let rows = tabBody.getElementsByTagName("tr");
     if (rows.length > 10) tabBody.querySelector("tr:last-child").remove();
     let newRow = document.createElement('tr');
-    newRow.innerHTML = `<td>${state.betAmount}</td><td>${state.winAmount}</td><td>${state.result}</td>` + `<td><span class="badge ${state.winAmount > 0 ? 'text-bg-success' : 'text-bg-danger'}">${state.winAmount > 0 ? 'Win' : 'Loss'}</span></td>`;
+    newRow.innerHTML = `<td>${state.betAmount}</td><td>${state.winAmount}</td><td>${state.result}</td>` + `<td><span class="badge ${isWin() ? 'text-bg-success' : 'text-bg-danger'}">${isWin() ? 'Win' : 'Loss'}</span></td>`;
     tabBody.prepend(newRow);
 
-    lblDisplay.style.color = state.winAmount > 0 ? 'green' : 'red';
+    lblDisplay.style.color = isWin() ? 'green' : 'red';
 
-    if (state.winAmount > 0)
+    if (isWin() > 0)
         setStatusLabel('WIN', state.winAmount, 'text-bg-success');
     else
-        setStatusLabel('loss', state.betAmount, 'text-bg-danger');
+        setStatusLabel('LOSS', state.betAmount, 'text-bg-danger');
 
 }
 
