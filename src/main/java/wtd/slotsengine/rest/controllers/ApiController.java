@@ -11,7 +11,7 @@ import wtd.slotsengine.rest.records.SpinResultMessage;
 import wtd.slotsengine.services.SlotManager;
 import wtd.slotsengine.slots.exceptions.InsufficientFundsException;
 import wtd.slotsengine.slots.interfaces.SlotMachine;
-import wtd.slotsengine.slots.machines.SpinResult;
+import wtd.slotsengine.slots.machines.abstracts.SpinResult;
 import wtd.slotsengine.utils.SlotConstants;
 
 import static wtd.slotsengine.utils.SlotUtils.now;
@@ -39,7 +39,6 @@ public class ApiController {
 
     @PostMapping("/api/spin/{amount}")
     public SpinResultMessage spin(@PathVariable("amount") Long amount) {
-        log.info("Spin request received: {} result {}", amount, machine.getResult());
         try {
             SpinResult spinResult = machine.spin(amount);
             return new SpinResultMessage(now(), spinResult.betAmount(), spinResult.winAmount(), spinResult.balance(), spinResult.result());

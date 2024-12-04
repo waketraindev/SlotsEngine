@@ -2,14 +2,15 @@ package wtd.slotsengine.slots.machines.abstracts;
 
 import wtd.slotsengine.slots.exceptions.InsufficientFundsException;
 import wtd.slotsengine.slots.interfaces.SlotMachine;
-import wtd.slotsengine.slots.machines.SpinResult;
 
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 
 public abstract class AbstractSlotMachine implements SlotMachine {
     private final AtomicLong credits = new AtomicLong(0);
     private final Random rng;
+    private final AtomicReference<SpinResult> lastSpin = new AtomicReference<>(null);
 
     public AbstractSlotMachine() {
         this.rng = new Random();
@@ -24,7 +25,8 @@ public abstract class AbstractSlotMachine implements SlotMachine {
         assertFunds(betAmount, "spin");
         credits.addAndGet(-betAmount);
         long winAmount = doSpin(betAmount);
-        return new SpinResult(betAmount, winAmount, awardCredits(winAmount), getResult());
+        lastSpin.set(new SpinResult(betAmount, winAmount, credits.addAndGet(winAmount), getResult()));
+        return lastSpin.get();
     }
 
     @Override
@@ -57,15 +59,11 @@ public abstract class AbstractSlotMachine implements SlotMachine {
         }
     }
 
-    public abstract long doSpin(long betAmount);
-
-    public abstract int getResult();
-
-    public long awardCredits(long winAmount) {
-        return credits.addAndGet(winAmount);
-    }
-
-    public Random getRandom() {
+    protected Random getRandom() {
         return rng;
     }
+
+    protected abstract long doSpin(long betAmount);
+
+    protected abstract int getResult();
 }

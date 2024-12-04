@@ -1,7 +1,7 @@
 package wtd.slotsengine.slots.interfaces;
 
 import wtd.slotsengine.slots.exceptions.InsufficientFundsException;
-import wtd.slotsengine.slots.machines.SpinResult;
+import wtd.slotsengine.slots.machines.abstracts.SpinResult;
 
 
 public interface SlotMachine {
@@ -19,7 +19,4 @@ public interface SlotMachine {
     boolean hasCredits(long amount);
 
     long getBalance();
-
-    int getResult();
-
 }
