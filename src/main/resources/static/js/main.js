@@ -104,7 +104,7 @@ function spin() {
     }, 150);
 }
 
-document.addEventListener('keyup', (e) => {
+document.addEventListener('keydown', (e) => {
     switch (e.key) {
         case 's':
             btnSpin.click();
