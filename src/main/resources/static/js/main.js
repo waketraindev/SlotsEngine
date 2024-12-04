@@ -101,7 +101,7 @@ function spin() {
                 method: 'POST'
             });
         }
-    }, 150);
+    }, 47);
 }
 
 document.addEventListener('keydown', (e) => {
