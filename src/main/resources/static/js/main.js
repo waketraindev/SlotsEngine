@@ -14,7 +14,7 @@ let lblDisplay = document.getElementById('lblDisplay');
 let lblRollResult = document.getElementById('lblRollResultText');
 let lblRollAmount = document.getElementById('lblRollResultAmount');
 
-let lastSpin;
+let lastSpin = {winAmount: 0};
 
 let machineState = {
     balance: 1, betAmount: 1
@@ -43,7 +43,7 @@ function sendCall(callback, path, options) {
         }
         return rsp;
     }).then((response) => response.json())
-        .then(data => callback(data)).catch(e => alert(`Error running API call`));
+        .then(data => callback(data)).catch(ignored => alert(`Error running API call`));
 }
 
 function setStatusLabel(label, text, classes) {
