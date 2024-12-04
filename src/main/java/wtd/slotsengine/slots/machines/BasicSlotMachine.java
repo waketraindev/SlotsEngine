@@ -8,10 +8,13 @@ import wtd.slotsengine.utils.SlotConstants;
 
 final public class BasicSlotMachine extends AbstractSlotMachine {
     private final VirtualReel reel;
+    private int counter;
 
     public BasicSlotMachine() {
         super();
         reel = new VirtualReel(SlotConstants.DEMO_MACHINE);
+        this.counter = 0;
+        reel.shuffle();
     }
 
     public BasicSlotMachine(final VirtualReel reel) {
@@ -21,8 +24,7 @@ final public class BasicSlotMachine extends AbstractSlotMachine {
 
     @Override
     public SpinResult doSpin(final long betAmount) {
-        final int position = getRandom().nextInt(reel.size());
-        final int res = reel.get(position);
+        final int res = reel.get(counter++ % reel.size());
         final long winAmount = calculatePayout(betAmount, res);
         return new SpinResult(betAmount, winAmount, res);
     }
