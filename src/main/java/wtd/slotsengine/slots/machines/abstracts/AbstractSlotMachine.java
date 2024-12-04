@@ -22,16 +22,20 @@ public abstract class AbstractSlotMachine implements SlotMachine {
     public long spin(long betAmount) throws InsufficientFundsException {
         assertFunds(betAmount, "spin");
         credits.addAndGet(-betAmount);
-        return doSpin(betAmount);
+        long winAmount = doSpin(betAmount);
+        if (winAmount > 0) winCredits(winAmount);
+        return winAmount;
     }
 
     @Override
     public long deposit(long depositAmount) {
+        if (depositAmount <= 0) throw new IllegalArgumentException("Deposit amount must be positive.");
         return credits.addAndGet(depositAmount);
     }
 
     @Override
     public long withdraw(long withdrawAmount) throws InsufficientFundsException {
+        if (withdrawAmount <= 0) throw new IllegalArgumentException("Withdraw amount must be positive.");
         assertFunds(withdrawAmount, "withdraw");
         return credits.addAndGet(-withdrawAmount);
     }

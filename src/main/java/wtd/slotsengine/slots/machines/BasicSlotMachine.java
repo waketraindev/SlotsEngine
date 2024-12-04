@@ -53,11 +53,7 @@ final public class BasicSlotMachine extends AbstractSlotMachine {
     @Override
     public long doSpin(long betAmount) {
         int position = getRandom().nextInt(reel.size());
-        long winAmount = spinLogic(position, betAmount);
-        if (winAmount > 0) {
-            winCredits(winAmount);
-        }
-        return winAmount;
+        return spinLogic(position, betAmount);
     }
 
     @Override
