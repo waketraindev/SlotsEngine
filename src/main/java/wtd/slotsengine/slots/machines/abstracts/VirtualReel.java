@@ -1,4 +1,4 @@
-package wtd.slotsengine.slots.machines.utils;
+package wtd.slotsengine.slots.machines.abstracts;
 
 import wtd.slotsengine.utils.SlotUtils;
 

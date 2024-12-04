@@ -6,11 +6,12 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import wtd.slotsengine.rest.records.BalanceMessage;
+import wtd.slotsengine.rest.records.BetResultMessage;
 import wtd.slotsengine.rest.records.ServerVersionMessage;
-import wtd.slotsengine.rest.records.SpinResultMessage;
 import wtd.slotsengine.services.SlotManager;
 import wtd.slotsengine.slots.exceptions.InsufficientFundsException;
 import wtd.slotsengine.slots.interfaces.SlotMachine;
+import wtd.slotsengine.slots.machines.abstracts.BetResult;
 import wtd.slotsengine.utils.SlotConstants;
 
 import static wtd.slotsengine.utils.SlotUtils.now;
@@ -32,16 +33,15 @@ public class ApiController {
     }
 
     @GetMapping("/api/load")
-    public SpinResultMessage load() {
-        return new SpinResultMessage(now(), 1, 0, machine.getBalance(), 0);
+    public BetResultMessage load() {
+        return new BetResultMessage(now(), 1, 0, machine.getBalance(), 0);
     }
 
     @PostMapping("/api/spin/{amount}")
-    public SpinResultMessage spin(@PathVariable("amount") Long amount) {
-        log.info("Spin request received: {} result {}", amount, machine.getResult());
+    public BetResultMessage spin(@PathVariable("amount") Long amount) {
         try {
-            long winAmount = machine.spin(amount);
-            return new SpinResultMessage(now(), amount, winAmount, machine.getBalance(), machine.getResult());
+            BetResult spinResult = machine.spin(amount);
+            return new BetResultMessage(now(), spinResult.betAmount(), spinResult.winAmount(), spinResult.balance(), spinResult.symbol());
         } catch (InsufficientFundsException ex) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(400), "Insufficient funds to spin. Required: %d Have: %d".formatted(amount, machine.getBalance()));
         }

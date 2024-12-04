@@ -3,65 +3,47 @@ package wtd.slotsengine.slots.machines.abstracts;
 import wtd.slotsengine.slots.exceptions.InsufficientFundsException;
 import wtd.slotsengine.slots.interfaces.SlotMachine;
 
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 
 public abstract class AbstractSlotMachine implements SlotMachine {
-    private final AtomicLong credits = new AtomicLong(0);
-    private final Random rng;
-
-    public AbstractSlotMachine() {
-        this.rng = new Random();
-    }
-
-    public AbstractSlotMachine(long seed) {
-        this.rng = new Random(seed);
-    }
+    private final AtomicLong walletBalance = new AtomicLong(0);
+    private final AtomicReference<BetResult> lastBet = new AtomicReference<>(null);
 
     @Override
-    public long spin(long betAmount) throws InsufficientFundsException {
+    public BetResult spin(long betAmount) throws InsufficientFundsException {
         assertFunds(betAmount, "spin");
-        credits.addAndGet(-betAmount);
-        return doSpin(betAmount);
+        walletBalance.addAndGet(-betAmount);
+        SpinResult result = doSpin(betAmount);
+        lastBet.set(new BetResult(result.betAmount(), result.winAmount(), walletBalance.addAndGet(result.winAmount()), result.symbol()));
+        return lastBet.get();
     }
 
     @Override
     public long deposit(long depositAmount) {
-        return credits.addAndGet(depositAmount);
+        if (depositAmount <= 0) throw new IllegalArgumentException("Deposit amount must be positive.");
+        return walletBalance.addAndGet(depositAmount);
     }
 
     @Override
     public long withdraw(long withdrawAmount) throws InsufficientFundsException {
+        if (withdrawAmount <= 0) throw new IllegalArgumentException("Withdraw amount must be positive.");
         assertFunds(withdrawAmount, "withdraw");
-        return credits.addAndGet(-withdrawAmount);
-    }
-
-    public boolean hasCredits(long amount) {
-        return getBalance() > amount;
+        return walletBalance.addAndGet(-withdrawAmount);
     }
 
     @Override
     public long getBalance() {
-        return credits.get();
+        return walletBalance.get();
     }
 
     protected void assertFunds(long requiredAmount, String actionName) throws InsufficientFundsException {
         if (requiredAmount > getBalance())
-            throw new InsufficientFundsException("Insufficient credits to %s. Required: %d Have: %d".formatted(actionName, requiredAmount, credits.get()));
+            throw new InsufficientFundsException("Insufficient credits to %s. Required: %d Have: %d".formatted(actionName, requiredAmount, walletBalance.get()));
         if (requiredAmount < 0) {
             throw new InsufficientFundsException("Only positive numbers are allowed.");
         }
     }
 
-    public abstract long doSpin(long betAmount);
-
-    public abstract int getResult();
-
-    public long winCredits(long winAmount) {
-        return credits.addAndGet(winAmount);
-    }
-
-    public Random getRandom() {
-        return rng;
-    }
+    protected abstract SpinResult doSpin(long betAmount);
 }

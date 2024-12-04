@@ -101,10 +101,10 @@ function spin() {
                 method: 'POST'
             });
         }
-    }, 150);
+    }, 47);
 }
 
-document.addEventListener('keyup', (e) => {
+document.addEventListener('keydown', (e) => {
     switch (e.key) {
         case 's':
             btnSpin.click();
