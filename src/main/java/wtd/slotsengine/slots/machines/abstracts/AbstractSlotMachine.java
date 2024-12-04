@@ -8,9 +8,9 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 public abstract class AbstractSlotMachine implements SlotMachine {
-    private final AtomicLong credits = new AtomicLong(0);
     private final Random rng;
-    private final AtomicReference<SpinResult> lastSpin = new AtomicReference<>(null);
+    private final AtomicLong walletBalance = new AtomicLong(0);
+    private final AtomicReference<BetResult> lastBet = new AtomicReference<>(null);
 
     public AbstractSlotMachine() {
         this.rng = new Random();
@@ -21,35 +21,35 @@ public abstract class AbstractSlotMachine implements SlotMachine {
     }
 
     @Override
-    public SpinResult spin(long betAmount) throws InsufficientFundsException {
+    public BetResult spin(long betAmount) throws InsufficientFundsException {
         assertFunds(betAmount, "spin");
-        credits.addAndGet(-betAmount);
-        long winAmount = doSpin(betAmount);
-        lastSpin.set(new SpinResult(betAmount, winAmount, credits.addAndGet(winAmount), getResult()));
-        return lastSpin.get();
+        walletBalance.addAndGet(-betAmount);
+        SpinResult result = doSpin(betAmount);
+        lastBet.set(new BetResult(result.betAmount(), result.winAmount(), walletBalance.addAndGet(result.winAmount()), result.symbol()));
+        return lastBet.get();
     }
 
     @Override
     public long deposit(long depositAmount) {
         if (depositAmount <= 0) throw new IllegalArgumentException("Deposit amount must be positive.");
-        return credits.addAndGet(depositAmount);
+        return walletBalance.addAndGet(depositAmount);
     }
 
     @Override
     public long withdraw(long withdrawAmount) throws InsufficientFundsException {
         if (withdrawAmount <= 0) throw new IllegalArgumentException("Withdraw amount must be positive.");
         assertFunds(withdrawAmount, "withdraw");
-        return credits.addAndGet(-withdrawAmount);
+        return walletBalance.addAndGet(-withdrawAmount);
     }
 
     @Override
     public long getBalance() {
-        return credits.get();
+        return walletBalance.get();
     }
 
     protected void assertFunds(long requiredAmount, String actionName) throws InsufficientFundsException {
         if (requiredAmount > getBalance())
-            throw new InsufficientFundsException("Insufficient credits to %s. Required: %d Have: %d".formatted(actionName, requiredAmount, credits.get()));
+            throw new InsufficientFundsException("Insufficient credits to %s. Required: %d Have: %d".formatted(actionName, requiredAmount, walletBalance.get()));
         if (requiredAmount < 0) {
             throw new InsufficientFundsException("Only positive numbers are allowed.");
         }
@@ -59,7 +59,5 @@ public abstract class AbstractSlotMachine implements SlotMachine {
         return rng;
     }
 
-    protected abstract long doSpin(long betAmount);
-
-    protected abstract int getResult();
+    protected abstract SpinResult doSpin(long betAmount);
 }
