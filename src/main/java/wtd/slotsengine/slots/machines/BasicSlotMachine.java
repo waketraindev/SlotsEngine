@@ -20,14 +20,14 @@ final public class BasicSlotMachine extends AbstractSlotMachine {
     }
 
     @Override
-    public SpinResult doSpin(long betAmount) {
-        int position = getRandom().nextInt(reel.size());
-        int res = reel.get(position);
-        long winAmount = calculatePayout(betAmount, res);
+    public SpinResult doSpin(final long betAmount) {
+        final int position = getRandom().nextInt(reel.size());
+        final int res = reel.get(position);
+        final long winAmount = calculatePayout(betAmount, res);
         return new SpinResult(betAmount, winAmount, res);
     }
 
-    private long calculatePayout(long betAmount, int symbol) {
+    private long calculatePayout(final long betAmount, final int symbol) {
         long winAmount;
         switch (symbol) {
             case 0 -> winAmount = 0;
