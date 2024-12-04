@@ -1,4 +1,4 @@
-let appwindow = document.getElementById('appwin');
+let appWindow = document.getElementById('appWindow');
 let btnSpin = document.getElementById('btnSpin');
 let btnIncBet = document.getElementById('btnIncrementBet');
 let btnDecBet = document.getElementById('btnDecrementBet');
@@ -11,7 +11,10 @@ let lblBetAmount = document.getElementById('lblBetAmount');
 
 let lblDisplay = document.getElementById('lblDisplay');
 
-let lastSpin;
+let lblRollResult = document.getElementById('lblRollResultText');
+let lblRollAmount = document.getElementById('lblRollResultAmount');
+
+let lastSpin = {winAmount: 0};
 
 let machineState = {
     balance: 1, betAmount: 1
@@ -20,8 +23,42 @@ let machineState = {
 let betRange = [1, 10, 15, 25, 50, 100, 200, 500, 1000, 2000, 5000, 10000];
 let betPos = 0;
 
+function initApp() {
+    sendCall((data) => {
+        bindListeners();
+        machineState.balance = data.balance;
+        machineState.betAmount = 1;
+        lblBalanceAmount.innerText = data.balance;
+        lblBetAmount.innerText = data.betAmount;
+        lblDisplay.innerText = data.result;
+        btnSpin.disabled = machineState.betAmount > machineState.balance;
+        setStatusLabel('Balance', machineState.balance);
+    }, '/api/load').then(() => appWindow.classList.remove('d-none'));
+}
+
+function sendCall(callback, path, options) {
+    return fetch(path, options).then((rsp) => {
+        if (!rsp.ok) {
+            throw new Error();
+        }
+        return rsp;
+    }).then((response) => response.json())
+        .then(data => callback(data)).catch(ignored => alert(`Error running API call`));
+}
+
+function setStatusLabel(label, text, classes) {
+    if (classes === undefined) classes = 'text-bg-info';
+    lblRollResult.className = `badge ${classes}`;
+    lblRollResult.innerText = label;
+    lblRollAmount.innerText = text;
+}
+
 function setButtonsState(state) {
     [btnSpin, btnIncBet, btnDecBet, btnDeposit, btnWithdraw].forEach((i) => i.disabled = state);
+}
+
+function isWin() {
+    return lastSpin.winAmount > 0;
 }
 
 function updateMachineState(state) {
@@ -37,26 +74,32 @@ function updateMachineState(state) {
     let rows = tabBody.getElementsByTagName("tr");
     if (rows.length > 10) tabBody.querySelector("tr:last-child").remove();
     let newRow = document.createElement('tr');
-    newRow.innerHTML = `<td>${state.betAmount}</td><td>${state.winAmount}</td><td>${state.result}</td>` + `<td><span class="badge ${state.winAmount > 0 ? 'text-bg-success' : 'text-bg-danger'}">${state.winAmount > 0 ? 'Win' : 'Loss'}</span></td>`;
+    newRow.innerHTML = `<td>${state.betAmount}</td><td>${state.winAmount}</td><td>${state.result}</td>` + `<td><span class="badge ${isWin() ? 'text-bg-success' : 'text-bg-danger'}">${isWin() ? 'Win' : 'Loss'}</span></td>`;
     tabBody.prepend(newRow);
 
-    lblDisplay.style.color = state.winAmount > 0 ? 'green' : 'red';
+    lblDisplay.style.color = isWin() ? 'green' : 'red';
+
+    if (isWin() > 0) setStatusLabel('WIN', state.winAmount, 'text-bg-success'); else setStatusLabel('LOSS', state.betAmount, 'text-bg-danger');
+
 }
 
 function spin() {
     setButtonsState(true);
-    lblDisplay.style.color = '';
+    lblDisplay.style.color = 'orange';
+    let betAmount = machineState.betAmount;
+    setStatusLabel('Spin', machineState.betAmount, 'text-bg-warning');
+
     let count = 0;
     let animateDisplay = setInterval(() => {
         if (count++ < 7) {
             lblDisplay.innerText = Math.floor(Math.random() * 10).toFixed(0)
         } else {
-            fetch('/api/spin/' + machineState.betAmount, {
-                method: 'POST'
-            }).then(response => response.json()).then(data => {
+            sendCall(data => {
                 clearInterval(animateDisplay);
                 updateMachineState(data);
-            })
+            }, `/api/spin/${betAmount}`, {
+                method: 'POST'
+            });
         }
     }, 150);
 }
@@ -75,26 +118,6 @@ document.addEventListener('keyup', (e) => {
     }
 });
 
-btnDeposit.addEventListener('click', () => {
-    let value = prompt("Enter deposit amount", "1000");
-    fetch('/api/deposit/' + value, {}).then(response => response.json()).then(data => {
-        lblBalanceAmount.innerText = data.balance;
-        machineState.balance = data.balance;
-        btnSpin.disabled = machineState.betAmount > machineState.balance;
-    })
-});
-btnWithdraw.addEventListener('click', () => {
-    let value = prompt("Enter withdrawal amount", "1000");
-    fetch('/api/withdraw/' + value, {}).then(response => response.json()).then(data => {
-        lblBalanceAmount.innerText = data.balance;
-        machineState.balance = data.balance;
-        btnSpin.disabled = machineState.betAmount > machineState.balance;
-    })
-});
-btnSpin.addEventListener('click', () => {
-    spin();
-});
-
 function calcBetValues() {
     let tb = document.getElementById('payoutTable');
     let body = tb.getElementsByTagName("tbody")[0];
@@ -107,32 +130,45 @@ function calcBetValues() {
 
 }
 
-btnIncBet.addEventListener('click', () => {
-    betPos = Math.min((betPos + 1), betRange.length - 1);
-    machineState.betAmount = betRange[betPos];
-    lblBetAmount.innerText = machineState.betAmount;
-    calcBetValues();
-    btnSpin.disabled = machineState.betAmount > machineState.balance;
-});
+function bindListeners() {
+    btnDeposit.addEventListener('click', () => {
+        let value = prompt("Enter deposit amount", "1000");
+        sendCall(data => {
+            lblBalanceAmount.innerText = data.balance;
+            machineState.balance = data.balance;
+            btnSpin.disabled = machineState.betAmount > machineState.balance;
+        }, '/api/deposit/' + value);
 
-btnDecBet.addEventListener('click', () => {
-    betPos = Math.max((betPos - 1), 0);
-    machineState.betAmount = betRange[betPos];
-    lblBetAmount.innerText = machineState.betAmount;
-    calcBetValues();
-    btnSpin.disabled = !(machineState.balance > machineState.betAmount);
-});
+    });
+    btnWithdraw.addEventListener('click', () => {
+        let value = prompt("Enter withdrawal amount", "1000");
+        sendCall(data => {
+            lblBalanceAmount.innerText = data.balance;
+            machineState.balance = data.balance;
+            btnSpin.disabled = machineState.betAmount > machineState.balance;
+        }, '/api/withdraw/' + value, {});
+    });
+    btnSpin.addEventListener('click', () => {
+        spin();
+    });
+    btnIncBet.addEventListener('click', () => {
+        betPos = Math.min((betPos + 1), betRange.length - 1);
+        machineState.betAmount = betRange[betPos];
+        lblBetAmount.innerText = machineState.betAmount;
+        calcBetValues();
+        btnSpin.disabled = machineState.betAmount > machineState.balance;
+    });
+
+    btnDecBet.addEventListener('click', () => {
+        betPos = Math.max((betPos - 1), 0);
+        machineState.betAmount = betRange[betPos];
+        lblBetAmount.innerText = machineState.betAmount;
+        calcBetValues();
+        btnSpin.disabled = !(machineState.balance > machineState.betAmount);
+    });
+}
 
 (function () {
 // Display UI after loading
-    window.addEventListener('load', () => {
-        fetch('/api/load').then(response => response.json()).then(data => {
-            machineState.balance = data.balance;
-            machineState.betAmount = 1;
-            lblBalanceAmount.innerText = data.balance;
-            lblBetAmount.innerText = data.betAmount;
-            lblDisplay.innerText = data.result;
-            btnSpin.disabled = machineState.betAmount > machineState.balance;
-        }).then(() => appwindow.classList.remove('d-none'));
-    });
+    initApp()
 })();

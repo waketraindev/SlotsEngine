@@ -1,4 +1,4 @@
-# Project Name
+# SlotsEngine
 
 ## Overview
 
@@ -18,23 +18,19 @@ Instructions for setting up the environment and running the Spring application:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-repo/project-name.git
+   git clone https://github.com/waketraindev/SlotsEngine.git
    ```
 2. Navigate to the project directory:
    ```bash
-   cd project-name
+   cd SlotsEngine
    ```
 3. Build the project using Maven or Gradle:
    ```bash
    mvn clean install
-   # or
-   gradle build
    ```
 4. Run the application:
    ```bash
    mvn spring-boot:run
-   # or
-   gradle bootRun
    ```
 
 ## Configuration
@@ -46,20 +42,13 @@ Explain how to configure the component, including any properties files or enviro
 
 ## Usage
 
-Detail how to use the component, including code examples if applicable:
+Start the app by running
 
-```java
-// Example code to demonstrate usage
-public class ExampleUsage {
-    public static void main(String[] args) {
-        // Initialize the component
-        MyComponent component = new MyComponent();
+   ```bash
+   mvn spring-boot:run
+   ```
 
-        // Use the component's methods
-        component.doSomething();
-    }
-}
-```
+Frontend available on http://localhost:8080
 
 ## Features
 
@@ -75,8 +64,6 @@ Outline how to run tests for the component:
 
 ```bash
 mvn test
-# or
-gradle test
 ```
 
 ## Contributors
