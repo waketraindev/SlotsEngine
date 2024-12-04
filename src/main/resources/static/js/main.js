@@ -78,7 +78,7 @@ function updateMachineState(state) {
 
 function spin() {
     setButtonsState(true);
-    lblDisplay.style.color = '';
+    lblDisplay.style.color = 'orange';
     let betAmount = machineState.betAmount;
     setStatusLabel('Spin', machineState.betAmount, 'text-bg-warning');
 
