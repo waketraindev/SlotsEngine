@@ -3,22 +3,12 @@ package wtd.slotsengine.slots.machines.abstracts;
 import wtd.slotsengine.slots.exceptions.InsufficientFundsException;
 import wtd.slotsengine.slots.interfaces.SlotMachine;
 
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 public abstract class AbstractSlotMachine implements SlotMachine {
-    private final Random rng;
     private final AtomicLong walletBalance = new AtomicLong(0);
     private final AtomicReference<BetResult> lastBet = new AtomicReference<>(null);
-
-    public AbstractSlotMachine() {
-        this.rng = new Random();
-    }
-
-    public AbstractSlotMachine(long seed) {
-        this.rng = new Random(seed);
-    }
 
     @Override
     public BetResult spin(long betAmount) throws InsufficientFundsException {
@@ -53,10 +43,6 @@ public abstract class AbstractSlotMachine implements SlotMachine {
         if (requiredAmount < 0) {
             throw new InsufficientFundsException("Only positive numbers are allowed.");
         }
-    }
-
-    protected Random getRandom() {
-        return rng;
     }
 
     protected abstract SpinResult doSpin(long betAmount);
