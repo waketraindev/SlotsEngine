@@ -23,11 +23,11 @@ final public class BasicSlotMachine extends AbstractSlotMachine {
     public SpinResult doSpin(long betAmount) {
         int position = getRandom().nextInt(reel.size());
         int res = reel.get(position);
-        long winAmount = calculatePayout(position, betAmount, res);
+        long winAmount = calculatePayout(betAmount, res);
         return new SpinResult(betAmount, winAmount, res);
     }
 
-    private long calculatePayout(int position, long betAmount, int symbol) {
+    private long calculatePayout(long betAmount, int symbol) {
         long winAmount;
         switch (symbol) {
             case 0 -> winAmount = 0;
@@ -50,7 +50,7 @@ final public class BasicSlotMachine extends AbstractSlotMachine {
         long cost = 0L;
         long winAmount = 0L;
         for (int i = 0; i < reel.size(); i++) {
-            winAmount += calculatePayout(i, 1, reel.get(i));
+            winAmount += calculatePayout(1, reel.get(i));
             cost += 1;
         }
         return winAmount / (double) cost;
