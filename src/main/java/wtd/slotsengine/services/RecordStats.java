@@ -83,7 +83,7 @@ public class RecordStats {
                 writeLock.unlock();
             }
         } catch (InterruptedException e) {
-            throw new RuntimeException("Error writing results to file");
+            log.error("Failed to acquire write lock", e);
         }
     }
 }
