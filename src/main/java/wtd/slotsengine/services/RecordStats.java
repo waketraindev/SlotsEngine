@@ -6,7 +6,10 @@ import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import wtd.slotsengine.rest.records.BetResultMessage;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.LongSummaryStatistics;
 import java.util.Scanner;
@@ -48,7 +51,8 @@ public class RecordStats {
                 String line = scanner.nextLine();
                 String[] cols = line.split(",");
                 betStats.accept(Long.parseLong(cols[1]));
-                winStats.accept(Long.parseLong(cols[2]));
+                if (Long.parseLong(cols[2]) > 0)
+                    winStats.accept(Long.parseLong(cols[2]));
             }
             writeStream = new PrintWriter(csvResultsFile);
         } catch (FileNotFoundException e) {
@@ -74,7 +78,7 @@ public class RecordStats {
     public void recordBet(BetResultMessage bet) {
         try {
             if (writeLock.tryLock(1, TimeUnit.SECONDS)) {
-                ArrayList<String> cols = new ArrayList<String>();
+                ArrayList<String> cols = new ArrayList<>();
                 cols.add(String.valueOf(bet.timestampMs()));
                 cols.add(String.valueOf(bet.betAmount()));
                 cols.add(String.valueOf(bet.winAmount()));
@@ -84,7 +88,8 @@ public class RecordStats {
                 writeStream.flush();
 
                 betStats.accept(bet.betAmount());
-                winStats.accept(bet.winAmount());
+                if (bet.winAmount() > 0)
+                    winStats.accept(bet.winAmount());
 
                 writeLock.unlock();
             }

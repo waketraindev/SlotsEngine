@@ -4,12 +4,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-import wtd.slotsengine.rest.records.BalanceMessage;
-import wtd.slotsengine.rest.records.BetResultMessage;
-import wtd.slotsengine.rest.records.MachineStateMessage;
-import wtd.slotsengine.rest.records.ServerVersionMessage;
+import wtd.slotsengine.rest.records.*;
 import wtd.slotsengine.services.RecordStats;
 import wtd.slotsengine.services.SlotManager;
 import wtd.slotsengine.slots.exceptions.InsufficientFundsException;
@@ -78,7 +78,7 @@ public class ApiController {
 
     /**
      * Endpoint to retrieve win statistics.
-     *
+     * <p>
      * This method maps to the HTTP GET request for the "/api/winstats" URL,
      * and returns a summary of win statistics.
      *
@@ -90,10 +90,19 @@ public class ApiController {
     }
 
     /**
+     * Retrieves the current machine statistics, including the timestamp, bet statistics, and win statistics.
+     *
+     * @return a MachineStatsMessage object containing the current timestamp, bet statistics, and win statistics.
+     */
+    public @GetMapping("/api/machinestats") MachineStatsMessage getMachineStats() {
+        return new MachineStatsMessage(now(), machine.getMachineRtp(), stats.getBetStats(), stats.getWinStats());
+    }
+
+    /**
      * Endpoint to retrieve bet statistics.
      *
      * @return LongSummaryStatistics object containing statistical data about bets,
-     *         including count, sum, min, average, and max.
+     * including count, sum, min, average, and max.
      */
     @GetMapping("/api/betstats")
     public LongSummaryStatistics getBetStats() {
