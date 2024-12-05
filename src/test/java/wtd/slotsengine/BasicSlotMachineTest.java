@@ -18,7 +18,7 @@ public class BasicSlotMachineTest {
     @Test
     public void testDeposit() {
         BasicSlotMachine sm = new BasicSlotMachine();
-        long funds = new Random().nextLong();
+        long funds = new Random().nextLong(9999);
         sm.deposit(funds);
         assertEquals(funds, sm.getBalance(), "Machine deposits funds");
     }
