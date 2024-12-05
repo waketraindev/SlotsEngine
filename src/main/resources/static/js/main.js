@@ -23,16 +23,22 @@ let machineState = {
 let betRange = [1, 10, 15, 25, 50, 100, 200, 500, 1000, 2000, 5000, 10000];
 let betPos = 0;
 
+let numFormat = new Intl.NumberFormat('en-US', {});
+
+function prettyNumber(num) {
+    return numFormat.format(num);
+}
+
 function initApp() {
     sendCall((data) => {
         bindListeners();
         machineState.balance = data.balance;
         machineState.betAmount = 1;
-        lblBalanceAmount.innerText = data.balance;
-        lblBetAmount.innerText = data.betAmount;
-        lblDisplay.innerText = data.result;
+        lblBalanceAmount.innerText = prettyNumber(data.balance);
+        lblBetAmount.innerText = prettyNumber(data.betAmount);
+        lblDisplay.innerText = prettyNumber(data.result);
         btnSpin.disabled = machineState.betAmount > machineState.balance;
-        setStatusLabel('Balance', machineState.balance);
+        setStatusLabel('Balance', numFormat.format(machineState.balance));
 
         refreshStats();
     }, '/api/load').then(() => appWindow.classList.remove('d-none'));
@@ -61,16 +67,16 @@ function refreshStats() {
     let lblRtpStats = document.getElementById("lblRtpStats");
 
     sendCall((data) => {
-        let newText = `Bets: ${data.betStats.count} `;
-        newText += `Max: ${data.betStats.max} `;
-        newText += `Sum: ${data.betStats.sum} `;
+        let newText = `Bets: ${prettyNumber(data.betStats.count)} `;
+        newText += `Max: ${prettyNumber(data.betStats.max)} `;
+        newText += `Sum: ${prettyNumber(data.betStats.sum)} `;
         lblBetStats.innerText = newText;
-        newText = `Wins: ${data.winStats.count} `;
-        newText += `Max: ${data.winStats.max} `;
-        newText += `Sum: ${data.winStats.sum} `;
+        newText = `Wins: ${prettyNumber(data.winStats.count)} `;
+        newText += `Max: ${prettyNumber(data.winStats.max)} `;
+        newText += `Sum: ${prettyNumber(data.winStats.sum)} `;
         lblWinStats.innerText = newText;
 
-        lblRtpStats.innerText = `RTP: ${(data.rtp*100.0).toFixed(2)}%`
+        lblRtpStats.innerText = `RTP: ${(data.rtp * 100.0).toFixed(2)}%`
     }, "/api/machinestats", {});
 }
 
@@ -84,9 +90,9 @@ function isWin() {
 
 function updateMachineState(state) {
     lastSpin = state;
-    lblBetAmount.innerText = state.betAmount;
-    lblBalanceAmount.innerText = state.balance;
-    lblDisplay.innerText = state.result;
+    lblBetAmount.innerText = prettyNumber(state.betAmount);
+    lblBalanceAmount.innerText = prettyNumber(state.balance);
+    lblDisplay.innerText = prettyNumber(state.result);
     machineState.balance = state.balance;
     setButtonsState(false);
     btnSpin.disabled = machineState.betAmount > machineState.balance;
@@ -95,7 +101,7 @@ function updateMachineState(state) {
     let rows = tabBody.getElementsByTagName("tr");
     if (rows.length > 10) tabBody.querySelector("tr:last-child").remove();
     let newRow = document.createElement('tr');
-    newRow.innerHTML = `<td>${state.betAmount}</td><td>${state.winAmount}</td><td>${state.result}</td>` + `<td><span class="badge ${isWin() ? 'text-bg-success' : 'text-bg-danger'}">${isWin() ? 'Win' : 'Loss'}</span></td>`;
+    newRow.innerHTML = `<td>${prettyNumber(state.betAmount)}</td><td>${prettyNumber(state.winAmount)}</td><td>${state.result}</td>` + `<td><span class="badge ${isWin() ? 'text-bg-success' : 'text-bg-danger'}">${isWin() ? 'Win' : 'Loss'}</span></td>`;
     tabBody.prepend(newRow);
 
     lblDisplay.style.color = isWin() ? 'green' : 'red';
@@ -179,7 +185,7 @@ function bindListeners() {
     btnIncBet.addEventListener('click', () => {
         betPos = Math.min((betPos + 1), betRange.length - 1);
         machineState.betAmount = betRange[betPos];
-        lblBetAmount.innerText = machineState.betAmount;
+        lblBetAmount.innerText = prettyNumber(machineState.betAmount);
         calcBetValues();
         btnSpin.disabled = machineState.betAmount > machineState.balance;
     });
@@ -187,7 +193,7 @@ function bindListeners() {
     btnDecBet.addEventListener('click', () => {
         betPos = Math.max((betPos - 1), 0);
         machineState.betAmount = betRange[betPos];
-        lblBetAmount.innerText = machineState.betAmount;
+        lblBetAmount.innerText = prettyNumber(machineState.betAmount);
         calcBetValues();
         btnSpin.disabled = !(machineState.balance > machineState.betAmount);
     });
