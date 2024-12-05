@@ -1,0 +1,374 @@
+openapi: "3.1.0"
+info:
+  title: "SlotsEngine API"
+  description: "SlotsEngine API"
+  version: "1.0.0"
+servers:
+  - url: "https://SlotsEngine"
+paths:
+  /api:
+    get:
+      summary: "GET api"
+      operationId: "indexAction"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ServerVersionMessage"
+  /api/load:
+    get:
+      summary: "GET api/load"
+      operationId: "load"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MachineStateMessage"
+  /api/spin/{amount}:
+    post:
+      summary: "POST api/spin/{amount}"
+      operationId: "spin"
+      parameters:
+        - name: "amount"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BetResultMessage"
+  /api/deposit/{amount}:
+    get:
+      summary: "GET api/deposit/{amount}"
+      operationId: "deposit"
+      parameters:
+        - name: "amount"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BalanceMessage"
+    put:
+      summary: "PUT api/deposit/{amount}"
+      operationId: "deposit"
+      parameters:
+        - name: "amount"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BalanceMessage"
+    post:
+      summary: "POST api/deposit/{amount}"
+      operationId: "deposit"
+      parameters:
+        - name: "amount"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BalanceMessage"
+    delete:
+      summary: "DELETE api/deposit/{amount}"
+      operationId: "deposit"
+      parameters:
+        - name: "amount"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BalanceMessage"
+    options:
+      summary: "OPTIONS api/deposit/{amount}"
+      operationId: "deposit"
+      parameters:
+        - name: "amount"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BalanceMessage"
+    head:
+      summary: "HEAD api/deposit/{amount}"
+      operationId: "deposit"
+      parameters:
+        - name: "amount"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BalanceMessage"
+    patch:
+      summary: "PATCH api/deposit/{amount}"
+      operationId: "deposit"
+      parameters:
+        - name: "amount"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BalanceMessage"
+    trace:
+      summary: "TRACE api/deposit/{amount}"
+      operationId: "deposit"
+      parameters:
+        - name: "amount"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BalanceMessage"
+  /api/withdraw/{amount}:
+    get:
+      summary: "GET api/withdraw/{amount}"
+      operationId: "withdraw"
+      parameters:
+        - name: "amount"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BalanceMessage"
+    put:
+      summary: "PUT api/withdraw/{amount}"
+      operationId: "withdraw"
+      parameters:
+        - name: "amount"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BalanceMessage"
+    post:
+      summary: "POST api/withdraw/{amount}"
+      operationId: "withdraw"
+      parameters:
+        - name: "amount"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BalanceMessage"
+    delete:
+      summary: "DELETE api/withdraw/{amount}"
+      operationId: "withdraw"
+      parameters:
+        - name: "amount"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BalanceMessage"
+    options:
+      summary: "OPTIONS api/withdraw/{amount}"
+      operationId: "withdraw"
+      parameters:
+        - name: "amount"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BalanceMessage"
+    head:
+      summary: "HEAD api/withdraw/{amount}"
+      operationId: "withdraw"
+      parameters:
+        - name: "amount"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BalanceMessage"
+    patch:
+      summary: "PATCH api/withdraw/{amount}"
+      operationId: "withdraw"
+      parameters:
+        - name: "amount"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BalanceMessage"
+    trace:
+      summary: "TRACE api/withdraw/{amount}"
+      operationId: "withdraw"
+      parameters:
+        - name: "amount"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BalanceMessage"
+components:
+  schemas:
+    ServerVersionMessage:
+      type: "object"
+      properties:
+        version:
+          type: "string"
+    MachineStateMessage:
+      type: "object"
+      properties:
+        timestampMs:
+          type: "integer"
+          format: "int64"
+        rtp:
+          type: "number"
+          format: "double"
+        betAmount:
+          type: "integer"
+          format: "int64"
+        winAmount:
+          type: "integer"
+          format: "int64"
+        balance:
+          type: "integer"
+          format: "int64"
+        result:
+          type: "integer"
+          format: "int32"
+    BetResultMessage:
+      type: "object"
+      properties:
+        timestampMs:
+          type: "integer"
+          format: "int64"
+        betAmount:
+          type: "integer"
+          format: "int64"
+        winAmount:
+          type: "integer"
+          format: "int64"
+        balance:
+          type: "integer"
+          format: "int64"
+        result:
+          type: "integer"
+          format: "int32"
+    BalanceMessage:
+      type: "object"
+      properties:
+        balance:
+          type: "integer"
+          format: "int64"
