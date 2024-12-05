@@ -11,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.LongSummaryStatistics;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -19,6 +20,8 @@ public class RecordStats {
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(RecordStats.class);
     private final ReentrantLock writeLock;
     private PrintWriter writeStream;
+    private static final LongSummaryStatistics winStats = new LongSummaryStatistics();
+    private static final LongSummaryStatistics betStats = new LongSummaryStatistics();
 
     public RecordStats() {
         log.info("RecordStats is initializing");
@@ -54,6 +57,14 @@ public class RecordStats {
         log.info("RecordStats is destroyed");
     }
 
+    public LongSummaryStatistics getWinStats() {
+        return winStats;
+    }
+
+    public LongSummaryStatistics getBetStats() {
+        return betStats;
+    }
+
     public void recordBet(BetResultMessage bet) {
         try {
             if (writeLock.tryLock(1, TimeUnit.SECONDS)) {
@@ -65,6 +76,10 @@ public class RecordStats {
                 String output = String.join(",", cols);
                 writeStream.append(output).append("\n");
                 writeStream.flush();
+
+                betStats.accept(bet.betAmount());
+                winStats.accept(bet.winAmount());
+
                 writeLock.unlock();
             }
         } catch (InterruptedException e) {
