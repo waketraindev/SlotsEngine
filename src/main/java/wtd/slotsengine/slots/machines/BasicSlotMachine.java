@@ -3,6 +3,7 @@ package wtd.slotsengine.slots.machines;
 import wtd.slotsengine.slots.exceptions.SlotUserException;
 import wtd.slotsengine.slots.machines.abstracts.AbstractSlotMachine;
 import wtd.slotsengine.slots.machines.abstracts.SpinResult;
+import wtd.slotsengine.slots.machines.reels.IReel;
 import wtd.slotsengine.slots.machines.reels.VirtualReel;
 import wtd.slotsengine.utils.SlotConstants;
 
@@ -29,7 +30,7 @@ final public class BasicSlotMachine extends AbstractSlotMachine {
         return cachedRtp;
     }
 
-    private long calculatePayout(final long betAmount, final int symbol) {
+    public static long calculatePayout(final long betAmount, final int symbol) {
         long winAmount;
         switch (symbol) {
             case 0 -> winAmount = 0;
@@ -49,6 +50,10 @@ final public class BasicSlotMachine extends AbstractSlotMachine {
     }
 
     public double calculateRTP() {
+        return calculateRTP(reel);
+    }
+
+    public static double calculateRTP(IReel reel) {
         long cost = 0L;
         long winAmount = 0L;
         for (int i = 0; i < reel.size(); i++) {

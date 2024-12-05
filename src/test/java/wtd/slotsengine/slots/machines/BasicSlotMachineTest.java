@@ -1,8 +1,7 @@
-package wtd.slotsengine;
+package wtd.slotsengine.slots.machines;
 
 import org.junit.jupiter.api.Test;
 import wtd.slotsengine.slots.exceptions.InsufficientFundsException;
-import wtd.slotsengine.slots.machines.BasicSlotMachine;
 import wtd.slotsengine.slots.machines.abstracts.BetResult;
 
 import java.util.Random;
@@ -65,5 +64,14 @@ public class BasicSlotMachineTest {
         assertFalse(excepted, "Spin did not throw exceptions");
         assertNotNull(result, "Spin did not return null.");
         assertEquals(1L, result.betAmount(), "Bet amount is correct.");
+    }
+
+    @Test
+    public void testCalculateRTP() {
+        BasicSlotMachine sm = new BasicSlotMachine();
+        double rtp = sm.calculateRTP();
+
+        // Assuming the expected RTP based on the demo machine setup
+        assertEquals(0.9799932180400136, rtp, "Calculated RTP is correct.");
     }
 }
