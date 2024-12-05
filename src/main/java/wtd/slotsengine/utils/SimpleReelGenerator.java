@@ -12,7 +12,6 @@ public class SimpleReelGenerator {
     private final int historySize;
     private final double[] history;
     private double bestRtp = 0.0;
-    private VirtualReel bestReel;
 
     public SimpleReelGenerator(double maxRtp) {
         this.maxRtp = maxRtp;
@@ -33,7 +32,7 @@ public class SimpleReelGenerator {
             int index = runCount % historySize;
             if (rtp >= history[index] && rtp < maxRtp) {
                 if (rtp > bestRtp) {
-                    bestReel = candidateReel.build();
+                    VirtualReel bestReel = candidateReel.build();
                     bestRtp = rtp;
                     System.out.println("Best RTP: " + bestRtp + ": " + bestReel.toString() + " Size: " + bestReel.size());
                 }
