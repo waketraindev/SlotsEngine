@@ -7,33 +7,35 @@ import java.util.Collections;
 import java.util.List;
 
 public class VirtualReel {
-    private final List<Integer> data = new ArrayList<>();
+    private final List<Byte> data;
 
-    public VirtualReel() {
-    }
-
-    public VirtualReel(String dataString) {
-        addElementsFromString(dataString);
-    }
-
-    public void addElementsFromString(String dataString) {
-        byte[] reelBytes = SlotUtils.decodeGzipBase64(dataString);
-        for (byte reelByte : reelBytes) {
-            data.add((int) reelByte);
-        }
-    }
-
-    public void addSymbol(int sym, int times) {
-        for (int i = 0; i < times; i++) {
-            data.add(sym);
-        }
+    public VirtualReel(List<Byte> symbolList) {
+        data = symbolList;
     }
 
     public Integer get(int position) {
-        return data.get(position % data.size());
+        return (int) data.get(position % data.size());
     }
 
-    public String encodeToString() {
+    public int size() {
+        return data.size();
+    }
+
+    static public VirtualReel loadFromString(String dataString) {
+        return new VirtualReel(parseElementsFromString(dataString));
+    }
+
+    static private List<Byte> parseElementsFromString(String dataString) {
+        ArrayList<Byte> aList = new ArrayList<>();
+        byte[] reelBytes = SlotUtils.decodeGzipBase64(dataString);
+        for (byte reelByte : reelBytes) {
+            aList.add(reelByte);
+        }
+        Collections.shuffle(aList);
+        return Collections.unmodifiableList(aList);
+    }
+
+    public String toString() {
         return SlotUtils.encodeGzipBase64(toByteArray());
     }
 
@@ -41,20 +43,8 @@ public class VirtualReel {
         int len = data.size();
         byte[] result = new byte[len];
         for (int i = 0; i < len; i++) {
-            result[i] = data.get(i).byteValue();
+            result[i] = data.get(i);
         }
         return result;
-    }
-
-    public int size() {
-        return data.size();
-    }
-
-    public void shuffle() {
-        Collections.shuffle(data);
-    }
-
-    public void sort() {
-        Collections.sort(data);
     }
 }
