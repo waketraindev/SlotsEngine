@@ -6,14 +6,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class VirtualReel {
+public class VirtualReel implements IReel {
     private final List<Byte> data;
 
     public VirtualReel(List<Byte> symbolList) {
         data = Collections.unmodifiableList(symbolList);
     }
 
-    public Integer get(int position) {
+    public int get(int position) {
         return (int) data.get(position % data.size());
     }
 
