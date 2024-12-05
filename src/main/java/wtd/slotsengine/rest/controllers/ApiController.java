@@ -2,6 +2,7 @@ package wtd.slotsengine.rest.controllers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -19,9 +20,11 @@ import static wtd.slotsengine.utils.SlotUtils.now;
 
 @RestController
 public class ApiController {
-    private static final ServerVersionMessage SERVER_BANNER = new ServerVersionMessage(SlotConstants.PROJECT_VERSION);
     private static final Logger log = LoggerFactory.getLogger(ApiController.class);
     private final SlotMachine machine;
+
+    @Value("${slotsengine.version}")
+    private String appVersion;
 
     public ApiController(SlotManager slotManager) {
         log.info("API controller is initializing");
@@ -30,7 +33,7 @@ public class ApiController {
 
     @GetMapping("/api")
     public ServerVersionMessage indexAction() {
-        return SERVER_BANNER;
+        return new ServerVersionMessage(appVersion);
     }
 
     @GetMapping("/api/load")
