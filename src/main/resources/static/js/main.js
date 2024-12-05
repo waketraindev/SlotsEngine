@@ -33,6 +33,8 @@ function initApp() {
         lblDisplay.innerText = data.result;
         btnSpin.disabled = machineState.betAmount > machineState.balance;
         setStatusLabel('Balance', machineState.balance);
+
+        refreshStats();
     }, '/api/load').then(() => appWindow.classList.remove('d-none'));
 }
 
@@ -51,6 +53,22 @@ function setStatusLabel(label, text, classes) {
     lblRollResult.className = `badge ${classes}`;
     lblRollResult.innerText = label;
     lblRollAmount.innerText = text;
+}
+
+function refreshStats() {
+    let lblBetStats = document.getElementById("lblBetStats");
+    let lblWinStats = document.getElementById("lblWinStats");
+
+    sendCall((data) => {
+        let newText = `Bets: ${data.betStats.count} `;
+        newText += `Max: ${data.betStats.max} `;
+        newText += `Sum: ${data.betStats.sum} `;
+        lblBetStats.innerText = newText;
+        newText = `Wins: ${data.winStats.count} `;
+        newText += `Max: ${data.winStats.max} `;
+        newText += `Sum: ${data.winStats.sum} `;
+        lblWinStats.innerText = newText;
+    }, "/api/machinestats", {});
 }
 
 function setButtonsState(state) {
@@ -80,7 +98,7 @@ function updateMachineState(state) {
     lblDisplay.style.color = isWin() ? 'green' : 'red';
 
     if (isWin() > 0) setStatusLabel('WIN', state.winAmount, 'text-bg-success'); else setStatusLabel('LOSS', state.betAmount, 'text-bg-danger');
-
+    setTimeout(refreshStats, 0);
 }
 
 function spin() {
