@@ -14,6 +14,9 @@ let lblDisplay = document.getElementById('lblDisplay');
 let lblRollResult = document.getElementById('lblRollResultText');
 let lblRollAmount = document.getElementById('lblRollResultAmount');
 
+// Autoset version
+let lblVersion = document.getElementById('lblVersion');
+
 let lastSpin = {winAmount: 0};
 
 let machineState = {
@@ -37,10 +40,11 @@ function initApp() {
         lblBalanceAmount.innerText = prettyNumber(data.balance);
         lblBetAmount.innerText = prettyNumber(data.betAmount);
         lblDisplay.innerText = prettyNumber(data.result);
+        lblVersion.innerText = data.version;
         btnSpin.disabled = machineState.betAmount > machineState.balance;
         setStatusLabel('Balance', prettyNumber(machineState.balance));
-
         refreshStats();
+
     }, '/api/load').then(() => appWindow.classList.remove('d-none'));
 }
 
