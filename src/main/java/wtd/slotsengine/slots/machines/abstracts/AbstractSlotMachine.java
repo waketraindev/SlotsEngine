@@ -46,4 +46,6 @@ public abstract class AbstractSlotMachine implements SlotMachine {
     }
 
     protected abstract SpinResult doSpin(long betAmount);
+
+    public abstract double getMachineRtp();
 }
