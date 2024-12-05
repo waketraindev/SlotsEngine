@@ -37,12 +37,12 @@ public class SimpleReelGenerator {
 
     public void run(GenStopCondition stopCondition) {
         for (int runCount = 0; stopCondition.apply(runCount); runCount++) {
-            VirtualReel candidateReel = generateReel();
+            VirtualReelBuilder candidateReel = generateReel();
             double rtp = calculateRTP(candidateReel);
             int index = runCount % historySize;
             if (rtp >= history[index] && rtp < maxRtp) {
                 if (rtp > bestRtp) {
-                    bestReel = candidateReel;
+                    bestReel = candidateReel.build();
                     bestRtp = rtp;
                     System.out.println("Best RTP: " + bestRtp + ": " + bestReel.toString() + " Size: " + bestReel.size());
                 }
@@ -51,7 +51,7 @@ public class SimpleReelGenerator {
         }
     }
 
-    private VirtualReel generateReel() {
+    private VirtualReelBuilder generateReel() {
         VirtualReelBuilder rb = new VirtualReelBuilder();
         int rand10 = random.nextInt(1, 8);
         int rand9 = random.nextInt(rand10, 64);
@@ -77,7 +77,7 @@ public class SimpleReelGenerator {
         for (int i = 0; calculateRTP(rb) >= maxRtp; i++) {
             rb.addSymbol(0, 1);
         }
-        return rb.build();
+        return rb;
     }
 
     private double calculateRTP(IReel rb) {
