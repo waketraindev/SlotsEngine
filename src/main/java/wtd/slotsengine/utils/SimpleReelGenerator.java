@@ -26,14 +26,6 @@ public class SimpleReelGenerator {
         gen.run(new RunCountCondition(100_000));
     }
 
-    public VirtualReel getBestReel() {
-        return bestReel;
-    }
-
-    public double getBestRtp() {
-        return bestRtp;
-    }
-
     public void run(GenStopCondition stopCondition) {
         for (int runCount = 0; stopCondition.apply(runCount); runCount++) {
             VirtualReelBuilder candidateReel = generateReel();
