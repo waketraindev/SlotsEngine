@@ -1,8 +1,7 @@
-package wtd.slotsengine;
+package wtd.slotsengine.slots.machines;
 
 import org.junit.jupiter.api.Test;
 import wtd.slotsengine.slots.exceptions.InsufficientFundsException;
-import wtd.slotsengine.slots.machines.BasicSlotMachine;
 import wtd.slotsengine.slots.machines.abstracts.BetResult;
 
 import java.util.Random;
