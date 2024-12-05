@@ -38,7 +38,7 @@ function initApp() {
         lblBetAmount.innerText = prettyNumber(data.betAmount);
         lblDisplay.innerText = prettyNumber(data.result);
         btnSpin.disabled = machineState.betAmount > machineState.balance;
-        setStatusLabel('Balance', numFormat.format(machineState.balance));
+        setStatusLabel('Balance', prettyNumber(machineState.balance));
 
         refreshStats();
     }, '/api/load').then(() => appWindow.classList.remove('d-none'));
@@ -106,7 +106,7 @@ function updateMachineState(state) {
 
     lblDisplay.style.color = isWin() ? 'green' : 'red';
 
-    if (isWin() > 0) setStatusLabel('WIN', state.winAmount, 'text-bg-success'); else setStatusLabel('LOSS', state.betAmount, 'text-bg-danger');
+    if (isWin() > 0) setStatusLabel('WIN', prettyNumber(state.winAmount), 'text-bg-success'); else setStatusLabel('LOSS', prettyNumber(state.betAmount), 'text-bg-danger');
     setTimeout(refreshStats, 0);
 }
 
@@ -114,7 +114,7 @@ function spin() {
     setButtonsState(true);
     lblDisplay.style.color = 'orange';
     let betAmount = machineState.betAmount;
-    setStatusLabel('Spin', machineState.betAmount, 'text-bg-warning');
+    setStatusLabel('Spin', prettyNumber(machineState.betAmount), 'text-bg-warning');
 
     let count = 0;
     let animateDisplay = setInterval(() => {
