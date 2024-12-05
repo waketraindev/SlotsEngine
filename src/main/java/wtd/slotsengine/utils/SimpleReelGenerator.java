@@ -15,16 +15,24 @@ public class SimpleReelGenerator {
     private double bestRtp = 0.0;
     private VirtualReel bestReel;
 
-    public static void main(String[] args) {
-        double maxRtp = 0.99;
-        SimpleReelGenerator gen = new SimpleReelGenerator(maxRtp);
-        gen.run((count) -> count < 1_000_000);
-    }
-
     public SimpleReelGenerator(double maxRtp) {
         this.maxRtp = maxRtp;
         this.historySize = 512;
         this.history = new double[historySize];
+    }
+
+    public static void main(String[] args) {
+        double maxRtp = 0.99;
+        SimpleReelGenerator gen = new SimpleReelGenerator(maxRtp);
+        gen.run(new RunCountCondition(100_000));
+    }
+
+    public VirtualReel getBestReel() {
+        return bestReel;
+    }
+
+    public double getBestRtp() {
+        return bestRtp;
     }
 
     public void run(GenStopCondition stopCondition) {
