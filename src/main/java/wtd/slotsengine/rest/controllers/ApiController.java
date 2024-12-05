@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import wtd.slotsengine.rest.records.BalanceMessage;
 import wtd.slotsengine.rest.records.BetResultMessage;
+import wtd.slotsengine.rest.records.MachineStateMessage;
 import wtd.slotsengine.rest.records.ServerVersionMessage;
 import wtd.slotsengine.services.SlotManager;
 import wtd.slotsengine.slots.exceptions.InsufficientFundsException;
@@ -33,8 +34,8 @@ public class ApiController {
     }
 
     @GetMapping("/api/load")
-    public BetResultMessage load() {
-        return new BetResultMessage(now(), 1, 0, machine.getBalance(), 0);
+    public MachineStateMessage load() {
+        return new MachineStateMessage(now(), 1, 0, machine.getBalance(), 0);
     }
 
     @PostMapping("/api/spin/{amount}")
