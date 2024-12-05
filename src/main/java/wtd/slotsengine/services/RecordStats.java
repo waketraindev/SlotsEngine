@@ -10,11 +10,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.LongSummaryStatistics;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class RecordStats {
@@ -51,8 +52,7 @@ public class RecordStats {
                 String line = scanner.nextLine();
                 String[] cols = line.split(",");
                 betStats.accept(Long.parseLong(cols[1]));
-                if (Long.parseLong(cols[2]) > 0)
-                    winStats.accept(Long.parseLong(cols[2]));
+                if (Long.parseLong(cols[2]) > 0) winStats.accept(Long.parseLong(cols[2]));
             }
             writeStream = new PrintWriter(csvResultsFile);
         } catch (FileNotFoundException e) {
@@ -78,18 +78,13 @@ public class RecordStats {
     public void recordBet(BetResultMessage bet) {
         try {
             if (writeLock.tryLock(1, TimeUnit.SECONDS)) {
-                ArrayList<String> cols = new ArrayList<>();
-                cols.add(String.valueOf(bet.timestampMs()));
-                cols.add(String.valueOf(bet.betAmount()));
-                cols.add(String.valueOf(bet.winAmount()));
-                cols.add(String.valueOf(bet.result()));
-                String output = String.join(",", cols);
+                String output = Stream.of(bet.timestampMs(), bet.betAmount(), bet.winAmount(), bet.result())
+                        .map(String::valueOf).collect(Collectors.joining(","));
                 writeStream.append(output).append("\n");
                 writeStream.flush();
 
                 betStats.accept(bet.betAmount());
-                if (bet.winAmount() > 0)
-                    winStats.accept(bet.winAmount());
+                if (bet.winAmount() > 0) winStats.accept(bet.winAmount());
 
                 writeLock.unlock();
             }
