@@ -16,8 +16,6 @@ import wtd.slotsengine.slots.exceptions.InsufficientFundsException;
 import wtd.slotsengine.slots.interfaces.SlotMachine;
 import wtd.slotsengine.slots.machines.abstracts.BetResult;
 
-import java.util.LongSummaryStatistics;
-
 import static wtd.slotsengine.utils.SlotUtils.now;
 
 /**
@@ -38,7 +36,7 @@ public class ApiController {
     private final SlotMachine machine;
     private final RecordStats stats;
 
-    @Value("${slotsengine.version}")
+    @Value("${slots-engine.version}")
     private String appVersion;
 
     /**
@@ -77,36 +75,12 @@ public class ApiController {
     }
 
     /**
-     * Endpoint to retrieve win statistics.
-     * <p>
-     * This method maps to the HTTP GET request for the "/api/winstats" URL,
-     * and returns a summary of win statistics.
-     *
-     * @return LongSummaryStatistics providing statistical information on wins.
-     */
-    @GetMapping("/api/winstats")
-    public LongSummaryStatistics getWinStats() {
-        return stats.getWinStats();
-    }
-
-    /**
      * Retrieves the current machine statistics, including the timestamp, bet statistics, and win statistics.
      *
      * @return a MachineStatsMessage object containing the current timestamp, bet statistics, and win statistics.
      */
-    public @GetMapping("/api/machinestats") MachineStatsMessage getMachineStats() {
+    public @GetMapping("/api/machine-stats") MachineStatsMessage getMachineStats() {
         return new MachineStatsMessage(now(), machine.getMachineRtp(), stats.getBetStats(), stats.getWinStats());
-    }
-
-    /**
-     * Endpoint to retrieve bet statistics.
-     *
-     * @return LongSummaryStatistics object containing statistical data about bets,
-     * including count, sum, min, average, and max.
-     */
-    @GetMapping("/api/betstats")
-    public LongSummaryStatistics getBetStats() {
-        return stats.getBetStats();
     }
 
     /**

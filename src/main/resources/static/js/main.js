@@ -14,7 +14,6 @@ let lblDisplay = document.getElementById('lblDisplay');
 let lblRollResult = document.getElementById('lblRollResultText');
 let lblRollAmount = document.getElementById('lblRollResultAmount');
 
-// Autoset version
 let lblVersion = document.getElementById('lblVersion');
 
 let lastSpin = {winAmount: 0};
@@ -81,7 +80,7 @@ function refreshStats() {
         lblWinStats.innerText = newText;
 
         lblRtpStats.innerText = `RTP: ${(data["rtp"] * 100.0).toFixed(2)}%`
-    }, "/api/machinestats", {}).then();
+    }, "/api/machine-stats", {}).then();
 }
 
 function setButtonsState(state) {
