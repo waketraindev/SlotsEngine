@@ -6,12 +6,10 @@ import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import wtd.slotsengine.rest.records.BetResultMessage;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.LongSummaryStatistics;
+import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -31,6 +29,8 @@ public class RecordStats {
     @PostConstruct
     public void init() {
         log.info("RecordStats is initialized");
+        winStats.accept(0);
+        betStats.accept(0);
         File csvResultsFile = new File("results.csv");
         if (!csvResultsFile.exists()) {
             try {
@@ -42,8 +42,14 @@ public class RecordStats {
                 throw new RuntimeException(e);
             }
         }
-
         try {
+            Scanner scanner = new Scanner(new File("results.csv"));
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] cols = line.split(",");
+                betStats.accept(Long.parseLong(cols[1]));
+                winStats.accept(Long.parseLong(cols[2]));
+            }
             writeStream = new PrintWriter(csvResultsFile);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);

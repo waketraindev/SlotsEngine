@@ -16,6 +16,8 @@ import wtd.slotsengine.slots.exceptions.InsufficientFundsException;
 import wtd.slotsengine.slots.interfaces.SlotMachine;
 import wtd.slotsengine.slots.machines.abstracts.BetResult;
 
+import java.util.LongSummaryStatistics;
+
 import static wtd.slotsengine.utils.SlotUtils.now;
 
 /**
@@ -67,7 +69,7 @@ public class ApiController {
      * Handles the HTTP GET request for loading the current state of the slot machine.
      *
      * @return a {@link MachineStateMessage} object containing the current timestamp,
-     *         machine's return to player (RTP), bet amount, win amount, balance, and result.
+     * machine's return to player (RTP), bet amount, win amount, balance, and result.
      */
     @GetMapping("/api/load")
     public MachineStateMessage load() {
@@ -75,11 +77,35 @@ public class ApiController {
     }
 
     /**
+     * Endpoint to retrieve win statistics.
+     *
+     * This method maps to the HTTP GET request for the "/api/winstats" URL,
+     * and returns a summary of win statistics.
+     *
+     * @return LongSummaryStatistics providing statistical information on wins.
+     */
+    @GetMapping("/api/winstats")
+    public LongSummaryStatistics getWinStats() {
+        return stats.getWinStats();
+    }
+
+    /**
+     * Endpoint to retrieve bet statistics.
+     *
+     * @return LongSummaryStatistics object containing statistical data about bets,
+     *         including count, sum, min, average, and max.
+     */
+    @GetMapping("/api/betstats")
+    public LongSummaryStatistics getBetStats() {
+        return stats.getBetStats();
+    }
+
+    /**
      * Initiates a spin operation on the slot machine for the specified bet amount.
      *
      * @param amount the amount to bet on the spin.
      * @return a {@link BetResultMessage} object containing the timestamp, bet amount, win amount,
-     *         balance after the spin, and the resulting symbol from the spin.
+     * balance after the spin, and the resulting symbol from the spin.
      * @throws ResponseStatusException with HTTP status 400 if there are insufficient funds to perform the spin.
      */
     @PostMapping("/api/spin/{amount}")
