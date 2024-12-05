@@ -74,7 +74,7 @@ public class SimpleReelGenerator {
         rb.addSymbol(8, rand8);
         rb.addSymbol(9, rand9);
         rb.addSymbol(10, rand10);
-        for (int i = 0; calculateRTP(rb) >= maxRtp; i++) {
+        while (calculateRTP(rb) >= maxRtp) {
             rb.addSymbol(0, 1);
         }
         return rb;
