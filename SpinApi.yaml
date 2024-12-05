@@ -2,9 +2,9 @@ openapi: "3.1.0"
 info:
   title: "SlotsEngine API"
   description: "SlotsEngine API"
-  version: "0.0.1"
+  version: "1.0.0"
 servers:
-  - url: "http://localhost:8080"
+  - url: "https://SlotsEngine"
 paths:
   /api:
     get:
@@ -28,6 +28,28 @@ paths:
             '*/*':
               schema:
                 $ref: "#/components/schemas/MachineStateMessage"
+  /api/winstats:
+    get:
+      summary: "GET api/winstats"
+      operationId: "getWinStats"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/LongSummaryStatistics"
+  /api/betstats:
+    get:
+      summary: "GET api/betstats"
+      operationId: "getBetStats"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/LongSummaryStatistics"
   /api/spin/{amount}:
     post:
       summary: "POST api/spin/{amount}"
@@ -110,6 +132,21 @@ components:
         result:
           type: "integer"
           format: "int32"
+    LongSummaryStatistics:
+      type: "object"
+      properties:
+        count:
+          type: "integer"
+          format: "int64"
+        sum:
+          type: "integer"
+          format: "int64"
+        min:
+          type: "integer"
+          format: "int64"
+        max:
+          type: "integer"
+          format: "int64"
     BetResultMessage:
       type: "object"
       properties:
