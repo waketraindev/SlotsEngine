@@ -77,7 +77,7 @@ public class RecordStats {
     public void recordBet(BetResultMessage bet) {
         try {
             if (writeLock.tryLock(1, TimeUnit.SECONDS)) {
-                ArrayList<String> cols = new ArrayList<String>();
+                ArrayList<String> cols = new ArrayList<>();
                 cols.add(String.valueOf(bet.timestampMs()));
                 cols.add(String.valueOf(bet.betAmount()));
                 cols.add(String.valueOf(bet.winAmount()));
