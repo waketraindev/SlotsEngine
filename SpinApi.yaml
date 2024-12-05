@@ -4,7 +4,7 @@ info:
   description: "SlotsEngine API"
   version: "1.0.0"
 servers:
-  - url: "http://localhost:8080"
+  - url: "https://SlotsEngine"
 paths:
   /api:
     get:
@@ -28,20 +28,9 @@ paths:
             '*/*':
               schema:
                 $ref: "#/components/schemas/MachineStateMessage"
-  /api/winstats:
+  /api/machine-stats:
     get:
-      summary: "GET api/winstats"
-      operationId: "getWinStats"
-      responses:
-        "200":
-          description: "OK"
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/LongSummaryStatistics"
-  /api/machinestats:
-    get:
-      summary: "GET api/machinestats"
+      summary: "GET api/machine-stats"
       operationId: "getMachineStats"
       responses:
         "200":
@@ -50,17 +39,6 @@ paths:
             '*/*':
               schema:
                 $ref: "#/components/schemas/MachineStatsMessage"
-  /api/betstats:
-    get:
-      summary: "GET api/betstats"
-      operationId: "getBetStats"
-      responses:
-        "200":
-          description: "OK"
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/LongSummaryStatistics"
   /api/spin/{amount}:
     post:
       summary: "POST api/spin/{amount}"
@@ -125,6 +103,8 @@ components:
     MachineStateMessage:
       type: "object"
       properties:
+        version:
+          type: "string"
         timestampMs:
           type: "integer"
           format: "int64"
@@ -164,6 +144,9 @@ components:
         timestampMs:
           type: "integer"
           format: "int64"
+        rtp:
+          type: "number"
+          format: "double"
         betStats:
           $ref: "#/components/schemas/LongSummaryStatistics"
         winStats:

@@ -14,6 +14,8 @@ let lblDisplay = document.getElementById('lblDisplay');
 let lblRollResult = document.getElementById('lblRollResultText');
 let lblRollAmount = document.getElementById('lblRollResultAmount');
 
+let lblVersion = document.getElementById('lblVersion');
+
 let lastSpin = {winAmount: 0};
 
 let machineState = {
@@ -37,10 +39,11 @@ function initApp() {
         lblBalanceAmount.innerText = prettyNumber(data.balance);
         lblBetAmount.innerText = prettyNumber(data.betAmount);
         lblDisplay.innerText = prettyNumber(data.result);
+        lblVersion.innerText = data.version;
         btnSpin.disabled = machineState.betAmount > machineState.balance;
         setStatusLabel('Balance', prettyNumber(machineState.balance));
-
         refreshStats();
+
     }, '/api/load').then(() => appWindow.classList.remove('d-none'));
 }
 
@@ -67,17 +70,17 @@ function refreshStats() {
     let lblRtpStats = document.getElementById("lblRtpStats");
 
     sendCall((data) => {
-        let newText = `Bets: ${prettyNumber(data.betStats.count)} `;
-        newText += `Max: ${prettyNumber(data.betStats.max)} `;
-        newText += `Sum: ${prettyNumber(data.betStats.sum)} `;
+        let newText = `Bets: ${prettyNumber(data["betStats"]["count"])} `;
+        newText += `Max: ${prettyNumber(data["betStats"]["max"])} `;
+        newText += `Sum: ${prettyNumber(data["betStats"]["sum"])} `;
         lblBetStats.innerText = newText;
-        newText = `Wins: ${prettyNumber(data.winStats.count)} `;
-        newText += `Max: ${prettyNumber(data.winStats.max)} `;
-        newText += `Sum: ${prettyNumber(data.winStats.sum)} `;
+        newText = `Wins: ${prettyNumber(data["winStats"]["count"])} `;
+        newText += `Max: ${prettyNumber(data["winStats"]["max"])} `;
+        newText += `Sum: ${prettyNumber(data["winStats"]["sum"])} `;
         lblWinStats.innerText = newText;
 
-        lblRtpStats.innerText = `RTP: ${(data.rtp * 100.0).toFixed(2)}%`
-    }, "/api/machinestats", {});
+        lblRtpStats.innerText = `RTP: ${(data["rtp"] * 100.0).toFixed(2)}%`
+    }, "/api/machine-stats", {}).then();
 }
 
 function setButtonsState(state) {
@@ -126,7 +129,7 @@ function spin() {
                 updateMachineState(data);
             }, `/api/spin/${betAmount}`, {
                 method: 'POST'
-            });
+            }).then();
         }
     }, 47);
 }
@@ -166,7 +169,7 @@ function bindListeners() {
             btnSpin.disabled = machineState.betAmount > machineState.balance;
         }, '/api/deposit/' + value, {
             method: 'POST'
-        });
+        }).then();
 
     });
     btnWithdraw.addEventListener('click', () => {
@@ -177,7 +180,7 @@ function bindListeners() {
             btnSpin.disabled = machineState.betAmount > machineState.balance;
         }, '/api/withdraw/' + value, {
             method: 'POST'
-        });
+        }).then();
     });
     btnSpin.addEventListener('click', () => {
         spin();
