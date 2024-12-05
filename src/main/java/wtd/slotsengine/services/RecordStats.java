@@ -51,13 +51,17 @@ public class RecordStats {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 String[] cols = line.split(",");
-                betStats.accept(Long.parseLong(cols[1]));
-                if (Long.parseLong(cols[2]) > 0) winStats.accept(Long.parseLong(cols[2]));
+                addStats(Long.parseLong(cols[1]), Long.parseLong(cols[2]));
             }
             writeStream = new PrintWriter(csvResultsFile);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static void addStats(long betAmount, long winAmount) {
+        betStats.accept(betAmount);
+        if (winAmount > 0) winStats.accept(winAmount);
     }
 
     @PreDestroy
@@ -78,14 +82,10 @@ public class RecordStats {
     public void recordBet(BetResultMessage bet) {
         try {
             if (writeLock.tryLock(1, TimeUnit.SECONDS)) {
-                String output = Stream.of(bet.timestampMs(), bet.betAmount(), bet.winAmount(), bet.result())
-                        .map(String::valueOf).collect(Collectors.joining(","));
+                String output = Stream.of(bet.timestampMs(), bet.betAmount(), bet.winAmount(), bet.result()).map(String::valueOf).collect(Collectors.joining(","));
                 writeStream.append(output).append("\n");
                 writeStream.flush();
-
-                betStats.accept(bet.betAmount());
-                if (bet.winAmount() > 0) winStats.accept(bet.winAmount());
-
+                addStats(bet.betAmount(), bet.winAmount());
                 writeLock.unlock();
             }
         } catch (InterruptedException e) {
