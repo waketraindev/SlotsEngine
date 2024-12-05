@@ -10,6 +10,7 @@ import wtd.slotsengine.rest.records.BalanceMessage;
 import wtd.slotsengine.rest.records.BetResultMessage;
 import wtd.slotsengine.rest.records.MachineStateMessage;
 import wtd.slotsengine.rest.records.ServerVersionMessage;
+import wtd.slotsengine.services.RecordStats;
 import wtd.slotsengine.services.SlotManager;
 import wtd.slotsengine.slots.exceptions.InsufficientFundsException;
 import wtd.slotsengine.slots.interfaces.SlotMachine;
@@ -33,6 +34,7 @@ import static wtd.slotsengine.utils.SlotUtils.now;
 public class ApiController {
     private static final Logger log = LoggerFactory.getLogger(ApiController.class);
     private final SlotMachine machine;
+    private final RecordStats stats;
 
     @Value("${slotsengine.version}")
     private String appVersion;
@@ -45,9 +47,10 @@ public class ApiController {
      * @param slotManager an instance of SlotManager that provides access
      *                    to the slot machine used by the API controller
      */
-    public ApiController(SlotManager slotManager) {
+    public ApiController(SlotManager slotManager, RecordStats stats) {
         log.info("API controller is initializing");
         this.machine = slotManager.getSlotMachine();
+        this.stats = stats;
     }
 
     /**
@@ -83,7 +86,10 @@ public class ApiController {
     public BetResultMessage spin(@PathVariable("amount") Long amount) {
         try {
             BetResult spinResult = machine.spin(amount);
-            return new BetResultMessage(now(), spinResult.betAmount(), spinResult.winAmount(), spinResult.balance(), spinResult.symbol());
+
+            BetResultMessage betResultMessage = new BetResultMessage(now(), spinResult.betAmount(), spinResult.winAmount(), spinResult.balance(), spinResult.symbol());
+            stats.recordBet(betResultMessage);
+            return betResultMessage;
         } catch (InsufficientFundsException ex) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(400), "Insufficient funds to spin. Required: %d Have: %d".formatted(amount, machine.getBalance()));
         }
