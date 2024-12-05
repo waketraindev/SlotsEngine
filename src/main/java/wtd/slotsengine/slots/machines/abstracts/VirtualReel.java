@@ -10,7 +10,7 @@ public class VirtualReel {
     private final List<Byte> data;
 
     public VirtualReel(List<Byte> symbolList) {
-        data = symbolList;
+        data = Collections.unmodifiableList(symbolList);
     }
 
     public Integer get(int position) {
@@ -32,7 +32,7 @@ public class VirtualReel {
             aList.add(reelByte);
         }
         Collections.shuffle(aList);
-        return Collections.unmodifiableList(aList);
+        return aList;
     }
 
     public String toString() {
