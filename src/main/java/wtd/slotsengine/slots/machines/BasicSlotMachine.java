@@ -12,8 +12,7 @@ final public class BasicSlotMachine extends AbstractSlotMachine {
 
     public BasicSlotMachine() {
         super();
-        reel = new VirtualReel(SlotConstants.DEMO_MACHINE);
-        reel.shuffle();
+        reel = VirtualReel.loadFromString(SlotConstants.DEMO_MACHINE);
     }
 
     @Override
