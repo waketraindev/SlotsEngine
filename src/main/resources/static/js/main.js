@@ -77,7 +77,7 @@ function refreshStats() {
         lblWinStats.innerText = newText;
 
         lblRtpStats.innerText = `RTP: ${(data["rtp"] * 100.0).toFixed(2)}%`
-    }, "/api/machinestats", {});
+    }, "/api/machinestats", {}).then();
 }
 
 function setButtonsState(state) {
@@ -126,7 +126,7 @@ function spin() {
                 updateMachineState(data);
             }, `/api/spin/${betAmount}`, {
                 method: 'POST'
-            });
+            }).then();
         }
     }, 47);
 }
@@ -166,7 +166,7 @@ function bindListeners() {
             btnSpin.disabled = machineState.betAmount > machineState.balance;
         }, '/api/deposit/' + value, {
             method: 'POST'
-        });
+        }).then();
 
     });
     btnWithdraw.addEventListener('click', () => {
@@ -177,7 +177,7 @@ function bindListeners() {
             btnSpin.disabled = machineState.betAmount > machineState.balance;
         }, '/api/withdraw/' + value, {
             method: 'POST'
-        });
+        }).then();
     });
     btnSpin.addEventListener('click', () => {
         spin();
