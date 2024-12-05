@@ -65,4 +65,13 @@ public class BasicSlotMachineTest {
         assertNotNull(result, "Spin did not return null.");
         assertEquals(1L, result.betAmount(), "Bet amount is correct.");
     }
+
+    @Test
+    public void testCalculateRTP() {
+        BasicSlotMachine sm = new BasicSlotMachine();
+        double rtp = sm.calculateRTP();
+
+        // Assuming the expected RTP based on the demo machine setup
+        assertEquals(0.9799932180400136, rtp, "Calculated RTP is correct.");
+    }
 }
