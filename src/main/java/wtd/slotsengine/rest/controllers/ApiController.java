@@ -14,7 +14,6 @@ import wtd.slotsengine.services.SlotManager;
 import wtd.slotsengine.slots.exceptions.InsufficientFundsException;
 import wtd.slotsengine.slots.interfaces.SlotMachine;
 import wtd.slotsengine.slots.machines.abstracts.BetResult;
-import wtd.slotsengine.utils.SlotConstants;
 
 import static wtd.slotsengine.utils.SlotUtils.now;
 
