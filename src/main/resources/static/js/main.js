@@ -67,16 +67,16 @@ function refreshStats() {
     let lblRtpStats = document.getElementById("lblRtpStats");
 
     sendCall((data) => {
-        let newText = `Bets: ${prettyNumber(data.betStats.count)} `;
-        newText += `Max: ${prettyNumber(data.betStats.max)} `;
-        newText += `Sum: ${prettyNumber(data.betStats.sum)} `;
+        let newText = `Bets: ${prettyNumber(data["betStats"]["count"])} `;
+        newText += `Max: ${prettyNumber(data["betStats"]["max"])} `;
+        newText += `Sum: ${prettyNumber(data["betStats"]["sum"])} `;
         lblBetStats.innerText = newText;
-        newText = `Wins: ${prettyNumber(data.winStats.count)} `;
-        newText += `Max: ${prettyNumber(data.winStats.max)} `;
-        newText += `Sum: ${prettyNumber(data.winStats.sum)} `;
+        newText = `Wins: ${prettyNumber(data["winStats"]["count"])} `;
+        newText += `Max: ${prettyNumber(data["winStats"]["max"])} `;
+        newText += `Sum: ${prettyNumber(data["winStats"]["sum"])} `;
         lblWinStats.innerText = newText;
 
-        lblRtpStats.innerText = `RTP: ${(data.rtp * 100.0).toFixed(2)}%`
+        lblRtpStats.innerText = `RTP: ${(data["rtp"] * 100.0).toFixed(2)}%`
     }, "/api/machinestats", {});
 }
 
