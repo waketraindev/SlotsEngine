@@ -1,5 +1,6 @@
 package wtd.slotsengine.utils;
 
 public final class SlotConstants {
-    public static final String DEMO_MACHINE = "H4sIAAAAAAAA/+3BxwGAIAAAMRQb7j+wQ9zTJGNr9mY2R3M2V3M3T7OatxkAAAAAAAAAAH/1AbtNSOuwIwAA";
+    //Best RTP: 0.9799932180400136: H4sIAAAAAAAA/+3ByQEAIAjAMBQv3H9gd7DfJtGYziQzmMksZjOHqW83JEmSxDwCVlXqhQsAAA== Size: 2949
+    public static final String DEMO_MACHINE = "H4sIAAAAAAAA/+3ByQEAIAjAMBQv3H9gd7DfJtGYziQzmMksZjOHqW83JEmSxDwCVlXqhQsAAA==";
 }

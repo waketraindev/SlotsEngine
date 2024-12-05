@@ -58,6 +58,7 @@ function setStatusLabel(label, text, classes) {
 function refreshStats() {
     let lblBetStats = document.getElementById("lblBetStats");
     let lblWinStats = document.getElementById("lblWinStats");
+    let lblRtpStats = document.getElementById("lblRtpStats");
 
     sendCall((data) => {
         let newText = `Bets: ${data.betStats.count} `;
@@ -68,6 +69,8 @@ function refreshStats() {
         newText += `Max: ${data.winStats.max} `;
         newText += `Sum: ${data.winStats.sum} `;
         lblWinStats.innerText = newText;
+
+        lblRtpStats.innerText = `RTP: ${(data.rtp*100.0).toFixed(2)}%`
     }, "/api/machinestats", {});
 }
 

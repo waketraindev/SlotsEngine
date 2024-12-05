@@ -22,7 +22,7 @@ public class SimpleReelGenerator {
     }
 
     public static void main(String[] args) {
-        double maxRtp = 0.99;
+        double maxRtp = 0.98;
         SimpleReelGenerator gen = new SimpleReelGenerator(maxRtp);
         gen.run(new RunCountCondition(100_000));
     }
@@ -53,7 +53,7 @@ public class SimpleReelGenerator {
 
     private VirtualReelBuilder generateReel() {
         VirtualReelBuilder rb = new VirtualReelBuilder();
-        int rand10 = random.nextInt(1, 8);
+        int rand10 = random.nextInt(1, 2);
         int rand9 = random.nextInt(rand10, 64);
         int rand8 = random.nextInt(rand9, 64);
         int rand7 = random.nextInt(rand8, 64);

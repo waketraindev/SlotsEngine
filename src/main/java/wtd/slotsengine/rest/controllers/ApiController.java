@@ -92,7 +92,7 @@ public class ApiController {
      * @return a MachineStatsMessage object containing the current timestamp, bet statistics, and win statistics.
      */
     public @GetMapping("/api/machinestats") MachineStatsMessage getMachineStats() {
-        return new MachineStatsMessage(now(), stats.getBetStats(), stats.getWinStats());
+        return new MachineStatsMessage(now(), machine.getMachineRtp(), stats.getBetStats(), stats.getWinStats());
     }
 
     /**
