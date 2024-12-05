@@ -137,7 +137,9 @@ function bindListeners() {
             lblBalanceAmount.innerText = data.balance;
             machineState.balance = data.balance;
             btnSpin.disabled = machineState.betAmount > machineState.balance;
-        }, '/api/deposit/' + value);
+        }, '/api/deposit/' + value, {
+            method: 'POST'
+        });
 
     });
     btnWithdraw.addEventListener('click', () => {
@@ -146,7 +148,9 @@ function bindListeners() {
             lblBalanceAmount.innerText = data.balance;
             machineState.balance = data.balance;
             btnSpin.disabled = machineState.betAmount > machineState.balance;
-        }, '/api/withdraw/' + value, {});
+        }, '/api/withdraw/' + value, {
+            method: 'POST'
+        });
     });
     btnSpin.addEventListener('click', () => {
         spin();
