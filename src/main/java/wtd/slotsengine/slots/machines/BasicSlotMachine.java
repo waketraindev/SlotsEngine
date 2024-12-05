@@ -3,7 +3,7 @@ package wtd.slotsengine.slots.machines;
 import wtd.slotsengine.slots.exceptions.SlotUserException;
 import wtd.slotsengine.slots.machines.abstracts.AbstractSlotMachine;
 import wtd.slotsengine.slots.machines.abstracts.SpinResult;
-import wtd.slotsengine.slots.machines.abstracts.VirtualReel;
+import wtd.slotsengine.slots.machines.reels.VirtualReel;
 import wtd.slotsengine.utils.SlotConstants;
 
 final public class BasicSlotMachine extends AbstractSlotMachine {

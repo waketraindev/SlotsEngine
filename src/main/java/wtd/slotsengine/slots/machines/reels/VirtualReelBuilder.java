@@ -1,4 +1,4 @@
-package wtd.slotsengine.slots.machines.abstracts;
+package wtd.slotsengine.slots.machines.reels;
 
 import java.util.ArrayList;
 import java.util.Collections;
