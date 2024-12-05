@@ -9,8 +9,8 @@ import java.util.List;
 public class VirtualReel {
     private final List<Byte> data;
 
-    public VirtualReel(String dataString) {
-        data = VirtualReel.parseElementsFromString(dataString, true);
+    public VirtualReel(List<Byte> symbolList) {
+        data = symbolList;
     }
 
     public Integer get(int position) {
@@ -22,16 +22,16 @@ public class VirtualReel {
     }
 
     static public VirtualReel loadFromString(String dataString) {
-        return new VirtualReel(dataString);
+        return new VirtualReel(parseElementsFromString(dataString));
     }
 
-    static private List<Byte> parseElementsFromString(String dataString, boolean doShuffle) {
+    static private List<Byte> parseElementsFromString(String dataString) {
         ArrayList<Byte> aList = new ArrayList<>();
         byte[] reelBytes = SlotUtils.decodeGzipBase64(dataString);
         for (byte reelByte : reelBytes) {
             aList.add(reelByte);
         }
-        if (doShuffle) Collections.shuffle(aList);
+        Collections.shuffle(aList);
         return Collections.unmodifiableList(aList);
     }
 
