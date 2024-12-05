@@ -9,10 +9,12 @@ import wtd.slotsengine.utils.SlotConstants;
 final public class BasicSlotMachine extends AbstractSlotMachine {
     private final VirtualReel reel;
     private int counter;
+    private Double cachedRtp = 0.0;
 
     public BasicSlotMachine() {
         super();
         reel = VirtualReel.loadFromString(SlotConstants.DEMO_MACHINE);
+        cachedRtp = calculateRTP();
     }
 
     @Override
@@ -20,6 +22,11 @@ final public class BasicSlotMachine extends AbstractSlotMachine {
         final int res = reel.get(counter++);
         final long winAmount = calculatePayout(betAmount, res);
         return new SpinResult(betAmount, winAmount, res);
+    }
+
+    @Override
+    public double getMachineRtp() {
+        return cachedRtp;
     }
 
     private long calculatePayout(final long betAmount, final int symbol) {

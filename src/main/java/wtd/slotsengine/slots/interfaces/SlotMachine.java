@@ -12,4 +12,6 @@ public interface SlotMachine {
     long withdraw(long amount) throws InsufficientFundsException;
 
     long getBalance();
+
+    double getMachineRtp();
 }
