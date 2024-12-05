@@ -96,7 +96,7 @@ public class ApiController {
      * @return a {@link BalanceMessage} object containing the updated balance after the deposit.
      * @throws ResponseStatusException with HTTP status 400 if the specified amount is negative.
      */
-    @RequestMapping(value = "/api/deposit/{amount}")
+    @PostMapping(value = "/api/deposit/{amount}")
     public BalanceMessage deposit(@PathVariable("amount") Long amount) {
         if (amount < 0) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(400), "Only positive numbers are allowed.");
@@ -112,7 +112,7 @@ public class ApiController {
      * @return a {@link BalanceMessage} object containing the updated balance after the withdrawal.
      * @throws ResponseStatusException with HTTP status 400 if there are insufficient funds to perform the withdrawal.
      */
-    @RequestMapping("/api/withdraw/{amount}")
+    @PostMapping("/api/withdraw/{amount}")
     public BalanceMessage withdraw(@PathVariable("amount") Long amount) {
         log.info("Withdraw request received: {}", amount);
         try {
