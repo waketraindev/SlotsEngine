@@ -51,7 +51,8 @@ public class RecordStats {
                 String line = scanner.nextLine();
                 String[] cols = line.split(",");
                 betStats.accept(Long.parseLong(cols[1]));
-                winStats.accept(Long.parseLong(cols[2]));
+                if (Long.parseLong(cols[2]) > 0)
+                    winStats.accept(Long.parseLong(cols[2]));
             }
             writeStream = new PrintWriter(csvResultsFile);
         } catch (FileNotFoundException e) {
@@ -87,7 +88,8 @@ public class RecordStats {
                 writeStream.flush();
 
                 betStats.accept(bet.betAmount());
-                winStats.accept(bet.winAmount());
+                if (bet.winAmount() > 0)
+                    winStats.accept(bet.winAmount());
 
                 writeLock.unlock();
             }
