@@ -77,7 +77,6 @@ public class SimpleReelGenerator {
         final int rand3 = random.nextInt(rand4, 64);
         final int rand2 = random.nextInt(rand3, 64);
         final int rand1 = random.nextInt(rand2, 64);
-        rb.addSymbol(0, 1);
         rb.addSymbol(1, rand1);
         rb.addSymbol(2, rand2);
         rb.addSymbol(3, rand3);
