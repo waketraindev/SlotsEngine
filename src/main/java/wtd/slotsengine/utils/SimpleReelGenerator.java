@@ -12,13 +12,14 @@ public class SimpleReelGenerator {
     private final int historySize;
     private final double[] history;
     private double bestRtp = 0.0;
+    private VirtualReel bestReel;
 
     private static class ReelCandidate {
         private final VirtualReelBuilder rb;
         private final Double rtp;
 
         private ReelCandidate(VirtualReelBuilder rb,
-                             double rtp) {
+                              double rtp) {
             this.rb = rb;
             this.rtp = rtp;
         }
@@ -36,6 +37,10 @@ public class SimpleReelGenerator {
         gen.run(new RunCountCondition(100_000));
     }
 
+    public VirtualReel getBestReel() {
+        return this.bestReel;
+    }
+
     /**
      * Executes the reel generation process until a stopping condition is met.
      * The method generates potential candidate reels, calculates their Return to Player (RTP),
@@ -46,12 +51,12 @@ public class SimpleReelGenerator {
      */
     public void run(GenStopCondition stopCondition) {
         for (int runCount = 0; stopCondition.apply(runCount); runCount++) {
-            ReelCandidate candidateReel = generateReel();
+            final ReelCandidate candidateReel = generateReel();
             double rtp = candidateReel.rtp;
             int index = runCount % historySize;
             if (rtp >= history[index] && rtp < maxRtp) {
-                if (rtp > bestRtp) {
-                    VirtualReel bestReel = candidateReel.rb.sort().build();
+                if (rtp >= bestRtp && runCount > 1024) {
+                    bestReel = candidateReel.rb.sort().build();
                     bestRtp = rtp;
                     System.out.println("Best RTP: " + bestRtp + ": " + bestReel.toString() + " Size: " + bestReel.size());
                 }
@@ -61,17 +66,17 @@ public class SimpleReelGenerator {
     }
 
     private ReelCandidate generateReel() {
-        VirtualReelBuilder rb = new VirtualReelBuilder();
-        int rand10 = random.nextInt(1, 2);
-        int rand9 = random.nextInt(rand10, 64);
-        int rand8 = random.nextInt(rand9, 64);
-        int rand7 = random.nextInt(rand8, 64);
-        int rand6 = random.nextInt(rand7, 64);
-        int rand5 = random.nextInt(rand6, 64);
-        int rand4 = random.nextInt(rand5, 64);
-        int rand3 = random.nextInt(rand4, 64);
-        int rand2 = random.nextInt(rand3, 64);
-        int rand1 = random.nextInt(rand2, 64);
+        final VirtualReelBuilder rb = new VirtualReelBuilder();
+        final int rand10 = random.nextInt(1, 2);
+        final int rand9 = random.nextInt(rand10, 64);
+        final int rand8 = random.nextInt(rand9, 64);
+        final int rand7 = random.nextInt(rand8, 64);
+        final int rand6 = random.nextInt(rand7, 64);
+        final int rand5 = random.nextInt(rand6, 64);
+        final int rand4 = random.nextInt(rand5, 64);
+        final int rand3 = random.nextInt(rand4, 64);
+        final int rand2 = random.nextInt(rand3, 64);
+        final int rand1 = random.nextInt(rand2, 64);
         rb.addSymbol(0, 1);
         rb.addSymbol(1, rand1);
         rb.addSymbol(2, rand2);
