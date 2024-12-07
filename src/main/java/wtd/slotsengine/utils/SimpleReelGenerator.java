@@ -18,8 +18,7 @@ public class SimpleReelGenerator {
         private final VirtualReelBuilder rb;
         private final Double rtp;
 
-        private ReelCandidate(VirtualReelBuilder rb,
-                              double rtp) {
+        private ReelCandidate(VirtualReelBuilder rb, double rtp) {
             this.rb = rb;
             this.rtp = rtp;
         }
@@ -55,7 +54,7 @@ public class SimpleReelGenerator {
             double rtp = candidateReel.rtp;
             int index = runCount % historySize;
             if (rtp >= history[index] && rtp < maxRtp) {
-                if (rtp >= bestRtp && runCount > historySize) {
+                if (runCount > historySize && rtp > bestRtp) {
                     bestReel = candidateReel.rb.sort().build();
                     bestRtp = rtp;
                     System.out.println("Best RTP: " + bestRtp + ": " + bestReel.toString() + " Size: " + bestReel.size());
@@ -67,7 +66,7 @@ public class SimpleReelGenerator {
 
     private ReelCandidate generateReel() {
         final VirtualReelBuilder rb = new VirtualReelBuilder();
-        final int rand10 = random.nextInt(1, 2);
+        final int rand10 = 1;
         final int rand9 = random.nextInt(rand10, 64);
         final int rand8 = random.nextInt(rand9, 64);
         final int rand7 = random.nextInt(rand8, 64);
@@ -88,8 +87,7 @@ public class SimpleReelGenerator {
         rb.addSymbol(9, rand9);
         rb.addSymbol(10, rand10);
         double rtp;
-        while ((rtp = BasicSlotMachine.calculateRTP(rb)) >= maxRtp)
-            rb.addSymbol(0, 1);
+        while ((rtp = BasicSlotMachine.calculateRTP(rb)) >= maxRtp) rb.addSymbol(0, 1);
         return new ReelCandidate(rb, rtp);
     }
 }
