@@ -88,7 +88,7 @@ public class SimpleReelGenerator {
         rb.addSymbol(8, rand8);
         rb.addSymbol(9, rand9);
         rb.addSymbol(10, rand10);
-        double rtp = Double.MAX_VALUE;
+        double rtp;
         while ((rtp = BasicSlotMachine.calculateRTP(rb)) >= maxRtp)
             rb.addSymbol(0, 1);
         return new ReelCandidate(rb, rtp);
