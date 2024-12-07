@@ -53,8 +53,8 @@ public class SimpleReelGenerator {
             final ReelCandidate candidateReel = generateReel();
             double rtp = candidateReel.rtp;
             int index = runCount % historySize;
-            if (rtp >= history[index] && rtp < maxRtp) {
-                if (runCount > historySize && rtp > bestRtp) {
+            if (rtp >= history[index]) {
+                if (rtp > bestRtp) {
                     bestReel = candidateReel.rb.sort().build();
                     bestRtp = rtp;
                     System.out.println("Best RTP: " + bestRtp + ": " + bestReel.toString() + " Size: " + bestReel.size());
