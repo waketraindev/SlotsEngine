@@ -66,7 +66,7 @@ public class SimpleReelGenerator {
 
     private ReelCandidate generateReel() {
         final VirtualReelBuilder rb = new VirtualReelBuilder();
-        final int rand10 = 1;
+        final int rand10 = random.nextInt(1, 8);
         final int rand9 = random.nextInt(rand10, 64);
         final int rand8 = random.nextInt(rand9, 64);
         final int rand7 = random.nextInt(rand8, 64);
