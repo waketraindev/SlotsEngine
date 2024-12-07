@@ -13,6 +13,17 @@ public class SimpleReelGenerator {
     private final double[] history;
     private double bestRtp = 0.0;
 
+    private static class ReelCandidate {
+        private final VirtualReelBuilder rb;
+        private final Double rtp;
+
+        private ReelCandidate(VirtualReelBuilder rb,
+                             double rtp) {
+            this.rb = rb;
+            this.rtp = rtp;
+        }
+    }
+
     public SimpleReelGenerator(double maxRtp) {
         this.maxRtp = maxRtp;
         this.historySize = 512;
@@ -46,17 +57,6 @@ public class SimpleReelGenerator {
                 }
                 history[index] = rtp;
             }
-        }
-    }
-
-    static class ReelCandidate {
-        protected final VirtualReelBuilder rb;
-        protected final Double rtp;
-
-        public ReelCandidate(VirtualReelBuilder rb,
-                             double rtp) {
-            this.rb = rb;
-            this.rtp = rtp;
         }
     }
 
