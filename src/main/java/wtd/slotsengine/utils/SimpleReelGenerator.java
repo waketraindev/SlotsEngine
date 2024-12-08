@@ -5,6 +5,7 @@ import wtd.slotsengine.slots.machines.reels.VirtualReel;
 import wtd.slotsengine.slots.machines.reels.VirtualReelBuilder;
 
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class SimpleReelGenerator {
     private static final Random random = new Random();
@@ -15,13 +16,8 @@ public class SimpleReelGenerator {
     private VirtualReel bestReel;
 
     private static class ReelCandidate {
-        private final VirtualReelBuilder rb;
-        private final Double rtp;
-
-        private ReelCandidate(VirtualReelBuilder rb, double rtp) {
-            this.rb = rb;
-            this.rtp = rtp;
-        }
+        public static VirtualReelBuilder rb;
+        public static double rtp;
     }
 
     public SimpleReelGenerator(double maxRtp) {
@@ -33,30 +29,22 @@ public class SimpleReelGenerator {
     public static void main(String[] args) {
         double maxRtp = 0.98;
         SimpleReelGenerator gen = new SimpleReelGenerator(maxRtp);
-        gen.run(new RunCountCondition(100_000));
+        gen.run(new TimeStopCondition(2, TimeUnit.MINUTES));
     }
 
     public VirtualReel getBestReel() {
         return this.bestReel;
     }
 
-    /**
-     * Executes the reel generation process until a stopping condition is met.
-     * The method generates potential candidate reels, calculates their Return to Player (RTP),
-     * and keeps track of the best reel generated based on its RTP.
-     *
-     * @param stopCondition the condition that determines when the reel generation process should stop.
-     *                      This is typically implemented to stop after a certain number of iterations or when a specific condition is fulfilled.
-     */
     public void run(GenStopCondition stopCondition) {
         for (int runCount = 0; stopCondition.apply(runCount); runCount++) {
-            final ReelCandidate candidateReel = generateReel();
-            double rtp = candidateReel.rtp;
+            generateReel();
+            double rtp = ReelCandidate.rtp;
             int index = runCount % historySize;
             if (rtp >= history[index]) {
                 if (rtp >= bestRtp) {
-                    bestReel = candidateReel.rb.sort().build();
-                    System.out.printf("Best RTP: %.8f: %s Size: %d Improvement:%.8f%n", rtp, bestReel.toString(), bestReel.size(), (rtp - bestRtp));
+                    bestReel = ReelCandidate.rb.sort().build();
+                    System.out.printf("Best RTP: %.8f: %s Size: %d%n", rtp, bestReel.toString(), bestReel.size());
                     bestRtp = rtp;
                 }
                 history[index] = rtp;
@@ -64,18 +52,18 @@ public class SimpleReelGenerator {
         }
     }
 
-    private ReelCandidate generateReel() {
+    private void generateReel() {
         final VirtualReelBuilder rb = new VirtualReelBuilder();
-        final int rand10 = random.nextInt(1, 8);
-        final int rand9 = random.nextInt(rand10, 64);
-        final int rand8 = random.nextInt(rand9, 64);
-        final int rand7 = random.nextInt(rand8, 64);
-        final int rand6 = random.nextInt(rand7, 64);
-        final int rand5 = random.nextInt(rand6, 64);
-        final int rand4 = random.nextInt(rand5, 64);
-        final int rand3 = random.nextInt(rand4, 64);
-        final int rand2 = random.nextInt(rand3, 64);
-        final int rand1 = random.nextInt(rand2, 64);
+        final int rand10 = 1;
+        final int rand9 = random.nextInt(rand10, 512);
+        final int rand8 = random.nextInt(rand9, 512);
+        final int rand7 = random.nextInt(rand8, 512);
+        final int rand6 = random.nextInt(rand7, 512);
+        final int rand5 = random.nextInt(rand6, 512);
+        final int rand4 = random.nextInt(rand5, 512);
+        final int rand3 = random.nextInt(rand4, 512);
+        final int rand2 = random.nextInt(rand3, 512);
+        final int rand1 = random.nextInt(rand2, 512);
         rb.addSymbol(1, rand1);
         rb.addSymbol(2, rand2);
         rb.addSymbol(3, rand3);
@@ -86,8 +74,21 @@ public class SimpleReelGenerator {
         rb.addSymbol(8, rand8);
         rb.addSymbol(9, rand9);
         rb.addSymbol(10, rand10);
-        double rtp;
-        while ((rtp = BasicSlotMachine.calculateRTP(rb)) >= maxRtp) rb.addSymbol(0, 1);
-        return new ReelCandidate(rb, rtp);
+        long cost = 0L;
+        long winAmount = 0L;
+        for (int i = 0; i < rb.size(); i++) {
+            winAmount += BasicSlotMachine.calculatePayout(1, rb.get(i));
+            cost += 1;
+        }
+        double rtp = winAmount / (double) cost;
+        if (rtp > maxRtp) {
+            while (rtp > maxRtp) {
+                rb.addSymbol(0, 1);
+                cost += 1;
+                rtp = winAmount / (double) cost;
+            }
+        }
+        ReelCandidate.rtp = rtp;
+        ReelCandidate.rb = rb;
     }
 }
