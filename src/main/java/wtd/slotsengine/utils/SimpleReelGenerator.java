@@ -72,7 +72,7 @@ public class SimpleReelGenerator {
             cost += 1;
         }
         double rtp = (double) winAmount / cost;
-        if (rtp > maxRtp) while (rtp > maxRtp) {
+        while (rtp > maxRtp) {
             rb.addSymbol(0, 1);
             cost += 1;
             rtp = (double) winAmount / cost;
