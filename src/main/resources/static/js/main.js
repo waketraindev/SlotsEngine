@@ -134,20 +134,6 @@ function spin() {
     }, 47);
 }
 
-document.addEventListener('keydown', (e) => {
-    switch (e.key) {
-        case 's':
-            btnSpin.click();
-            break;
-        case 'a':
-            btnIncBet.click();
-            break;
-        case 'd':
-            btnDecBet.click();
-            break;
-    }
-});
-
 function calcBetValues() {
     let tb = document.getElementById('payoutTable');
     let body = tb.getElementsByTagName("tbody")[0];
@@ -200,9 +186,22 @@ function bindListeners() {
         calcBetValues();
         btnSpin.disabled = !(machineState.balance > machineState.betAmount);
     });
+
+    document.addEventListener('keydown', (e) => {
+        switch (e.key) {
+            case 's':
+                btnSpin.click();
+                break;
+            case 'a':
+                btnIncBet.click();
+                break;
+            case 'd':
+                btnDecBet.click();
+                break;
+        }
+    });
 }
 
 (function () {
-// Display UI after loading
-    initApp()
+    window.onload = initApp;
 })();
