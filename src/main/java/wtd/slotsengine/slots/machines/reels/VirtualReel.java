@@ -1,5 +1,6 @@
 package wtd.slotsengine.slots.machines.reels;
 
+import wtd.slotsengine.utils.SlotConstants;
 import wtd.slotsengine.utils.SlotUtils;
 
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public class VirtualReel implements IReel {
         for (byte reelByte : reelBytes) {
             aList.add(reelByte);
         }
-        Collections.shuffle(aList);
+        Collections.shuffle(aList, SlotConstants.RANDOM);
         return aList;
     }
 
