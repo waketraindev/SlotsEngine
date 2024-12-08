@@ -26,7 +26,7 @@ public class SimpleReelGenerator {
 
     public SimpleReelGenerator(double maxRtp) {
         this.maxRtp = maxRtp;
-        this.historySize = 512;
+        this.historySize = 1024;
         this.history = new double[historySize];
     }
 
