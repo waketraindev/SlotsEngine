@@ -7,7 +7,7 @@ public class VirtualReelBuilder implements IReel {
     private final ArrayList<Byte> newList;
 
     public VirtualReelBuilder() {
-        this.newList = new ArrayList<>();
+        this.newList = new ArrayList<>(4096);
     }
 
     public static VirtualReelBuilder builder() {
