@@ -36,7 +36,7 @@ public class SimpleReelGenerator {
                 if (candidateRtp > bestRtp) {
                     VirtualReel bestReel = candidateReel.sort().build();
                     bestRtp = candidateRtp;
-                    System.out.printf("Best RTP:\t%.8f:\t/\tSize:\t%d\t/\t%s%n", bestRtp, bestReel.size(), bestReel.toString());
+                    System.out.printf("Best RTP:\t%.8f:\t/\tSize:\t%d\t/\t%s%n", bestRtp, bestReel.size(), bestReel);
                 }
                 history[index] = bestRtp;
             }
@@ -72,12 +72,10 @@ public class SimpleReelGenerator {
             cost += 1;
         }
         double rtp = (double) winAmount / cost;
-        if (rtp > maxRtp) {
-            while (rtp > maxRtp) {
-                rb.addSymbol(0, 1);
-                cost += 1;
-                rtp = (double) winAmount / cost;
-            }
+        if (rtp > maxRtp) while (rtp > maxRtp) {
+            rb.addSymbol(0, 1);
+            cost += 1;
+            rtp = (double) winAmount / cost;
         }
         candidateRtp = rtp;
         candidateReel = rb;
