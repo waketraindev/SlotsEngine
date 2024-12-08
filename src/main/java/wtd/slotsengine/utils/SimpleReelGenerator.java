@@ -54,10 +54,10 @@ public class SimpleReelGenerator {
             double rtp = candidateReel.rtp;
             int index = runCount % historySize;
             if (rtp >= history[index]) {
-                if (rtp > bestRtp) {
+                if (rtp >= bestRtp) {
                     bestReel = candidateReel.rb.sort().build();
+                    System.out.printf("Best RTP: %.8f: %s Size: %d Improvement:%.8f%n", rtp, bestReel.toString(), bestReel.size(), (rtp - bestRtp));
                     bestRtp = rtp;
-                    System.out.printf("Best RTP: %s: %s Size: %d%n", bestRtp, bestReel.toString(), bestReel.size());
                 }
                 history[index] = rtp;
             }
