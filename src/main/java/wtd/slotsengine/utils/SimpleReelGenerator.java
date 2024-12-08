@@ -20,7 +20,7 @@ public class SimpleReelGenerator {
 
     public SimpleReelGenerator(double maxRtp) {
         this.maxRtp = maxRtp;
-        this.historySize = 2048;
+        this.historySize = 1024;
         this.history = new double[historySize];
     }
 
@@ -35,21 +35,15 @@ public class SimpleReelGenerator {
             generateReel();
             int index = runCount % historySize;
             if (candidateRtp >= history[index]) {
-                if (candidateRtp >= bestRtp) {
-                    VirtualReel newReel = candidateReel.sort().build();
-                    if (bestReel == null || candidateRtp > bestRtp || newReel.size() < bestReel.size()) {
-                        bestRtp = candidateRtp;
-                        bestReel = newReel;
-                        System.out.printf("Best RTP:\t%.8f:\t/\tSize:\t%d\t/\t%s%n", bestRtp, bestReel.size(), bestReel);
-                    }
+                VirtualReel newReel = candidateReel.sort().build();
+                if (bestReel == null || candidateRtp > bestRtp || newReel.size() < bestReel.size()) {
+                    bestRtp = candidateRtp;
+                    bestReel = newReel;
+                    System.out.printf("Best RTP:\t%.8f:\t/\tSize:\t%d\t/\t%s%n", bestRtp, bestReel.size(), bestReel);
                 }
+                history[index] = candidateRtp;
             }
-            history[index] = bestRtp;
         }
-    }
-
-    private int boundRand(int lo) {
-        return random.nextInt(lo+1, BOUND + lo);
     }
 
     private void generateReel() {
@@ -88,5 +82,9 @@ public class SimpleReelGenerator {
         }
         candidateRtp = rtp;
         candidateReel = rb;
+    }
+
+    private int boundRand(int lo) {
+        return random.nextInt(lo + 1, BOUND + lo);
     }
 }
