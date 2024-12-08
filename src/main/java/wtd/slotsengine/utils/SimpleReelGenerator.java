@@ -13,12 +13,8 @@ public class SimpleReelGenerator {
     private final int historySize;
     private final double[] history;
     private double bestRtp = 0.0;
-    private VirtualReel bestReel;
-
-    private static class ReelCandidate {
-        public static VirtualReelBuilder rb;
-        public static double rtp;
-    }
+    private double candidateRtp;
+    private VirtualReelBuilder candidateReel;
 
     public SimpleReelGenerator(double maxRtp) {
         this.maxRtp = maxRtp;
@@ -32,29 +28,24 @@ public class SimpleReelGenerator {
         gen.run(new TimeStopCondition(2, TimeUnit.MINUTES));
     }
 
-    public VirtualReel getBestReel() {
-        return this.bestReel;
-    }
-
     public void run(GenStopCondition stopCondition) {
         for (int runCount = 0; stopCondition.apply(runCount); runCount++) {
             generateReel();
-            double rtp = ReelCandidate.rtp;
             int index = runCount % historySize;
-            if (rtp >= history[index]) {
-                if (rtp >= bestRtp) {
-                    bestReel = ReelCandidate.rb.sort().build();
-                    System.out.printf("Best RTP: %.8f: %s Size: %d%n", rtp, bestReel.toString(), bestReel.size());
-                    bestRtp = rtp;
+            if (candidateRtp >= history[index]) {
+                if (candidateRtp > bestRtp) {
+                    VirtualReel bestReel = candidateReel.sort().build();
+                    bestRtp = candidateRtp;
+                    System.out.printf("Best RTP:\t%.8f:\t/\tSize:\t%d\t/\t%s%n", bestRtp, bestReel.size(), bestReel.toString());
                 }
-                history[index] = rtp;
+                history[index] = bestRtp;
             }
         }
     }
 
     private void generateReel() {
         final VirtualReelBuilder rb = new VirtualReelBuilder();
-        final int rand10 = 1;
+        final int rand10 = random.nextInt(1, 512);
         final int rand9 = random.nextInt(rand10, 512);
         final int rand8 = random.nextInt(rand9, 512);
         final int rand7 = random.nextInt(rand8, 512);
@@ -80,15 +71,15 @@ public class SimpleReelGenerator {
             winAmount += BasicSlotMachine.calculatePayout(1, rb.get(i));
             cost += 1;
         }
-        double rtp = winAmount / (double) cost;
+        double rtp = (double) winAmount / cost;
         if (rtp > maxRtp) {
             while (rtp > maxRtp) {
                 rb.addSymbol(0, 1);
                 cost += 1;
-                rtp = winAmount / (double) cost;
+                rtp = (double) winAmount / cost;
             }
         }
-        ReelCandidate.rtp = rtp;
-        ReelCandidate.rb = rb;
+        candidateRtp = rtp;
+        candidateReel = rb;
     }
 }
