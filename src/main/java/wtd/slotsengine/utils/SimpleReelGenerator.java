@@ -15,6 +15,7 @@ public class SimpleReelGenerator {
     private double bestRtp = 0.0;
     private double candidateRtp;
     private VirtualReelBuilder candidateReel;
+    private VirtualReel bestReel;
 
     public SimpleReelGenerator(double maxRtp) {
         this.maxRtp = maxRtp;
@@ -23,7 +24,7 @@ public class SimpleReelGenerator {
     }
 
     public static void main(String[] args) {
-        double maxRtp = 0.98;
+        double maxRtp = 0.9875;
         SimpleReelGenerator gen = new SimpleReelGenerator(maxRtp);
         gen.run(new TimeStopCondition(2, TimeUnit.MINUTES));
     }
@@ -33,13 +34,16 @@ public class SimpleReelGenerator {
             generateReel();
             int index = runCount % historySize;
             if (candidateRtp >= history[index]) {
-                if (candidateRtp > bestRtp) {
-                    VirtualReel bestReel = candidateReel.sort().build();
-                    bestRtp = candidateRtp;
-                    System.out.printf("Best RTP:\t%.8f:\t/\tSize:\t%d\t/\t%s%n", bestRtp, bestReel.size(), bestReel);
+                if (candidateRtp >= bestRtp) {
+                    VirtualReel newReel = candidateReel.sort().build();
+                    if (bestReel == null || candidateRtp > bestRtp || newReel.size() < bestReel.size()) {
+                        bestRtp = candidateRtp;
+                        bestReel = newReel;
+                        System.out.printf("Best RTP:\t%.8f:\t/\tSize:\t%d\t/\t%s%n", bestRtp, bestReel.size(), bestReel);
+                    }
                 }
-                history[index] = bestRtp;
             }
+            history[index] = bestRtp;
         }
     }
 
