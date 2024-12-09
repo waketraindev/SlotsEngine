@@ -89,7 +89,23 @@ public class SimpleReelGenerator {
     private int flipIndex;
 
     private void addSymbol(int[] reel, int sym, int count) {
-        Arrays.fill(reel, flipIndex, flipIndex + count, sym);
+        int pos = flipIndex;
+        final int end = flipIndex + count, batch = 12;
+        for (; pos + batch < end; pos += batch) {
+            reel[pos] = sym;
+            reel[pos + 1] = sym;
+            reel[pos + 2] = sym;
+            reel[pos + 3] = sym;
+            reel[pos + 4] = sym;
+            reel[pos + 5] = sym;
+            reel[pos + 6] = sym;
+            reel[pos + 7] = sym;
+            reel[pos + 8] = sym;
+            reel[pos + 9] = sym;
+            reel[pos + 10] = sym;
+            reel[pos + 11] = sym;
+        }
+        for (; pos < end; pos++) reel[pos] = sym;
         flipIndex += count;
     }
 
