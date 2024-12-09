@@ -72,6 +72,6 @@ public class BasicSlotMachineTest {
         double rtp = sm.calculateRTP();
 
         // Assuming the expected RTP based on the demo machine setup
-        assertEquals(0.9799932180400136, rtp, "Calculated RTP is correct.");
+        assertEquals(0.98, rtp, "Calculated RTP is correct.");
     }
 }
