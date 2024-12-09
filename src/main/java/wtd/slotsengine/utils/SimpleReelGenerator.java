@@ -46,18 +46,10 @@ public class SimpleReelGenerator {
 
     private PResult generateReel() {
         flipIndex = 0;
-        final int rand10 = random.nextInt(1, BOUND);
-        final int rand9 = boundRand(rand10);
-        final int rand8 = boundRand(rand9);
-        final int rand7 = boundRand(rand8);
-        final int rand6 = boundRand(rand7);
-        final int rand5 = boundRand(rand6);
-        final int rand4 = boundRand(rand5);
-        final int rand3 = boundRand(rand4);
-        final int rand2 = boundRand(rand3);
-        final int rand1 = boundRand(rand2);
-        final int total = rand1 + rand2 + rand3 + rand4 + rand5 + rand6 + rand7 + rand8 + rand9 + rand10;
-        final int[] reel = new int[total];
+        final int rand10 = random.nextInt(1, BOUND), rand9 = boundRand(rand10), rand8 = boundRand(rand9), rand7 =
+                boundRand(rand8), rand6 = boundRand(rand7), rand5 = boundRand(rand6), rand4 = boundRand(rand5), rand3 =
+                boundRand(rand4), rand2 = boundRand(rand3), rand1 = boundRand(rand2);
+        final int[] reel = new int[rand1 + rand2 + rand3 + rand4 + rand5 + rand6 + rand7 + rand8 + rand9 + rand10];
         addSymbol(reel, 1, rand1);
         addSymbol(reel, 2, rand2);
         addSymbol(reel, 3, rand3);
@@ -68,17 +60,16 @@ public class SimpleReelGenerator {
         addSymbol(reel, 8, rand8);
         addSymbol(reel, 9, rand9);
         addSymbol(reel, 10, rand10);
-        long cost = 0L;
-        long winAmount = 0L;
-        for (int i = 0; i < total; i++) {
-            winAmount += BasicSlotMachine.calculatePayout(1, reel[i]);
-            cost += 1;
+        long cost = 0L, winAmount = 0L;
+        for (int j : reel) {
+            winAmount += BasicSlotMachine.calculatePayout(1, j);
+            cost++;
         }
         double rtp = (double) winAmount / cost;
         int zeros = 0;
         while (rtp > maxRtp) {
             zeros++;
-            cost += 1;
+            cost++;
             rtp = (double) winAmount / cost;
         }
         final int[] finalReel = new int[zeros + reel.length];
@@ -89,24 +80,22 @@ public class SimpleReelGenerator {
     private int flipIndex;
 
     private void addSymbol(int[] reel, int sym, int count) {
-        int pos = flipIndex;
         final int end = flipIndex + count, batch = 12;
-        for (; pos + batch < end; pos += batch) {
-            reel[pos] = sym;
-            reel[pos + 1] = sym;
-            reel[pos + 2] = sym;
-            reel[pos + 3] = sym;
-            reel[pos + 4] = sym;
-            reel[pos + 5] = sym;
-            reel[pos + 6] = sym;
-            reel[pos + 7] = sym;
-            reel[pos + 8] = sym;
-            reel[pos + 9] = sym;
-            reel[pos + 10] = sym;
-            reel[pos + 11] = sym;
+        for (; flipIndex + batch < end; flipIndex += batch) {
+            reel[flipIndex] = sym;
+            reel[flipIndex + 1] = sym;
+            reel[flipIndex + 2] = sym;
+            reel[flipIndex + 3] = sym;
+            reel[flipIndex + 4] = sym;
+            reel[flipIndex + 5] = sym;
+            reel[flipIndex + 6] = sym;
+            reel[flipIndex + 7] = sym;
+            reel[flipIndex + 8] = sym;
+            reel[flipIndex + 9] = sym;
+            reel[flipIndex + 10] = sym;
+            reel[flipIndex + 11] = sym;
         }
-        for (; pos < end; pos++) reel[pos] = sym;
-        flipIndex += count;
+        for (; flipIndex < end; flipIndex++) reel[flipIndex] = sym;
     }
 
     private int boundRand(int lo) {
