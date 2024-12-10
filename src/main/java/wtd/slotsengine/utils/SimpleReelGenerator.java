@@ -2,12 +2,10 @@ package wtd.slotsengine.utils;
 
 import wtd.slotsengine.slots.machines.reels.VirtualReel;
 
-import java.util.Random;
 import java.util.concurrent.*;
 
 public class SimpleReelGenerator {
     private final int BOUND = 256;
-    private final Random random = new Random();
     private final double maxRtp;
     private final int historySize;
     private final double[] history;
@@ -58,7 +56,7 @@ public class SimpleReelGenerator {
     }
 
     private PResult generateReel() {
-        final int rand10 = random.nextInt(1, BOUND), rand9 = boundRand(rand10), rand8 = boundRand(rand9), rand7 =
+        final int rand10 = boundRand(0), rand9 = boundRand(rand10), rand8 = boundRand(rand9), rand7 =
                 boundRand(rand8), rand6 = boundRand(rand7), rand5 = boundRand(rand6), rand4 = boundRand(rand5), rand3 =
                 boundRand(rand4), rand2 = boundRand(rand3), rand1 = boundRand(rand2);
         final byte[] reel = new byte[rand1 + rand2 + rand3 + rand4 + rand5 + rand6 + rand7 + rand8 + rand9 + rand10];
@@ -92,6 +90,7 @@ public class SimpleReelGenerator {
 
 
     private int boundRand(int lo) {
+        final ThreadLocalRandom random = ThreadLocalRandom.current();
         return random.nextInt(lo + 1, BOUND + lo);
     }
 
