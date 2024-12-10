@@ -29,9 +29,7 @@ public class SimpleReelGenerator {
         SimpleReelGenerator gen = new SimpleReelGenerator(maxRtp);
         try {
             gen.run(new TimeStopCondition(60, TimeUnit.MINUTES));
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
@@ -39,18 +37,18 @@ public class SimpleReelGenerator {
     public void run(GenStopCondition stopCondition) throws ExecutionException, InterruptedException {
         int runCount = 0;
         while (true) {
-            //PResult c = generateReel();
+            @SuppressWarnings("unchecked")
             Future<PResult>[] ret = new Future[historySize];
             for (int i = 0; i < ret.length; i++) {
                 ret[i] = exec.submit(this::generateReel);
             }
-            for (int i = 0; i < ret.length; i++) {
+            for (Future<PResult> future : ret) {
                 int index = runCount % historySize;
-                PResult c = ret[i].get();
+                PResult c = (PResult) future.get();
                 if (c.rtp >= history[index]) {
                     if (bestReel == null || c.rtp > bestRtp || c.rb.length < bestReel.size()) {
                         bestRtp = c.rtp;
-                        List<Byte> list = new ArrayList<Byte>(c.rb.length);
+                        List<Byte> list = new ArrayList<>(c.rb.length);
                         for (byte b : c.rb) list.add(b);
                         bestReel = new VirtualReel(list);
                         System.out.printf(

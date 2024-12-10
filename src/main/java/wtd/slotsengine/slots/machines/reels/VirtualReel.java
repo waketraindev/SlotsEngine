@@ -44,7 +44,7 @@ public class VirtualReel implements IReel {
         int len = data.size();
         byte[] result = new byte[len];
         for (int i = 0; i < len; i++) {
-            result[i] = data.get(i).byteValue();
+            result[i] = data.get(i);
         }
         return result;
     }
