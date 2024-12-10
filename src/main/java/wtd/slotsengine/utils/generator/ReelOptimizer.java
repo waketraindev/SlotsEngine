@@ -5,7 +5,7 @@ import wtd.slotsengine.slots.machines.reels.VirtualReel;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public final class ThreadedReelGenerator {
+public final class ReelOptimizer {
     private final ExecutorService workPool = Executors.newWorkStealingPool();
     private final double[] history;
     private final int historySize;
@@ -13,7 +13,7 @@ public final class ThreadedReelGenerator {
     private double bestRtp = 0.0;
     private VirtualReel bestReel;
 
-    public ThreadedReelGenerator(int historySize, double targetRtp) {
+    public ReelOptimizer(int historySize, double targetRtp) {
         this.historySize = historySize;
         this.history = new double[this.historySize];
         this.targetRtp = targetRtp;
