@@ -4,6 +4,7 @@ import wtd.slotsengine.slots.machines.reels.VirtualReel;
 
 import java.util.Random;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public final class SimpleReelGenerator {
     private final Random random = new Random();
@@ -32,30 +33,41 @@ public final class SimpleReelGenerator {
     }
 
     public void run(final GenStopCondition stopCondition) throws ExecutionException, InterruptedException {
-        int runCount = 0;
-        @SuppressWarnings("unchecked") Future<PResult>[] ret = new Future[historySize * 10];
-        while (stopCondition.apply(runCount)) {
-            for (int i = 0; i < ret.length; i++) {
-                ret[i] = exec.submit(this::generateReel);
-            }
-            for (Future<PResult> future : ret) {
-                int index = runCount % historySize;
-                PResult c = (PResult) future.get();
-                if (c.rtp >= history[index]) {
-                    if (bestReel == null || c.rtp > bestRtp || c.rb.length < bestReel.size()) {
-                        bestRtp = c.rtp;
-                        bestReel = new VirtualReel(c.rb);
-                        System.out.printf(
-                                "Best RTP:\t%.8f:\t/\tSize:\t%d\t/\t%s%n", bestRtp, bestReel.size(), bestReel);
-                    }
-                    history[index] = c.rtp;
+        final AtomicInteger runCount = new AtomicInteger(0);
+        ArrayBlockingQueue<Future<GeneratedResult>> blockQueue = new ArrayBlockingQueue<>(historySize * 1024);
+        Runnable generatingTask = () -> {
+            while (stopCondition.apply(runCount.get())) {
+                try {
+                    blockQueue.put(exec.submit(this::generateReel));
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                 }
-                runCount++;
             }
+        };
+
+        Thread generatingThread = new Thread(generatingTask);
+        generatingThread.start();
+
+        while (stopCondition.apply(runCount.get())) {
+            Future<GeneratedResult> future = blockQueue.take();
+            processFuture(future, runCount.getAndIncrement());
         }
     }
 
-    private PResult generateReel() {
+    private void processFuture(Future<GeneratedResult> future, int runCount) throws InterruptedException, ExecutionException {
+        int index = runCount % historySize;
+        GeneratedResult candidate = future.get();
+        if (candidate.rtp >= history[index]) {
+            if (bestReel == null || candidate.rtp > bestRtp || candidate.reelBytes.length < bestReel.size()) {
+                bestRtp = candidate.rtp;
+                bestReel = new VirtualReel(candidate.reelBytes);
+                System.out.printf("Best RTP:\t%.8f:\t/\tSize:\t%d\t/\t%s%n", bestRtp, bestReel.size(), bestReel);
+            }
+            history[index] = candidate.rtp;
+        }
+    }
+
+    private GeneratedResult generateReel() {
         final int rand10 = boundRand(0), rand9 = boundRand(rand10), rand8 = boundRand(rand9), rand7 = boundRand(rand8),
                 rand6 = boundRand(rand7), rand5 = boundRand(rand6), rand4 = boundRand(rand5), rand3 = boundRand(rand4),
                 rand2 = boundRand(rand3), rand1 = boundRand(rand2);
@@ -84,7 +96,7 @@ public final class SimpleReelGenerator {
         }
         final byte[] finalReel = new byte[zeros + reel.length];
         System.arraycopy(reel, 0, finalReel, zeros, reel.length);
-        return new PResult(rtp, finalReel);
+        return new GeneratedResult(rtp, finalReel);
     }
 
     private int boundRand(final int lo) {
@@ -95,7 +107,7 @@ public final class SimpleReelGenerator {
         return payoutTable[symbol];
     }
 
-    private record PResult(double rtp, byte[] rb) {
+    private record GeneratedResult(double rtp, byte[] reelBytes) {
     }
 
     private final static class BufferedSymbols {
