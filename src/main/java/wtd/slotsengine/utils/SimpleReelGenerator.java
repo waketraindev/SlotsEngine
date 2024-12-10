@@ -13,6 +13,8 @@ public class SimpleReelGenerator {
     private final double maxRtp;
     private final int historySize;
     private final double[] history;
+    ExecutorService exec = Executors.newWorkStealingPool();
+    long[] paytb = new long[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 100};
     private double bestRtp = 0.0;
     private VirtualReel bestReel;
 
@@ -21,9 +23,6 @@ public class SimpleReelGenerator {
         this.historySize = 1024;
         this.history = new double[historySize];
     }
-
-    ExecutorService exec = Executors.newWorkStealingPool();
-    long[] paytb = new long[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 100};
 
     public static void main(String[] args) {
         double maxRtp = 0.98;
@@ -109,7 +108,7 @@ public class SimpleReelGenerator {
     private record PResult(double rtp, byte[] rb) {
     }
 
-    class ITemp {
+    private static class ITemp {
         int flipIndex = 0;
 
         private void addSymbol(byte[] reel, byte sym, int count) {
