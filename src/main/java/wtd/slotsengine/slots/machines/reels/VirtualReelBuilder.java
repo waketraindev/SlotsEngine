@@ -3,6 +3,7 @@ package wtd.slotsengine.slots.machines.reels;
 import java.util.ArrayList;
 import java.util.Collections;
 
+@SuppressWarnings("unused")
 public class VirtualReelBuilder implements IReel {
     private final ArrayList<Byte> newList;
 
@@ -14,9 +15,9 @@ public class VirtualReelBuilder implements IReel {
         return new VirtualReelBuilder();
     }
 
-    public VirtualReelBuilder addSymbol(int symbol, int count) {
+    public VirtualReelBuilder addSymbol(Byte symbol, int count) {
         for (int i = 0; i < count; i++) {
-            newList.add((byte) symbol);
+            newList.add(symbol);
         }
         return this;
     }
