@@ -7,7 +7,7 @@ public class GeneratedReel {
     private static final int MAX_SYMBOLS = 256;
     private static final int BATCH_SIZE = 8;
     private static final Random random = new Random();
-    private final long[] payoutTable = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 100};
+    private static final long[] payoutTable = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 100};
     private final double maxRtp;
     private int index = 0;
 
