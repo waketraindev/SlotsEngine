@@ -1,4 +1,4 @@
-package wtd.slotsengine.utils;
+package wtd.slotsengine.utils.generator;
 
 public class RunCountCondition implements GenStopCondition {
 
