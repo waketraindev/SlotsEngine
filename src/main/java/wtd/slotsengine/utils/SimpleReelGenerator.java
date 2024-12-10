@@ -5,7 +5,7 @@ import wtd.slotsengine.slots.machines.reels.VirtualReel;
 import java.util.Random;
 import java.util.concurrent.*;
 
-public class SimpleReelGenerator {
+public final class SimpleReelGenerator {
     private final Random random = new Random();
     private final ExecutorService exec = Executors.newWorkStealingPool();
     private final double maxRtp;
@@ -98,7 +98,7 @@ public class SimpleReelGenerator {
     private record PResult(double rtp, byte[] rb) {
     }
 
-    private static class BufferedSymbols {
+    private final static class BufferedSymbols {
         private int index = 0;
 
         private void add(final byte[] reel, final byte sym, final int count) {
