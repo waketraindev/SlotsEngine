@@ -112,12 +112,16 @@ public class SimpleReelGenerator {
         int flipIndex = 0;
 
         private void addSymbol(byte[] reel, byte sym, int count) {
-            final int end = flipIndex + count, batch = 4;
+            final int end = flipIndex + count, batch = 8;
             for (; flipIndex + batch < end; flipIndex += batch) {
                 reel[flipIndex] = sym;
                 reel[flipIndex + 1] = sym;
                 reel[flipIndex + 2] = sym;
                 reel[flipIndex + 3] = sym;
+                reel[flipIndex + 4] = sym;
+                reel[flipIndex + 5] = sym;
+                reel[flipIndex + 6] = sym;
+                reel[flipIndex + 7] = sym;
             }
             for (; flipIndex < end; flipIndex++) reel[flipIndex] = sym;
         }
