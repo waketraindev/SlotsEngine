@@ -8,9 +8,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class VirtualReel implements IReel {
-    private final List<Byte> data;
+    private final List<Integer> data;
 
-    public VirtualReel(List<Byte> symbolList) {
+    public VirtualReel(List<Integer> symbolList) {
         data = Collections.unmodifiableList(symbolList);
     }
 
@@ -26,11 +26,11 @@ public class VirtualReel implements IReel {
         return new VirtualReel(parseElementsFromString(dataString));
     }
 
-    static private List<Byte> parseElementsFromString(String dataString) {
-        ArrayList<Byte> aList = new ArrayList<>();
+    static private List<Integer> parseElementsFromString(String dataString) {
+        ArrayList<Integer> aList = new ArrayList<>();
         byte[] reelBytes = SlotUtils.decodeGzipBase64(dataString);
         for (byte reelByte : reelBytes) {
-            aList.add(reelByte);
+            aList.add((int)reelByte);
         }
         Collections.shuffle(aList, SlotConstants.RANDOM);
         return aList;
@@ -44,7 +44,7 @@ public class VirtualReel implements IReel {
         int len = data.size();
         byte[] result = new byte[len];
         for (int i = 0; i < len; i++) {
-            result[i] = data.get(i);
+            result[i] = data.get(i).byteValue();
         }
         return result;
     }

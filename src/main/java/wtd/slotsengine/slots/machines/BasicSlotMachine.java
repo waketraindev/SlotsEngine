@@ -18,19 +18,21 @@ final public class BasicSlotMachine extends AbstractSlotMachine {
         cachedRtp = calculateRTP();
     }
 
-    @Override
-    public SpinResult doSpin(final long betAmount) {
-        final int res = reel.get(counter++);
-        final long winAmount = calculatePayout(betAmount, res);
-        return new SpinResult(betAmount, winAmount, res);
+    public double calculateRTP() {
+        return calculateRTP(reel);
     }
 
-    @Override
-    public double getMachineRtp() {
-        return cachedRtp;
+    public double calculateRTP(IReel reel) {
+        long cost = 0L;
+        long winAmount = 0L;
+        for (int i = 0; i < reel.size(); i++) {
+            winAmount += calculatePayout(1, reel.get(i));
+            cost += 1;
+        }
+        return winAmount / (double) cost;
     }
 
-    public static long calculatePayout(final long betAmount, final int symbol) {
+    public long calculatePayout(final long betAmount, final int symbol) {
         long winAmount;
         switch (symbol) {
             case 0 -> winAmount = 0;
@@ -49,17 +51,15 @@ final public class BasicSlotMachine extends AbstractSlotMachine {
         return winAmount;
     }
 
-    public double calculateRTP() {
-        return calculateRTP(reel);
+    @Override
+    public SpinResult doSpin(final long betAmount) {
+        final int res = reel.get(counter++);
+        final long winAmount = calculatePayout(betAmount, res);
+        return new SpinResult(betAmount, winAmount, res);
     }
 
-    public static double calculateRTP(IReel reel) {
-        long cost = 0L;
-        long winAmount = 0L;
-        for (int i = 0; i < reel.size(); i++) {
-            winAmount += calculatePayout(1, reel.get(i));
-            cost += 1;
-        }
-        return winAmount / (double) cost;
+    @Override
+    public double getMachineRtp() {
+        return cachedRtp;
     }
 }
