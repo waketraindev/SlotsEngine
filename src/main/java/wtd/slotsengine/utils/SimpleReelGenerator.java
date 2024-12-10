@@ -25,14 +25,10 @@ public final class SimpleReelGenerator {
     public static void main(final String[] args) {
         final double maxRtp = 0.98;
         SimpleReelGenerator gen = new SimpleReelGenerator(maxRtp);
-        try {
-            gen.run(new TimeStopCondition(60, TimeUnit.MINUTES));
-        } catch (ExecutionException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        gen.run(new TimeStopCondition(1, TimeUnit.MINUTES));
     }
 
-    public void run(final GenStopCondition stopCondition) throws ExecutionException, InterruptedException {
+    public void run(final GenStopCondition stopCondition) {
         final AtomicInteger runCount = new AtomicInteger(0);
         ArrayBlockingQueue<Future<GeneratedResult>> blockQueue = new ArrayBlockingQueue<>(historySize * 1024);
         Runnable generatingTask = () -> {
@@ -48,9 +44,16 @@ public final class SimpleReelGenerator {
         Thread generatingThread = new Thread(generatingTask);
         generatingThread.start();
 
-        while (stopCondition.apply(runCount.get())) {
-            Future<GeneratedResult> future = blockQueue.take();
-            processFuture(future, runCount.getAndIncrement());
+        try {
+            while (stopCondition.apply(runCount.get())) {
+                Future<GeneratedResult> future = blockQueue.take();
+                processFuture(future, runCount.getAndIncrement());
+            }
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            generatingThread.interrupt();
+            exec.shutdown();
         }
     }
 
