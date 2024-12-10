@@ -11,8 +11,8 @@ public class SimpleReelGenerator {
     private final double maxRtp;
     private final int historySize;
     private final double[] history;
-    ExecutorService exec = Executors.newWorkStealingPool();
-    long[] paytb = new long[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 100};
+    private final ExecutorService exec = Executors.newWorkStealingPool();
+    private final long[] payoutTable = new long[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 100};
     private double bestRtp = 0.0;
     private VirtualReel bestReel;
 
@@ -34,7 +34,7 @@ public class SimpleReelGenerator {
 
     public void run(GenStopCondition stopCondition) throws ExecutionException, InterruptedException {
         int runCount = 0;
-        while (true) {
+        while (stopCondition.apply(runCount)) {
             @SuppressWarnings("unchecked")
             Future<PResult>[] ret = new Future[historySize];
             for (int i = 0; i < ret.length; i++) {
@@ -96,7 +96,7 @@ public class SimpleReelGenerator {
     }
 
     private long calculatePayout(final int symbol) {
-        return paytb[symbol];
+        return payoutTable[symbol];
     }
 
     private record PResult(double rtp, byte[] rb) {
