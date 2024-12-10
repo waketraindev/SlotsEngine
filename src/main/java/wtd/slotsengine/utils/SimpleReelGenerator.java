@@ -73,7 +73,7 @@ public final class SimpleReelGenerator {
                 rand2 = boundRand(rand3), rand1 = boundRand(rand2);
         final int reelSize = rand1 + rand2 + rand3 + rand4 + rand5 + rand6 + rand7 + rand8 + rand9 + rand10;
         final byte[] reel = new byte[reelSize];
-        BufferedSymbols fl = new BufferedSymbols();
+        BufferedSymbolWriter fl = new BufferedSymbolWriter();
         fl.add(reel, (byte) 1, rand1);
         fl.add(reel, (byte) 2, rand2);
         fl.add(reel, (byte) 3, rand3);
@@ -110,7 +110,7 @@ public final class SimpleReelGenerator {
     private record GeneratedResult(double rtp, byte[] reelBytes) {
     }
 
-    private final static class BufferedSymbols {
+    private final static class BufferedSymbolWriter {
         private int index = 0;
 
         private void add(final byte[] reel, final byte sym, final int count) {
