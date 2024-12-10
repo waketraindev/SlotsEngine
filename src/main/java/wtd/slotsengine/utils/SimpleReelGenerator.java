@@ -25,7 +25,7 @@ public final class SimpleReelGenerator {
     public static void main(final String[] args) {
         final double maxRtp = 0.98;
         SimpleReelGenerator gen = new SimpleReelGenerator(maxRtp);
-        gen.run(new TimeStopCondition(1, TimeUnit.MINUTES));
+        gen.run(new TimeStopCondition(60, TimeUnit.MINUTES));
     }
 
     public void run(final GenStopCondition stopCondition) {
@@ -76,6 +76,37 @@ public final class SimpleReelGenerator {
                 rand2 = boundRand(rand3), rand1 = boundRand(rand2);
         final int reelSize = rand1 + rand2 + rand3 + rand4 + rand5 + rand6 + rand7 + rand8 + rand9 + rand10;
         final byte[] reel = new byte[reelSize];
+        fillReel(reel, rand1, rand2, rand3, rand4, rand5, rand6, rand7, rand8, rand9, rand10);
+        return adjustReel(reel, reelSize);
+    }
+
+    private GeneratedResult adjustReel(byte[] reel, int reelSize) {
+        double winAmount = calculateInitialWinAmount(reel);
+        if (winAmount == 0) return new GeneratedResult(0.0, reel);
+        int zeros = (int) Math.max(0, Math.ceil((winAmount / maxRtp) - reelSize));
+        if (zeros == 0) return new GeneratedResult(winAmount / reelSize, reel);
+        final byte[] finalReel = createPaddedReel(reel, zeros);
+        return new GeneratedResult(winAmount / (reelSize + zeros), finalReel);
+    }
+
+    private double calculateInitialWinAmount(byte[] reel) {
+        double winAmount = 0L;
+        for (int i = 0, reelLength = reel.length; i < reelLength; i++)
+            winAmount += calculatePayout(reel[i]);
+        return winAmount;
+    }
+
+    private long calculatePayout(final int symbol) {
+        return payoutTable[symbol];
+    }
+
+    private static byte[] createPaddedReel(byte[] reel, int padding) {
+        final byte[] finalReel = new byte[padding + reel.length];
+        System.arraycopy(reel, 0, finalReel, padding, reel.length);
+        return finalReel;
+    }
+
+    private static void fillReel(byte[] reel, int rand1, int rand2, int rand3, int rand4, int rand5, int rand6, int rand7, int rand8, int rand9, int rand10) {
         BufferedSymbolWriter fl = new BufferedSymbolWriter();
         fl.add(reel, (byte) 1, rand1);
         fl.add(reel, (byte) 2, rand2);
@@ -87,27 +118,10 @@ public final class SimpleReelGenerator {
         fl.add(reel, (byte) 8, rand8);
         fl.add(reel, (byte) 9, rand9);
         fl.add(reel, (byte) 10, rand10);
-        double winAmount = 0L;
-        for (final int symbol : reel)
-            winAmount += calculatePayout(symbol);
-
-        double rtp = winAmount / reelSize;
-        int zeros = 0;
-        while (rtp > maxRtp) {
-            zeros++;
-            rtp = winAmount / (reelSize + zeros);
-        }
-        final byte[] finalReel = new byte[zeros + reel.length];
-        System.arraycopy(reel, 0, finalReel, zeros, reel.length);
-        return new GeneratedResult(rtp, finalReel);
     }
 
     private int boundRand(final int lo) {
-        return random.nextInt(lo + 1, lo + 256);
-    }
-
-    private long calculatePayout(final int symbol) {
-        return payoutTable[symbol];
+        return random.nextInt(lo + 1, lo + 11);
     }
 
     private record GeneratedResult(double rtp, byte[] reelBytes) {
