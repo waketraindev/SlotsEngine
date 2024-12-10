@@ -2,8 +2,6 @@ package wtd.slotsengine.utils;
 
 import wtd.slotsengine.slots.machines.reels.VirtualReel;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.*;
 
@@ -48,9 +46,7 @@ public class SimpleReelGenerator {
                 if (c.rtp >= history[index]) {
                     if (bestReel == null || c.rtp > bestRtp || c.rb.length < bestReel.size()) {
                         bestRtp = c.rtp;
-                        List<Byte> list = new ArrayList<>(c.rb.length);
-                        for (byte b : c.rb) list.add(b);
-                        bestReel = new VirtualReel(list);
+                        bestReel = new VirtualReel(c.rb);
                         System.out.printf(
                                 "Best RTP:\t%.8f:\t/\tSize:\t%d\t/\t%s%n", bestRtp, bestReel.size(), bestReel);
                     }

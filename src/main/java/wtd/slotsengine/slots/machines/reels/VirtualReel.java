@@ -8,18 +8,25 @@ import java.util.Collections;
 import java.util.List;
 
 public class VirtualReel implements IReel {
-    private final List<Byte> data;
+    private final byte[] data;
 
-    public VirtualReel(List<Byte> symbolList) {
-        data = Collections.unmodifiableList(symbolList);
+    public VirtualReel(byte[] input) {
+        data = input;
+    }
+
+    public VirtualReel(List<Byte> bytes) {
+        data = new byte[bytes.size()];
+        for (int i = 0; i < bytes.size(); i++) {
+            data[i] = bytes.get(i);
+        }
     }
 
     public int get(int position) {
-        return (int) data.get(position % data.size());
+        return (int) data[position % data.length];
     }
 
     public int size() {
-        return data.size();
+        return data.length;
     }
 
     static public VirtualReel loadFromString(String dataString) {
@@ -41,11 +48,9 @@ public class VirtualReel implements IReel {
     }
 
     public byte[] toByteArray() {
-        int len = data.size();
+        int len = size();
         byte[] result = new byte[len];
-        for (int i = 0; i < len; i++) {
-            result[i] = data.get(i);
-        }
+        System.arraycopy(data, 0, result, 0, len);
         return result;
     }
 }
