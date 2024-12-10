@@ -21,7 +21,8 @@ public class SimpleReelGenerator {
         this.historySize = 1024;
         this.history = new double[historySize];
     }
-    ExecutorService exec = Executors.newFixedThreadPool(8);
+
+    ExecutorService exec = Executors.newWorkStealingPool();
     long[] paytb = new long[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 100};
 
     public static void main(String[] args) {
@@ -40,11 +41,11 @@ public class SimpleReelGenerator {
         int runCount = 0;
         while (true) {
             //PResult c = generateReel();
-            Future<PResult>[] ret = new Future[100];
-            for (int i = 0; i < 100; i++) {
+            Future<PResult>[] ret = new Future[historySize];
+            for (int i = 0; i < ret.length; i++) {
                 ret[i] = exec.submit(this::generateReel);
             }
-            for (int i = 0; i < 100; i++) {
+            for (int i = 0; i < ret.length; i++) {
                 int index = runCount % historySize;
                 PResult c = ret[i].get();
                 if (c.rtp >= history[index]) {
