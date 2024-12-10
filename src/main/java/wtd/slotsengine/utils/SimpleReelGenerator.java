@@ -5,6 +5,7 @@ import wtd.slotsengine.slots.machines.reels.VirtualReel;
 import java.util.Random;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.IntStream;
 
 public final class SimpleReelGenerator {
     private final Random random = new Random();
@@ -90,10 +91,7 @@ public final class SimpleReelGenerator {
     }
 
     private double calculateInitialWinAmount(byte[] reel) {
-        double winAmount = 0L;
-        for (int i = 0, reelLength = reel.length; i < reelLength; i++)
-            winAmount += calculatePayout(reel[i]);
-        return winAmount;
+        return IntStream.range(0, reel.length).parallel().mapToDouble(i -> calculatePayout(reel[i])).sum();
     }
 
     private long calculatePayout(final int symbol) {
