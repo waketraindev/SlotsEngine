@@ -5,22 +5,18 @@ import wtd.slotsengine.slots.machines.reels.VirtualReel;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public final class SimpleReelGenerator {
-    public static final double TARGET_RTP = 0.98;
+public final class ThreadedReelGenerator {
     private final ExecutorService workPool = Executors.newWorkStealingPool();
     private final double[] history;
     private final int historySize;
+    private final double targetRtp;
     private double bestRtp = 0.0;
     private VirtualReel bestReel;
 
-    public SimpleReelGenerator(int historySize) {
+    public ThreadedReelGenerator(int historySize, double targetRtp) {
         this.historySize = historySize;
         this.history = new double[this.historySize];
-    }
-
-    public static void main(final String[] args) {
-        SimpleReelGenerator gen = new SimpleReelGenerator(1024);
-        gen.run(new TimeStopCondition(1, TimeUnit.MINUTES));
+        this.targetRtp = targetRtp;
     }
 
     public void run(final GenStopCondition stopCondition) {
@@ -44,7 +40,7 @@ public final class SimpleReelGenerator {
         Runnable generatingTask = () -> {
             while (stopCondition.apply(runCount.get())) {
                 try {
-                    GeneratedReel gen = new GeneratedReel(TARGET_RTP);
+                    GeneratedReel gen = new GeneratedReel(targetRtp);
                     blockQueue.put(workPool.submit(gen::generateReel));
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
@@ -68,5 +64,9 @@ public final class SimpleReelGenerator {
             }
             history[index] = candidate.rtp();
         }
+    }
+
+    public VirtualReel getBestReel() {
+        return bestReel;
     }
 }
