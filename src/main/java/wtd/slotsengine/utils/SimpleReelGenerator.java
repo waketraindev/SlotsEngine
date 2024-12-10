@@ -91,7 +91,7 @@ public final class SimpleReelGenerator {
     }
 
     private double calculateInitialWinAmount(byte[] reel) {
-        return IntStream.range(0, reel.length).parallel().mapToDouble(i -> calculatePayout(reel[i])).sum();
+        return IntStream.range(0, reel.length).mapToDouble(i -> calculatePayout(reel[i])).sum();
     }
 
     private long calculatePayout(final int symbol) {
