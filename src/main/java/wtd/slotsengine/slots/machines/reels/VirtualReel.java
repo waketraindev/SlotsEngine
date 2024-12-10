@@ -22,7 +22,7 @@ public class VirtualReel implements IReel {
     }
 
     public int get(int position) {
-        return (int) data[position % data.length];
+        return data[position % data.length];
     }
 
     public int size() {
