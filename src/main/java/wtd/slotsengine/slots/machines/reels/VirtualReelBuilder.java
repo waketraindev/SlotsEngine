@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class VirtualReelBuilder implements IReel {
-    private final ArrayList<Integer> newList;
+    private final ArrayList<Byte> newList;
 
     public VirtualReelBuilder() {
         this.newList = new ArrayList<>(4096);
@@ -14,7 +14,7 @@ public class VirtualReelBuilder implements IReel {
         return new VirtualReelBuilder();
     }
 
-    public VirtualReelBuilder addSymbol(int symbol, int count) {
+    public VirtualReelBuilder addSymbol(Byte symbol, int count) {
         for (int i = 0; i < count; i++) {
             newList.add(symbol);
         }
