@@ -1,6 +1,6 @@
 package wtd.slotsengine.utils;
 
-import wtd.slotsengine.slots.machines.BasicSlotMachine;
+import wtd.slotsengine.slots.exceptions.SlotUserException;
 import wtd.slotsengine.slots.machines.reels.VirtualReel;
 
 import java.util.Arrays;
@@ -8,13 +8,14 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class SimpleReelGenerator {
-    public static final int BOUND = 256;
-    private static final Random random = new Random();
+    public final int BOUND = 256;
+    private final Random random = new Random();
     private final double maxRtp;
     private final int historySize;
     private final double[] history;
     private double bestRtp = 0.0;
     private VirtualReel bestReel;
+    private int flipIndex;
 
     public SimpleReelGenerator(double maxRtp) {
         this.maxRtp = maxRtp;
@@ -62,7 +63,7 @@ public class SimpleReelGenerator {
         addSymbol(reel, 10, rand10);
         long cost = 0L, winAmount = 0L;
         for (int j : reel) {
-            winAmount += BasicSlotMachine.calculatePayout(1, j);
+            winAmount += calculatePayout(1, j);
             cost++;
         }
         double rtp = (double) winAmount / cost;
@@ -76,8 +77,6 @@ public class SimpleReelGenerator {
         System.arraycopy(reel, 0, finalReel, zeros, reel.length);
         return new PResult(rtp, finalReel);
     }
-
-    private int flipIndex;
 
     private void addSymbol(int[] reel, int sym, int count) {
         final int end = flipIndex + count, batch = 12;
@@ -100,6 +99,25 @@ public class SimpleReelGenerator {
 
     private int boundRand(int lo) {
         return random.nextInt(lo + 1, BOUND + lo);
+    }
+
+    private long calculatePayout(final long betAmount, final int symbol) {
+        long winAmount;
+        switch (symbol) {
+            case 0 -> winAmount = 0;
+            case 1 -> winAmount = betAmount;
+            case 2 -> winAmount = betAmount * 2;
+            case 3 -> winAmount = betAmount * 3;
+            case 4 -> winAmount = betAmount * 4;
+            case 5 -> winAmount = betAmount * 5;
+            case 6 -> winAmount = betAmount * 6;
+            case 7 -> winAmount = betAmount * 7;
+            case 8 -> winAmount = betAmount * 8;
+            case 9 -> winAmount = betAmount * 9;
+            case 10 -> winAmount = betAmount * 100;
+            default -> throw new SlotUserException("Invalid symbol " + symbol);
+        }
+        return winAmount;
     }
 
     private record PResult(double rtp, int[] rb) {
