@@ -1,7 +1,7 @@
 package wtd.slotsengine.slots.interfaces;
 
 import wtd.slotsengine.slots.exceptions.InsufficientFundsException;
-import wtd.slotsengine.slots.machines.abstracts.SpinOutcome;
+import wtd.slotsengine.slots.machines.records.SpinOutcome;
 
 
 public interface SlotMachine {

@@ -2,7 +2,7 @@ package wtd.slotsengine.slots.machines;
 
 import org.junit.jupiter.api.Test;
 import wtd.slotsengine.slots.exceptions.InsufficientFundsException;
-import wtd.slotsengine.slots.machines.abstracts.SpinOutcome;
+import wtd.slotsengine.slots.machines.records.SpinOutcome;
 
 import java.util.Random;
 

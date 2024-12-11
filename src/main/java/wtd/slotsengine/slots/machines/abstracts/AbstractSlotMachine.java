@@ -2,6 +2,8 @@ package wtd.slotsengine.slots.machines.abstracts;
 
 import wtd.slotsengine.slots.exceptions.InsufficientFundsException;
 import wtd.slotsengine.slots.interfaces.SlotMachine;
+import wtd.slotsengine.slots.machines.records.SpinOutcome;
+import wtd.slotsengine.slots.machines.records.SpinRecord;
 
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
@@ -14,7 +16,7 @@ public abstract class AbstractSlotMachine implements SlotMachine {
     public SpinOutcome spin(long betAmount) throws InsufficientFundsException {
         assertFunds(betAmount, "spin");
         walletBalance.addAndGet(-betAmount);
-        SpinResult result = doSpin(betAmount);
+        SpinRecord result = doSpin(betAmount);
         lastBet.set(new SpinOutcome(
                 result.betAmount(), result.winAmount(), result.symbol(),
                 walletBalance.addAndGet(result.winAmount())));
@@ -49,7 +51,7 @@ public abstract class AbstractSlotMachine implements SlotMachine {
         }
     }
 
-    protected abstract SpinResult doSpin(long betAmount);
+    protected abstract SpinRecord doSpin(long betAmount);
 
     public abstract double getMachineRtp();
 }

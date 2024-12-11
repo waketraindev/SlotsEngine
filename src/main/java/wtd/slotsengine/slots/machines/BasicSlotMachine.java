@@ -2,7 +2,7 @@ package wtd.slotsengine.slots.machines;
 
 import wtd.slotsengine.slots.exceptions.SlotUserException;
 import wtd.slotsengine.slots.machines.abstracts.AbstractSlotMachine;
-import wtd.slotsengine.slots.machines.abstracts.SpinResult;
+import wtd.slotsengine.slots.machines.records.SpinRecord;
 import wtd.slotsengine.slots.machines.reels.IReel;
 import wtd.slotsengine.slots.machines.reels.VirtualReel;
 import wtd.slotsengine.utils.SlotConstants;
@@ -52,10 +52,10 @@ final public class BasicSlotMachine extends AbstractSlotMachine {
     }
 
     @Override
-    public SpinResult doSpin(final long betAmount) {
+    public SpinRecord doSpin(final long betAmount) {
         final int res = reel.get(counter++);
         final long winAmount = calculatePayout(betAmount, res);
-        return new SpinResult(betAmount, winAmount, res);
+        return new SpinRecord(betAmount, winAmount, res);
     }
 
     @Override
