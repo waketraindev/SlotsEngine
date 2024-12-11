@@ -14,7 +14,7 @@ import wtd.slotsengine.services.RecordStats;
 import wtd.slotsengine.services.SlotManager;
 import wtd.slotsengine.slots.exceptions.InsufficientFundsException;
 import wtd.slotsengine.slots.interfaces.SlotMachine;
-import wtd.slotsengine.slots.machines.abstracts.BetResult;
+import wtd.slotsengine.slots.machines.abstracts.SpinOutcome;
 
 import static wtd.slotsengine.utils.SlotUtils.now;
 
@@ -94,13 +94,18 @@ public class ApiController {
     @PostMapping("/api/spin/{amount}")
     public BetResultMessage spin(@PathVariable("amount") Long amount) {
         try {
-            BetResult spinResult = machine.spin(amount);
+            SpinOutcome spinResult = machine.spin(amount);
 
-            BetResultMessage betResultMessage = new BetResultMessage(now(), spinResult.betAmount(), spinResult.winAmount(), spinResult.balance(), spinResult.symbol());
+            BetResultMessage betResultMessage =
+                    new BetResultMessage(
+                            now(), spinResult.betAmount(), spinResult.winAmount(), spinResult.balance(),
+                            spinResult.symbol());
             stats.recordBet(betResultMessage);
             return betResultMessage;
         } catch (InsufficientFundsException ex) {
-            throw new ResponseStatusException(HttpStatusCode.valueOf(400), "Insufficient funds to spin. Required: %d Have: %d".formatted(amount, machine.getBalance()));
+            throw new ResponseStatusException(
+                    HttpStatusCode.valueOf(400),
+                    "Insufficient funds to spin. Required: %d Have: %d".formatted(amount, machine.getBalance()));
         }
     }
 
@@ -133,7 +138,9 @@ public class ApiController {
         try {
             return new BalanceMessage(machine.withdraw(amount));
         } catch (InsufficientFundsException e) {
-            throw new ResponseStatusException(HttpStatusCode.valueOf(400), "Insufficient funds to spin. Required: %d Have: %d".formatted(amount, machine.getBalance()));
+            throw new ResponseStatusException(
+                    HttpStatusCode.valueOf(400),
+                    "Insufficient funds to spin. Required: %d Have: %d".formatted(amount, machine.getBalance()));
         }
     }
 }

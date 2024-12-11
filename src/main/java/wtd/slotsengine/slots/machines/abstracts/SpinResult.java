@@ -1,4 +1,4 @@
 package wtd.slotsengine.slots.machines.abstracts;
 
-public record SpinResult(long betAmount, long winAmount, int symbol) {
+public record SpinResult(long betAmount, long winAmount, int symbol) implements ISpinResult {
 }
