@@ -1,5 +1,5 @@
 /* jshint esversion: 6 */
-(function () {
+(() => {
     "use strict";
     let appWindow = document.getElementById('appWindow');
     let btnSpin = document.getElementById('btnSpin');
@@ -213,5 +213,5 @@
         });
     }
 
-    window.onload = initApp;
+    (() => window.onload = initApp)();
 })();
