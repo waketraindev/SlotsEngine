@@ -12,7 +12,8 @@ public final class ReelOptimizer {
     private final double targetRtp;
     private double bestRtp = 0.0;
     private VirtualReel bestReel;
-    private BestReelCallback eventNewBest;
+    private BestReelCallback eventNewBest = (rtp, reel) -> {
+    };
 
     public ReelOptimizer(int historySize, double targetRtp) {
         this.historySize = historySize;
