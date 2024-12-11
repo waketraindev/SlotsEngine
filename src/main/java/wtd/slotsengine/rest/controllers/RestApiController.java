@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import wtd.slotsengine.rest.records.*;
 import wtd.slotsengine.services.RecordStatsService;
-import wtd.slotsengine.services.SlotManager;
+import wtd.slotsengine.services.SlotManagerService;
 import wtd.slotsengine.slots.exceptions.InsufficientFundsException;
 import wtd.slotsengine.slots.interfaces.SlotMachine;
 import wtd.slotsengine.slots.machines.records.SpinOutcome;
@@ -31,8 +31,8 @@ import static wtd.slotsengine.utils.SlotUtils.now;
  * values for versioning information.
  */
 @RestController
-public class ApiController {
-    private static final Logger log = LoggerFactory.getLogger(ApiController.class);
+public class RestApiController {
+    private static final Logger log = LoggerFactory.getLogger(RestApiController.class);
     private final SlotMachine machine;
     private final RecordStatsService stats;
 
@@ -44,12 +44,12 @@ public class ApiController {
      * This constructor sets up the necessary configurations
      * for managing slot machine operations through the SlotManager.
      *
-     * @param slotManager an instance of SlotManager that provides access
+     * @param slotManagerService an instance of SlotManager that provides access
      *                    to the slot machine used by the API controller
      */
-    public ApiController(SlotManager slotManager, RecordStatsService stats) {
+    public RestApiController(SlotManagerService slotManagerService, RecordStatsService stats) {
         log.info("API controller is initializing");
-        this.machine = slotManager.getSlotMachine();
+        this.machine = slotManagerService.getSlotMachine();
         this.stats = stats;
     }
 
