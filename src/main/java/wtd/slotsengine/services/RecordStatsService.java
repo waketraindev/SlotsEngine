@@ -47,7 +47,7 @@ public class RecordStatsService {
         if (!csvResultsFile.exists()) {
             try {
                 if (!csvResultsFile.createNewFile()) {
-                    throw new RuntimeException("Failed to create " + RESULTS_FILE + " file");
+                    throw new RuntimeException("Failed to create %s file".formatted(RESULTS_FILE));
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);
