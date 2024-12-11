@@ -65,7 +65,7 @@ public final class ReelOptimizer {
                 try {
                     GeneratedReel gen = new GeneratedReel(targetRtp);
                     blockQueue.put(workPool.submit(gen::generateReel));
-                } catch (InterruptedException e) {
+                } catch (InterruptedException | RejectedExecutionException e) {
                     Thread.currentThread().interrupt();
                 }
             }
