@@ -79,6 +79,7 @@
             newText += `Max: ${prettyNumber(data["betStats"]["max"])} `;
             newText += `Sum: ${prettyNumber(data["betStats"]["sum"])} `;
             lblBetStats.innerText = newText;
+
             newText = `Wins: ${prettyNumber(data["winStats"]["count"])} `;
             newText += `Max: ${prettyNumber(data["winStats"]["max"])} `;
             newText += `Sum: ${prettyNumber(data["winStats"]["sum"])} `;
