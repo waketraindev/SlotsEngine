@@ -2,7 +2,7 @@ package wtd.slotsengine.slots.machines;
 
 import org.junit.jupiter.api.Test;
 import wtd.slotsengine.slots.exceptions.InsufficientFundsException;
-import wtd.slotsengine.slots.machines.abstracts.BetResult;
+import wtd.slotsengine.slots.machines.records.SpinOutcome;
 
 import java.util.Random;
 
@@ -24,7 +24,8 @@ public class BasicSlotMachineTest {
         long funds = rng.nextLong(9999);
         sm.deposit(funds);
         assertEquals(funds, sm.getBalance(), "Machine deposited " + funds);
-        assertThrowsExactly(IllegalArgumentException.class, () -> sm.deposit(-1000),
+        assertThrowsExactly(
+                IllegalArgumentException.class, () -> sm.deposit(-1000),
                 "Machine cannot have negative balance.");
     }
 
@@ -41,7 +42,8 @@ public class BasicSlotMachineTest {
             fail("Machine has no funds. Should not throw exception.");
         }
 
-        assertThrowsExactly(InsufficientFundsException.class, () -> sm.withdraw(funds),
+        assertThrowsExactly(
+                InsufficientFundsException.class, () -> sm.withdraw(funds),
                 "Machine has insufficient funds.");
 
         assertDoesNotThrow(() -> sm.withdraw(sm.getBalance()), "Withdraw all funds");
@@ -54,7 +56,7 @@ public class BasicSlotMachineTest {
         assertEquals(1000, sm.getBalance(), "Machine loaded all funds.");
 
         boolean excepted = false;
-        BetResult result = null;
+        SpinOutcome result = null;
         try {
             result = sm.spin(1);
         } catch (Exception e) {

@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import wtd.slotsengine.rest.records.*;
-import wtd.slotsengine.services.RecordStats;
-import wtd.slotsengine.services.SlotManager;
+import wtd.slotsengine.services.RecordStatsService;
+import wtd.slotsengine.services.SlotManagerService;
 import wtd.slotsengine.slots.exceptions.InsufficientFundsException;
 import wtd.slotsengine.slots.interfaces.SlotMachine;
-import wtd.slotsengine.slots.machines.abstracts.BetResult;
+import wtd.slotsengine.slots.machines.records.SpinOutcome;
 
 import static wtd.slotsengine.utils.SlotUtils.now;
 
@@ -31,10 +31,10 @@ import static wtd.slotsengine.utils.SlotUtils.now;
  * values for versioning information.
  */
 @RestController
-public class ApiController {
-    private static final Logger log = LoggerFactory.getLogger(ApiController.class);
+public class RestApiController {
+    private static final Logger log = LoggerFactory.getLogger(RestApiController.class);
     private final SlotMachine machine;
-    private final RecordStats stats;
+    private final RecordStatsService stats;
 
     @Value("${slots-engine.version}")
     private String appVersion;
@@ -44,12 +44,12 @@ public class ApiController {
      * This constructor sets up the necessary configurations
      * for managing slot machine operations through the SlotManager.
      *
-     * @param slotManager an instance of SlotManager that provides access
+     * @param slotManagerService an instance of SlotManager that provides access
      *                    to the slot machine used by the API controller
      */
-    public ApiController(SlotManager slotManager, RecordStats stats) {
+    public RestApiController(SlotManagerService slotManagerService, RecordStatsService stats) {
         log.info("API controller is initializing");
-        this.machine = slotManager.getSlotMachine();
+        this.machine = slotManagerService.getSlotMachine();
         this.stats = stats;
     }
 
@@ -94,13 +94,18 @@ public class ApiController {
     @PostMapping("/api/spin/{amount}")
     public BetResultMessage spin(@PathVariable("amount") Long amount) {
         try {
-            BetResult spinResult = machine.spin(amount);
+            SpinOutcome spinResult = machine.spin(amount);
 
-            BetResultMessage betResultMessage = new BetResultMessage(now(), spinResult.betAmount(), spinResult.winAmount(), spinResult.balance(), spinResult.symbol());
+            BetResultMessage betResultMessage =
+                    new BetResultMessage(
+                            now(), spinResult.betAmount(), spinResult.winAmount(), spinResult.balance(),
+                            spinResult.symbol());
             stats.recordBet(betResultMessage);
             return betResultMessage;
         } catch (InsufficientFundsException ex) {
-            throw new ResponseStatusException(HttpStatusCode.valueOf(400), "Insufficient funds to spin. Required: %d Have: %d".formatted(amount, machine.getBalance()));
+            throw new ResponseStatusException(
+                    HttpStatusCode.valueOf(400),
+                    "Insufficient funds to spin. Required: %d Have: %d".formatted(amount, machine.getBalance()));
         }
     }
 
@@ -133,7 +138,9 @@ public class ApiController {
         try {
             return new BalanceMessage(machine.withdraw(amount));
         } catch (InsufficientFundsException e) {
-            throw new ResponseStatusException(HttpStatusCode.valueOf(400), "Insufficient funds to spin. Required: %d Have: %d".formatted(amount, machine.getBalance()));
+            throw new ResponseStatusException(
+                    HttpStatusCode.valueOf(400),
+                    "Insufficient funds to spin. Required: %d Have: %d".formatted(amount, machine.getBalance()));
         }
     }
 }

@@ -3,7 +3,6 @@ package wtd.slotsengine.slots.machines.reels;
 import java.util.ArrayList;
 import java.util.Collections;
 
-@SuppressWarnings("unused")
 public class VirtualReelBuilder implements IReel {
     private final ArrayList<Byte> newList;
 

@@ -3,6 +3,7 @@ package wtd.slotsengine.services;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import wtd.slotsengine.rest.records.BetResultMessage;
 
@@ -17,49 +18,57 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * A service class responsible for managing and recording statistical data related to betting.
+ * This includes managing log files, tracking summary statistics for bets and winnings,
+ * and persisting betting results to a file. It also handles initialization and destruction
+ * tasks to ensure proper resource management and file handling.
+ * <p>
+ * This class uses a {@link ReentrantLock} to ensure thread-safe operations when recording bets.
+ */
 @Service
-public class RecordStats {
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(RecordStats.class);
-    private final ReentrantLock writeLock;
+public class RecordStatsService {
+    private static final Logger log = LoggerFactory.getLogger(RecordStatsService.class);
+    private static final String RESULTS_FILE = "results.csv";
+    private final ReentrantLock writeLock = new ReentrantLock();
+    private final LongSummaryStatistics winStats = new LongSummaryStatistics();
+    private final LongSummaryStatistics betStats = new LongSummaryStatistics();
     private PrintWriter writeStream;
-    private static final LongSummaryStatistics winStats = new LongSummaryStatistics();
-    private static final LongSummaryStatistics betStats = new LongSummaryStatistics();
-
-    public RecordStats() {
-        log.info("RecordStats is initializing");
-        this.writeLock = new ReentrantLock();
-    }
 
     @PostConstruct
     public void init() {
         log.info("RecordStats is initialized");
-        winStats.accept(0);
-        betStats.accept(0);
-        File csvResultsFile = new File("results.csv");
+        createResultsFileIfNotExists();
+        loadPreviousStats();
+    }
+
+    private void createResultsFileIfNotExists() {
+        File csvResultsFile = new File(RESULTS_FILE);
         if (!csvResultsFile.exists()) {
             try {
-                boolean fileCreated = csvResultsFile.createNewFile();
-                if (!fileCreated) {
-                    throw new RuntimeException("Failed to create results.csv file");
+                if (!csvResultsFile.createNewFile()) {
+                    throw new RuntimeException("Failed to create " + RESULTS_FILE + " file");
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
-        try {
-            Scanner scanner = new Scanner(new File("results.csv"));
+    }
+
+    private void loadPreviousStats() {
+        try (Scanner scanner = new Scanner(new File(RESULTS_FILE))) {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 String[] cols = line.split(",");
                 addStats(Long.parseLong(cols[1]), Long.parseLong(cols[2]));
             }
-            writeStream = new PrintWriter(csvResultsFile);
+            writeStream = new PrintWriter(new File(RESULTS_FILE));
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static void addStats(long betAmount, long winAmount) {
+    private void addStats(long betAmount, long winAmount) {
         betStats.accept(betAmount);
         if (winAmount > 0) winStats.accept(winAmount);
     }
@@ -82,7 +91,7 @@ public class RecordStats {
     public void recordBet(BetResultMessage bet) {
         try {
             if (writeLock.tryLock(1, TimeUnit.SECONDS)) {
-                String output = Stream.of(bet.timestampMs(), bet.betAmount(), bet.winAmount(), bet.result()).map(String::valueOf).collect(Collectors.joining(","));
+                String output = formatBetResult(bet);
                 writeStream.append(output).append("\n");
                 writeStream.flush();
                 addStats(bet.betAmount(), bet.winAmount());
@@ -91,5 +100,10 @@ public class RecordStats {
         } catch (InterruptedException e) {
             log.error("Failed to acquire write lock", e);
         }
+    }
+
+    private String formatBetResult(BetResultMessage bet) {
+        return Stream.of(bet.timestampMs(), bet.betAmount(), bet.winAmount(), bet.result()).map(
+                String::valueOf).collect(Collectors.joining(","));
     }
 }

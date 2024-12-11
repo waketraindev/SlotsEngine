@@ -12,11 +12,34 @@ public final class ReelOptimizer {
     private final double targetRtp;
     private double bestRtp = 0.0;
     private VirtualReel bestReel;
+    private BestReelCallback eventNewBest;
 
     public ReelOptimizer(int historySize, double targetRtp) {
         this.historySize = historySize;
         this.history = new double[this.historySize];
         this.targetRtp = targetRtp;
+    }
+
+    public void runSingle(final GenStopCondition stopCondition) {
+        int runCount = 0;
+        while (stopCondition.apply(runCount)) {
+            GeneratedReel gen = new GeneratedReel(targetRtp);
+            processGeneratedResult(runCount, gen.generateReel());
+            runCount++;
+        }
+    }
+
+    private void processGeneratedResult(final int runCount, GeneratedResult candidate) {
+        int index = runCount % historySize;
+        if (candidate.rtp() >= history[index]) {
+            if (bestReel == null || candidate.rtp() > bestRtp || candidate.reelBytes().length < bestReel.size()) {
+                bestRtp = candidate.rtp();
+                bestReel = new VirtualReel(candidate.reelBytes());
+                eventNewBest.run(bestRtp, bestReel);
+                //System.out.printf("Best RTP:\t%.8f:\t/\tSize:\t%d\t/\t%s%n", bestRtp, bestReel.size(), bestReel);
+            }
+            history[index] = candidate.rtp();
+        }
     }
 
     public void run(final GenStopCondition stopCondition) {
@@ -42,7 +65,7 @@ public final class ReelOptimizer {
                 try {
                     GeneratedReel gen = new GeneratedReel(targetRtp);
                     blockQueue.put(workPool.submit(gen::generateReel));
-                } catch (InterruptedException e) {
+                } catch (InterruptedException | RejectedExecutionException e) {
                     Thread.currentThread().interrupt();
                 }
             }
@@ -53,20 +76,20 @@ public final class ReelOptimizer {
         return generatingThread;
     }
 
-    private void processFuture(Future<GeneratedResult> future, int runCount) throws InterruptedException, ExecutionException {
-        int index = runCount % historySize;
+    private void processFuture(Future<GeneratedResult> future, final int runCount) throws InterruptedException, ExecutionException {
         GeneratedResult candidate = future.get();
-        if (candidate.rtp() >= history[index]) {
-            if (bestReel == null || candidate.rtp() > bestRtp || candidate.reelBytes().length < bestReel.size()) {
-                bestRtp = candidate.rtp();
-                bestReel = new VirtualReel(candidate.reelBytes());
-                System.out.printf("Best RTP:\t%.8f:\t/\tSize:\t%d\t/\t%s%n", bestRtp, bestReel.size(), bestReel);
-            }
-            history[index] = candidate.rtp();
-        }
+        processGeneratedResult(runCount, candidate);
     }
 
     public VirtualReel getBestReel() {
         return bestReel;
+    }
+
+    public double getBestRtp() {
+        return bestRtp;
+    }
+
+    public void setFoundBestCallback(BestReelCallback fn) {
+        this.eventNewBest = fn;
     }
 }

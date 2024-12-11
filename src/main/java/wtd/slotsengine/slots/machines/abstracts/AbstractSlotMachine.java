@@ -2,20 +2,24 @@ package wtd.slotsengine.slots.machines.abstracts;
 
 import wtd.slotsengine.slots.exceptions.InsufficientFundsException;
 import wtd.slotsengine.slots.interfaces.SlotMachine;
+import wtd.slotsengine.slots.machines.records.SpinOutcome;
+import wtd.slotsengine.slots.machines.records.SpinRecord;
 
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 public abstract class AbstractSlotMachine implements SlotMachine {
     private final AtomicLong walletBalance = new AtomicLong(0);
-    private final AtomicReference<BetResult> lastBet = new AtomicReference<>(null);
+    private final AtomicReference<SpinOutcome> lastBet = new AtomicReference<>(null);
 
     @Override
-    public BetResult spin(long betAmount) throws InsufficientFundsException {
+    public SpinOutcome spin(long betAmount) throws InsufficientFundsException {
         assertFunds(betAmount, "spin");
         walletBalance.addAndGet(-betAmount);
-        SpinResult result = doSpin(betAmount);
-        lastBet.set(new BetResult(result.betAmount(), result.winAmount(), walletBalance.addAndGet(result.winAmount()), result.symbol()));
+        SpinRecord result = doSpin(betAmount);
+        lastBet.set(new SpinOutcome(
+                result.betAmount(), result.winAmount(), result.symbol(),
+                walletBalance.addAndGet(result.winAmount())));
         return lastBet.get();
     }
 
@@ -38,14 +42,16 @@ public abstract class AbstractSlotMachine implements SlotMachine {
     }
 
     protected void assertFunds(long requiredAmount, String actionName) throws InsufficientFundsException {
-        if (requiredAmount > getBalance())
-            throw new InsufficientFundsException("Insufficient credits to %s. Required: %d Have: %d".formatted(actionName, requiredAmount, walletBalance.get()));
+        if (requiredAmount > getBalance()) throw new InsufficientFundsException(
+                "Insufficient credits to %s. Required: %d Have: %d".formatted(
+                        actionName, requiredAmount,
+                        walletBalance.get()));
         if (requiredAmount < 0) {
             throw new InsufficientFundsException("Only positive numbers are allowed.");
         }
     }
 
-    protected abstract SpinResult doSpin(long betAmount);
+    protected abstract SpinRecord doSpin(long betAmount);
 
     public abstract double getMachineRtp();
 }
