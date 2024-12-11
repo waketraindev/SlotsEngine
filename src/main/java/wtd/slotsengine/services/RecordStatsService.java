@@ -62,7 +62,7 @@ public class RecordStatsService {
                 String[] cols = line.split(",");
                 addStats(Long.parseLong(cols[1]), Long.parseLong(cols[2]));
             }
-            writeStream = new PrintWriter(new File(RESULTS_FILE));
+            writeStream = new PrintWriter(RESULTS_FILE);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
