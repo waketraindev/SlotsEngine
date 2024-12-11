@@ -12,6 +12,7 @@ public final class ReelOptimizer {
     private final double targetRtp;
     private double bestRtp = 0.0;
     private VirtualReel bestReel;
+    private BestReelCallback eventNewBest;
 
     public ReelOptimizer(int historySize, double targetRtp) {
         this.historySize = historySize;
@@ -60,7 +61,8 @@ public final class ReelOptimizer {
             if (bestReel == null || candidate.rtp() > bestRtp || candidate.reelBytes().length < bestReel.size()) {
                 bestRtp = candidate.rtp();
                 bestReel = new VirtualReel(candidate.reelBytes());
-                System.out.printf("Best RTP:\t%.8f:\t/\tSize:\t%d\t/\t%s%n", bestRtp, bestReel.size(), bestReel);
+                eventNewBest.run(bestRtp, bestReel);
+                //System.out.printf("Best RTP:\t%.8f:\t/\tSize:\t%d\t/\t%s%n", bestRtp, bestReel.size(), bestReel);
             }
             history[index] = candidate.rtp();
         }
@@ -68,5 +70,13 @@ public final class ReelOptimizer {
 
     public VirtualReel getBestReel() {
         return bestReel;
+    }
+
+    public double getBestRtp() {
+        return bestRtp;
+    }
+
+    public void setFoundBestCallback(BestReelCallback fn) {
+        this.eventNewBest = fn;
     }
 }
