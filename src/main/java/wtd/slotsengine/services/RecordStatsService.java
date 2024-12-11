@@ -31,8 +31,8 @@ public class RecordStatsService {
     private static final Logger log = LoggerFactory.getLogger(RecordStatsService.class);
     private static final String RESULTS_FILE = "results.csv";
     private final ReentrantLock writeLock = new ReentrantLock();
-    private final LongSummaryStatistics winStats = new LongSummaryStatistics();
-    private final LongSummaryStatistics betStats = new LongSummaryStatistics();
+    private final LongSummaryStatistics winStats = new LongSummaryStatistics(0, 0, 0, 0);
+    private final LongSummaryStatistics betStats = new LongSummaryStatistics(0, 0, 0, 0);
     private PrintWriter writeStream;
 
     @PostConstruct
