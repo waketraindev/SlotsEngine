@@ -18,6 +18,14 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * A service class responsible for managing and recording statistical data related to betting.
+ * This includes managing log files, tracking summary statistics for bets and winnings,
+ * and persisting betting results to a file. It also handles initialization and destruction
+ * tasks to ensure proper resource management and file handling.
+ * <p>
+ * This class uses a {@link ReentrantLock} to ensure thread-safe operations when recording bets.
+ */
 @Service
 public class RecordStatsService {
     private static final Logger log = LoggerFactory.getLogger(RecordStatsService.class);
