@@ -31,8 +31,8 @@ public class RecordStatsService {
     private static final Logger log = LoggerFactory.getLogger(RecordStatsService.class);
     private static final String RESULTS_FILE = "results.csv";
     private final ReentrantLock writeLock = new ReentrantLock();
-    private final LongSummaryStatistics winStats = new LongSummaryStatistics();
-    private final LongSummaryStatistics betStats = new LongSummaryStatistics();
+    private final LongSummaryStatistics winStats = new LongSummaryStatistics(0, 0, 0, 0);
+    private final LongSummaryStatistics betStats = new LongSummaryStatistics(0, 0, 0, 0);
     private PrintWriter writeStream;
 
     @PostConstruct
@@ -47,7 +47,7 @@ public class RecordStatsService {
         if (!csvResultsFile.exists()) {
             try {
                 if (!csvResultsFile.createNewFile()) {
-                    throw new RuntimeException("Failed to create " + RESULTS_FILE + " file");
+                    throw new RuntimeException("Failed to create %s file".formatted(RESULTS_FILE));
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -62,7 +62,7 @@ public class RecordStatsService {
                 String[] cols = line.split(",");
                 addStats(Long.parseLong(cols[1]), Long.parseLong(cols[2]));
             }
-            writeStream = new PrintWriter(new File(RESULTS_FILE));
+            writeStream = new PrintWriter(RESULTS_FILE);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }

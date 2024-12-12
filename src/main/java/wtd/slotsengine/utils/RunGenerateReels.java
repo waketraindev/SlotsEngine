@@ -16,9 +16,7 @@ public class RunGenerateReels {
         long startTime = System.currentTimeMillis();
         log.info("Starting ReelOptimizer");
         ReelOptimizer op = new ReelOptimizer(1024, 0.98);
-        op.setFoundBestCallback((rtp, reel) -> {
-            log.info("RTP: {} tSize: {} = {}", rtp, reel.size(), reel.toString());
-        });
+        op.setFoundBestCallback((rtp, reel) -> log.info("RTP: {} tSize: {} = {}", rtp, reel.size(), reel));
         op.run(new TimeStopCondition(1, TimeUnit.MINUTES));
         VirtualReel best = op.getBestReel();
         long deltaTime = System.currentTimeMillis() - startTime;

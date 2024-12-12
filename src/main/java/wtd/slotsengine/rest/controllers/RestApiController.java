@@ -66,12 +66,12 @@ public class RestApiController {
     /**
      * Handles the HTTP GET request for loading the current state of the slot machine.
      *
-     * @return a {@link MachineStateMessage} object containing the current timestamp,
+     * @return a {@link StateMessage} object containing the current timestamp,
      * machine's return to player (RTP), bet amount, win amount, balance, and result.
      */
     @GetMapping("/api/load")
-    public MachineStateMessage load() {
-        return new MachineStateMessage(appVersion, now(), machine.getMachineRtp(), 1, 0, machine.getBalance(), 0);
+    public StateMessage load() {
+        return new StateMessage(appVersion, now(), machine.getMachineRtp(), 1, 0, machine.getBalance(), 0);
     }
 
     /**
@@ -79,8 +79,8 @@ public class RestApiController {
      *
      * @return a MachineStatsMessage object containing the current timestamp, bet statistics, and win statistics.
      */
-    public @GetMapping("/api/machine-stats") MachineStatsMessage getMachineStats() {
-        return new MachineStatsMessage(now(), machine.getMachineRtp(), stats.getBetStats(), stats.getWinStats());
+    public @GetMapping("/api/machine-stats") SpinStatsMessage getMachineStats() {
+        return new SpinStatsMessage(now(), machine.getMachineRtp(), stats.getBetStats(), stats.getWinStats());
     }
 
     /**
