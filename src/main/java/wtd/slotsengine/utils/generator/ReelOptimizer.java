@@ -21,10 +21,11 @@ public final class ReelOptimizer {
         this.targetRtp = targetRtp;
     }
 
+    @SuppressWarnings("unused")
     public void runSingle(final GenStopCondition stopCondition) {
         int runCount = 0;
         while (stopCondition.apply(runCount)) {
-            GeneratedReel gen = new GeneratedReel(targetRtp);
+            ReelBufferedGenerator gen = new ReelBufferedGenerator(targetRtp);
             processGeneratedResult(runCount, gen.generateReel());
             runCount++;
         }
@@ -64,7 +65,7 @@ public final class ReelOptimizer {
         Runnable generatingTask = () -> {
             while (stopCondition.apply(runCount.get())) {
                 try {
-                    GeneratedReel gen = new GeneratedReel(targetRtp);
+                    ReelBufferedGenerator gen = new ReelBufferedGenerator(targetRtp);
                     blockQueue.put(workPool.submit(gen::generateReel));
                 } catch (InterruptedException | RejectedExecutionException e) {
                     Thread.currentThread().interrupt();
