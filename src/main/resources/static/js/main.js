@@ -18,7 +18,11 @@
     const lblWinStats = document.getElementById("lblWinStats");
     const lblRtpStats = document.getElementById("lblRtpStats");
 
-    const betRange = [1, 10, 15, 25, 50, 100, 200, 500, 1000, 2000, 5000, 10000];
+    const tb = document.getElementById('payoutTable');
+    const body = tb.getElementsByTagName("tbody")[0];
+    const rows = body.getElementsByTagName("tr");
+
+    const betRange = [1, 10, 15, 25, 50, 100, 150, 200, 250, 500, 1000, 1500, 2000, 2500, 5000, 10000];
     const numFormat = new Intl.NumberFormat('en-US', {});
 
     let lastSpin = {winAmount: 0};
@@ -104,7 +108,11 @@
             tabBody.querySelector("tr:last-child").remove();
         }
         const newRow = document.createElement('tr');
-        newRow.innerHTML = `<td>${prettyNumber(state.betAmount)}</td><td>${prettyNumber(state.winAmount)}</td><td>${state.result}</td>` + `<td><span class="badge ${isWin() ? 'text-bg-success' : 'text-bg-danger'}">${isWin() ? 'Win' : 'Loss'}</span></td>`;
+        newRow.innerHTML =
+            `<td>${prettyNumber(state.betAmount)}</td><td>${prettyNumber(state.winAmount)}</td><td>${state.result}</td>`;
+        newRow.innerHTML +=
+            `<td><span class="badge ${isWin() ? 'text-bg-success' : 'text-bg-danger'}">${isWin() ? 'Win' :
+                'Loss'}</span></td>`;
         tabBody.prepend(newRow);
 
         if (isWin() > 0) {
@@ -141,9 +149,6 @@
     }
 
     function calcBetValues() {
-        const tb = document.getElementById('payoutTable');
-        const body = tb.getElementsByTagName("tbody")[0];
-        const rows = body.getElementsByTagName("tr");
         for (let i = 0; i < rows.length; i++) {
             const cells = rows[i].getElementsByTagName("td");
             const value = cells[1];
