@@ -3,7 +3,7 @@ package wtd.slotsengine.utils.generator;
 import java.util.Random;
 import java.util.stream.IntStream;
 
-public class GeneratedReel {
+public class ReelBufferedGenerator {
     private static final int MAX_SYMBOLS = 256;
     private static final int BATCH_SIZE = 8;
     private static final Random random = new Random();
@@ -11,7 +11,7 @@ public class GeneratedReel {
     private final double maxRtp;
     private int index = 0;
 
-    public GeneratedReel(final double targetRtp) {
+    public ReelBufferedGenerator(final double targetRtp) {
         this.maxRtp = targetRtp;
     }
 

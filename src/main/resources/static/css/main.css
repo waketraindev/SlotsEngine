@@ -4,15 +4,6 @@
     padding: .75em
 }
 
-#blkDisplay {
-    font-size: 150px;
-    border: 1px solid gray;
-}
-
-#lblDisplay {
-    width: 15%;
-    display: inline-block;
-}
 
 #lblBalanceText {
     font-size: 2em;
@@ -22,4 +13,30 @@
     font-size: 2em;
     font-weight: bolder;
     padding: .75em;
+}
+
+#blkDisplay {
+    font-size: 150px;
+    border: 1px solid gray;
+    border-radius: 10px;
+}
+
+#lblDisplay {
+    width: 15%;
+    display: inline-block;
+}
+
+.animate-spin {
+}
+
+.animate-spin #lblDisplay {
+    color: orange;
+}
+
+.animate-spin-loss #lblDisplay {
+    color: red;
+}
+
+.animate-spin-win #lblDisplay {
+    color: green;
 }
