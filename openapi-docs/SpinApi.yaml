@@ -27,7 +27,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/MachineStateMessage"
+                $ref: "#/components/schemas/StateMessage"
   /api/machine-stats:
     get:
       summary: "GET api/machine-stats"
@@ -38,7 +38,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/MachineStatsMessage"
+                $ref: "#/components/schemas/SpinStatsMessage"
   /api/spin/{amount}:
     post:
       summary: "POST api/spin/{amount}"
@@ -100,7 +100,7 @@ components:
       properties:
         version:
           type: "string"
-    MachineStateMessage:
+    StateMessage:
       type: "object"
       properties:
         version:
@@ -138,7 +138,7 @@ components:
         max:
           type: "integer"
           format: "int64"
-    MachineStatsMessage:
+    SpinStatsMessage:
       type: "object"
       properties:
         timestampMs:
