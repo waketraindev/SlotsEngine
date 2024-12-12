@@ -1,31 +1,25 @@
 /* jshint esversion: 6 */
-(() => {
+(function () {
     "use strict";
-    let appWindow = document.getElementById('appWindow');
-    let btnSpin = document.getElementById('btnSpin');
-    let btnIncBet = document.getElementById('btnIncrementBet');
-    let btnDecBet = document.getElementById('btnDecrementBet');
-
-    let btnDeposit = document.getElementById('btnDeposit');
-    let btnWithdraw = document.getElementById('btnWithdraw');
-
-    let lblBalanceAmount = document.getElementById('lblBalanceAmount');
-    let lblBetAmount = document.getElementById('lblBetAmount');
-
-    let lblDisplay = document.getElementById('lblDisplay');
-
-    let lblRollResult = document.getElementById('lblRollResultText');
-    let lblRollAmount = document.getElementById('lblRollResultAmount');
-
-    let lblVersion = document.getElementById('lblVersion');
+    const appWindow = document.getElementById('appWindow');
+    const btnSpin = document.getElementById('btnSpin');
+    const btnIncBet = document.getElementById('btnIncrementBet');
+    const btnDecBet = document.getElementById('btnDecrementBet');
+    const btnDeposit = document.getElementById('btnDeposit');
+    const btnWithdraw = document.getElementById('btnWithdraw');
+    const lblBalanceAmount = document.getElementById('lblBalanceAmount');
+    const lblBetAmount = document.getElementById('lblBetAmount');
+    const lblDisplay = document.getElementById('lblDisplay');
+    const lblRollResult = document.getElementById('lblRollResultText');
+    const lblRollAmount = document.getElementById('lblRollResultAmount');
+    const lblVersion = document.getElementById('lblVersion');
+    const blkDisplay = document.getElementById('blkDisplay');
+    const betRange = [1, 10, 15, 25, 50, 100, 200, 500, 1000, 2000, 5000, 10000];
 
     let lastSpin = {winAmount: 0};
-
     let machineState = {
         balance: 1, betAmount: 1
     };
-
-    let betRange = [1, 10, 15, 25, 50, 100, 200, 500, 1000, 2000, 5000, 10000];
     let betPos = 0;
 
     let numFormat = new Intl.NumberFormat('en-US', {});
@@ -102,9 +96,6 @@
         lblBalanceAmount.innerText = prettyNumber(state.balance);
         lblDisplay.innerText = prettyNumber(state.result);
         machineState.balance = state.balance;
-        setButtonsState(false);
-        btnSpin.disabled = machineState.betAmount > machineState.balance;
-
         let tabBody = document.querySelector("#historyTable tbody");
         let rows = tabBody.getElementsByTagName("tr");
         if (rows.length > 10) {
@@ -118,15 +109,20 @@
 
         if (isWin() > 0) {
             setStatusLabel('WIN', prettyNumber(state.winAmount), 'text-bg-success');
+            blkDisplay.className = "animate-spin-win";
         } else {
             setStatusLabel('LOSS', prettyNumber(state.betAmount), 'text-bg-danger');
+            blkDisplay.className = "animate-spin-loss";
         }
+        setButtonsState(false);
+        btnSpin.disabled = machineState.betAmount > machineState.balance;
         setTimeout(refreshStats, 0);
     }
 
     function spin() {
         setButtonsState(true);
         lblDisplay.style.color = 'orange';
+        blkDisplay.className = "animate-spin";
         let betAmount = machineState.betAmount;
         setStatusLabel('Spin', prettyNumber(machineState.betAmount), 'text-bg-warning');
 
@@ -154,7 +150,6 @@
             let value = cells[1];
             value.innerText = prettyNumber(((i >= 10) ? 100 : i) * machineState.betAmount);
         }
-
     }
 
     function bindListeners() {
