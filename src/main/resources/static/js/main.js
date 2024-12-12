@@ -54,13 +54,12 @@
     function sendCall(callback,path,options) {
         return fetch(path,options).then((rsp) => {
             if (!rsp.ok) {
-                throw new Error();
+                throw new Error(`Error running API call: ${rsp.status} ${rsp.statusText}`);
             }
             return rsp;
         }).then((response) => response.json())
-            .then((data) => callback(data)).catch((ignored) => {
-                window.alert(`Error running API call`);
-                //console.log(ignored);
+            .then((data) => callback(data)).catch((error) => {
+                window.alert(`Error running API call: ${error.message}`);
             });
     }
 
