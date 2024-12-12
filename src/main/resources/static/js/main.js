@@ -14,15 +14,18 @@
     const lblRollAmount = document.getElementById('lblRollResultAmount');
     const lblVersion = document.getElementById('lblVersion');
     const blkDisplay = document.getElementById('blkDisplay');
+    const lblBetStats = document.getElementById("lblBetStats");
+    const lblWinStats = document.getElementById("lblWinStats");
+    const lblRtpStats = document.getElementById("lblRtpStats");
+
     const betRange = [1, 10, 15, 25, 50, 100, 200, 500, 1000, 2000, 5000, 10000];
+    const numFormat = new Intl.NumberFormat('en-US', {});
 
     let lastSpin = {winAmount: 0};
     let machineState = {
         balance: 1, betAmount: 1
     };
     let betPos = 0;
-
-    let numFormat = new Intl.NumberFormat('en-US', {});
 
     function prettyNumber(num) {
         return numFormat.format(num);
@@ -51,7 +54,10 @@
             }
             return rsp;
         }).then((response) => response.json())
-            .then(data => callback(data)).catch(ignored => window.alert(`Error running API call`));
+            .then(data => callback(data)).catch(ignored => {
+                window.alert(`Error running API call`);
+                console.log(ignored);
+            });
     }
 
     function setStatusLabel(label, text, classes) {
@@ -64,10 +70,6 @@
     }
 
     function refreshStats() {
-        let lblBetStats = document.getElementById("lblBetStats");
-        let lblWinStats = document.getElementById("lblWinStats");
-        let lblRtpStats = document.getElementById("lblRtpStats");
-
         sendCall((data) => {
             let newText = `Bets: ${prettyNumber(data["betStats"]["count"])} `;
             newText += `Max: ${prettyNumber(data["betStats"]["max"])} `;
@@ -96,16 +98,14 @@
         lblBalanceAmount.innerText = prettyNumber(state.balance);
         lblDisplay.innerText = prettyNumber(state.result);
         machineState.balance = state.balance;
-        let tabBody = document.querySelector("#historyTable tbody");
-        let rows = tabBody.getElementsByTagName("tr");
+        const tabBody = document.querySelector("#historyTable tbody");
+        const rows = tabBody.getElementsByTagName("tr");
         if (rows.length > 10) {
             tabBody.querySelector("tr:last-child").remove();
         }
-        let newRow = document.createElement('tr');
+        const newRow = document.createElement('tr');
         newRow.innerHTML = `<td>${prettyNumber(state.betAmount)}</td><td>${prettyNumber(state.winAmount)}</td><td>${state.result}</td>` + `<td><span class="badge ${isWin() ? 'text-bg-success' : 'text-bg-danger'}">${isWin() ? 'Win' : 'Loss'}</span></td>`;
         tabBody.prepend(newRow);
-
-        lblDisplay.style.color = isWin() ? 'green' : 'red';
 
         if (isWin() > 0) {
             setStatusLabel('WIN', prettyNumber(state.winAmount), 'text-bg-success');
@@ -121,13 +121,12 @@
 
     function spin() {
         setButtonsState(true);
-        lblDisplay.style.color = 'orange';
         blkDisplay.className = "animate-spin";
-        let betAmount = machineState.betAmount;
+        const betAmount = machineState.betAmount;
         setStatusLabel('Spin', prettyNumber(machineState.betAmount), 'text-bg-warning');
 
         let count = 0;
-        let animateDisplay = setInterval(() => {
+        const animateDisplay = setInterval(() => {
             if (count++ < 7) {
                 lblDisplay.innerText = Math.floor(Math.random() * 10).toFixed(0);
             } else {
@@ -142,19 +141,19 @@
     }
 
     function calcBetValues() {
-        let tb = document.getElementById('payoutTable');
-        let body = tb.getElementsByTagName("tbody")[0];
-        let rows = body.getElementsByTagName("tr");
+        const tb = document.getElementById('payoutTable');
+        const body = tb.getElementsByTagName("tbody")[0];
+        const rows = body.getElementsByTagName("tr");
         for (let i = 0; i < rows.length; i++) {
-            let cells = rows[i].getElementsByTagName("td");
-            let value = cells[1];
+            const cells = rows[i].getElementsByTagName("td");
+            const value = cells[1];
             value.innerText = prettyNumber(((i >= 10) ? 100 : i) * machineState.betAmount);
         }
     }
 
     function bindListeners() {
         btnDeposit.addEventListener('click', () => {
-            let value = window.prompt("Enter deposit amount", "1000");
+            const value = window.prompt("Enter deposit amount", "1000");
             sendCall(data => {
                 lblBalanceAmount.innerText = data.balance;
                 machineState.balance = data.balance;
@@ -165,7 +164,7 @@
 
         });
         btnWithdraw.addEventListener('click', () => {
-            let value = window.prompt("Enter withdrawal amount", "1000");
+            const value = window.prompt("Enter withdrawal amount", "1000");
             sendCall(data => {
                 lblBalanceAmount.innerText = data.balance;
                 machineState.balance = data.balance;
