@@ -1,177 +1,249 @@
-openapi: "3.1.0"
+openapi: 3.0.1
 info:
-  title: "SlotsEngine API"
-  description: "SlotsEngine API"
-  version: "1.0.0"
+  title: OpenAPI definition
+  version: v0
 servers:
-  - url: "https://SlotsEngine"
+  - url: http://localhost:8080
+    description: Generated server url
+tags:
+  - name: rest-api-controller
+    description: |-
+      The ApiController class is responsible for handling API requests related to a slot machine application.
+       It provides endpoints for retrieving server version information, loading the slot machine state,
+       performing spin operations, and managing the user's balance through deposit and withdrawal actions.
+       Each method is mapped to a specific HTTP request type and URL path, enabling interaction with the slot machine.
+       <p>
+       The controller ensures that each endpoint is appropriately logged and handles exceptions that may occur
+       during operations, such as insufficient funds for a spin or withdrawal.
+       <p>
+       The class leverages a SlotMachine instance to perform the core operations and depends on configuration
+       values for versioning information.
 paths:
-  /api:
-    get:
-      summary: "GET api"
-      operationId: "indexAction"
-      responses:
-        "200":
-          description: "OK"
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/ServerVersionMessage"
-  /api/load:
-    get:
-      summary: "GET api/load"
-      operationId: "load"
-      responses:
-        "200":
-          description: "OK"
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/StateMessage"
-  /api/machine-stats:
-    get:
-      summary: "GET api/machine-stats"
-      operationId: "getMachineStats"
-      responses:
-        "200":
-          description: "OK"
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/SpinStatsMessage"
-  /api/spin/{amount}:
+  /api/withdraw/{amount}:
     post:
-      summary: "POST api/spin/{amount}"
-      operationId: "spin"
+      tags:
+        - rest-api-controller
+      summary: Handles the HTTP request to withdraw a specified amount from the slot
+        machine's balance.
+      description: Handles the HTTP request to withdraw a specified amount from the
+        slot machine's balance.
+      operationId: withdraw
       parameters:
-        - name: "amount"
-          in: "path"
+        - name: amount
+          in: path
+          description: the amount to withdraw from the balance. Must be a positive Long
+            value.
           required: true
           schema:
-            type: "integer"
-            format: "int64"
+            type: integer
+            format: int64
       responses:
         "200":
-          description: "OK"
+          description: "a {@link BalanceMessage BalanceMessage} object containing\
+            \ the updated balance after the withdrawal."
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BalanceMessage"
+  /api/spin/{amount}:
+    post:
+      tags:
+        - rest-api-controller
+      summary: Initiates a spin operation on the slot machine for the specified bet
+        amount.
+      description: Initiates a spin operation on the slot machine for the specified
+        bet amount.
+      operationId: spin
+      parameters:
+        - name: amount
+          in: path
+          description: the amount to bet on the spin.
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: |-
+            a {@link BetResultMessage BetResultMessage} object containing the timestamp, bet amount, win amount,
+             balance after the spin, and the resulting symbol from the spin.
           content:
             '*/*':
               schema:
                 $ref: "#/components/schemas/BetResultMessage"
   /api/deposit/{amount}:
     post:
-      summary: "POST api/deposit/{amount}"
-      operationId: "deposit"
+      tags:
+        - rest-api-controller
+      summary: Handles the HTTP request to deposit a specified amount into the slot
+        machine.
+      description: Handles the HTTP request to deposit a specified amount into the
+        slot machine.
+      operationId: deposit
       parameters:
-        - name: "amount"
-          in: "path"
+        - name: amount
+          in: path
+          description: a positive Long value representing the amount to deposit.
           required: true
           schema:
-            type: "integer"
-            format: "int64"
+            type: integer
+            format: int64
       responses:
         "200":
-          description: "OK"
+          description: "a {@link BalanceMessage BalanceMessage} object containing\
+            \ the updated balance after the deposit."
           content:
             '*/*':
               schema:
                 $ref: "#/components/schemas/BalanceMessage"
-  /api/withdraw/{amount}:
-    post:
-      summary: "POST api/withdraw/{amount}"
-      operationId: "withdraw"
-      parameters:
-        - name: "amount"
-          in: "path"
-          required: true
-          schema:
-            type: "integer"
-            format: "int64"
+  /api:
+    get:
+      tags:
+        - rest-api-controller
+      summary: Handles the HTTP GET request for the root API endpoint and provides
+        the server version information.
+      description: Handles the HTTP GET request for the root API endpoint and provides
+        the server version information.
+      operationId: indexAction
       responses:
         "200":
-          description: "OK"
+          description: "a {@link ServerVersionMessage ServerVersionMessage} object\
+            \ containing the current version of the application."
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/BalanceMessage"
+                $ref: "#/components/schemas/ServerVersionMessage"
+  /api/machine-stats:
+    get:
+      tags:
+        - rest-api-controller
+      summary: "Retrieves the current machine statistics, including the timestamp,\
+        \ bet statistics, and win statistics."
+      description: "Retrieves the current machine statistics, including the timestamp,\
+        \ bet statistics, and win statistics."
+      operationId: getMachineStats
+      responses:
+        "200":
+          description: "a MachineStatsMessage object containing the current timestamp,\
+            \ bet statistics, and win statistics."
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SpinStatsMessage"
+  /api/load:
+    get:
+      tags:
+        - rest-api-controller
+      summary: Handles the HTTP GET request for loading the current state of the slot
+        machine.
+      description: Handles the HTTP GET request for loading the current state of the
+        slot machine.
+      operationId: load
+      responses:
+        "200":
+          description: |-
+            a {@link StateMessage StateMessage} object containing the current timestamp,
+             machine's return to player (RTP), bet amount, win amount, balance, and result.
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/StateMessage"
 components:
   schemas:
-    ServerVersionMessage:
-      type: "object"
-      properties:
-        version:
-          type: "string"
-    StateMessage:
-      type: "object"
-      properties:
-        version:
-          type: "string"
-        timestampMs:
-          type: "integer"
-          format: "int64"
-        rtp:
-          type: "number"
-          format: "double"
-        betAmount:
-          type: "integer"
-          format: "int64"
-        winAmount:
-          type: "integer"
-          format: "int64"
-        balance:
-          type: "integer"
-          format: "int64"
-        result:
-          type: "integer"
-          format: "int32"
-    LongSummaryStatistics:
-      type: "object"
-      properties:
-        count:
-          type: "integer"
-          format: "int64"
-        sum:
-          type: "integer"
-          format: "int64"
-        min:
-          type: "integer"
-          format: "int64"
-        max:
-          type: "integer"
-          format: "int64"
-    SpinStatsMessage:
-      type: "object"
-      properties:
-        timestampMs:
-          type: "integer"
-          format: "int64"
-        rtp:
-          type: "number"
-          format: "double"
-        betStats:
-          $ref: "#/components/schemas/LongSummaryStatistics"
-        winStats:
-          $ref: "#/components/schemas/LongSummaryStatistics"
-    BetResultMessage:
-      type: "object"
-      properties:
-        timestampMs:
-          type: "integer"
-          format: "int64"
-        betAmount:
-          type: "integer"
-          format: "int64"
-        winAmount:
-          type: "integer"
-          format: "int64"
-        balance:
-          type: "integer"
-          format: "int64"
-        result:
-          type: "integer"
-          format: "int32"
     BalanceMessage:
-      type: "object"
+      type: object
       properties:
         balance:
-          type: "integer"
-          format: "int64"
+          type: integer
+          format: int64
+    BetResultMessage:
+      type: object
+      properties:
+        timestampMs:
+          type: integer
+          format: int64
+        betAmount:
+          type: integer
+          format: int64
+        winAmount:
+          type: integer
+          format: int64
+        balance:
+          type: integer
+          format: int64
+        result:
+          type: integer
+          format: int32
+    ServerVersionMessage:
+      type: object
+      properties:
+        version:
+          type: string
+    SpinStatsMessage:
+      type: object
+      properties:
+        timestampMs:
+          type: integer
+          format: int64
+        rtp:
+          type: number
+          format: double
+        betStats:
+          type: object
+          properties:
+            count:
+              type: integer
+              format: int64
+            sum:
+              type: integer
+              format: int64
+            min:
+              type: integer
+              format: int64
+            max:
+              type: integer
+              format: int64
+            average:
+              type: number
+              format: double
+        winStats:
+          type: object
+          properties:
+            count:
+              type: integer
+              format: int64
+            sum:
+              type: integer
+              format: int64
+            min:
+              type: integer
+              format: int64
+            max:
+              type: integer
+              format: int64
+            average:
+              type: number
+              format: double
+    StateMessage:
+      type: object
+      properties:
+        version:
+          type: string
+        timestampMs:
+          type: integer
+          format: int64
+        rtp:
+          type: number
+          format: double
+        betAmount:
+          type: integer
+          format: int64
+        winAmount:
+          type: integer
+          format: int64
+        balance:
+          type: integer
+          format: int64
+        result:
+          type: integer
+          format: int32
