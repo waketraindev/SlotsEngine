@@ -18,7 +18,7 @@ public class TimeStopCondition implements GenStopCondition {
     /**
      * Constructs a {@code TimeStopCondition} with a specified runtime duration.
      *
-     * @param amount the duration of time to run before stopping
+     * @param amount   the duration of time to run before stopping
      * @param timeUnit the unit of time for the specified amount (e.g., seconds, minutes, hours)
      */
     public TimeStopCondition(int amount, TimeUnit timeUnit) {
@@ -31,7 +31,7 @@ public class TimeStopCondition implements GenStopCondition {
      * @param runCount the number of times the operation has been executed; this parameter is
      *                 currently unused but may be used in future implementations.
      * @return {@code true} if the elapsed time since the start is less than the defined runtime duration,
-     *         otherwise {@code false}.
+     * otherwise {@code false}.
      */
     @Override
     public boolean apply(int runCount) {

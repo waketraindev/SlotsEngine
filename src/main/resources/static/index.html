@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Slots Engine Demo</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/main.css">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
 </head>
 <body>
-<div id="appWindow" class="container d-none">
+<div class="container d-none" id="appWindow">
     <div class="container text-center bg-black">
         <div class="row">
             <div class="col">
@@ -24,8 +24,8 @@
                 <h2>Balance: <span id="lblBalanceAmount">100</span> credits</h2>
             </div>
             <div class="col">
-                <button type="button" class="btn btn-primary" id="btnDeposit">Deposit</button>
-                <button type="button" class="btn btn-danger" id="btnWithdraw">Withdraw</button>
+                <button class="btn btn-primary" id="btnDeposit" type="button">Deposit</button>
+                <button class="btn btn-danger" id="btnWithdraw" type="button">Withdraw</button>
             </div>
         </div>
         <div class="row">
@@ -42,14 +42,14 @@
         </div>
         <div class="row">
             <div class="col">
-                <button type="button"
-                        class="btn btn-primary" id="btnSpin" accesskey="s">(S)pin
+                <button accesskey="s"
+                        class="btn btn-primary" id="btnSpin" type="button">(S)pin
                 </button>
             </div>
         </div>
         <div class="row">
             <div class="col">
-                <button type="button" class="btn btn-success" id="btnIncrementBet" accesskey="a">
+                <button accesskey="a" class="btn btn-success" id="btnIncrementBet" type="button">
                     (A)Bet+
                 </button>
             </div>
@@ -58,7 +58,7 @@
                 <span id="lblBalanceText"><span id="lblBetAmount">100</span> credits</span>
             </div>
             <div class="col">
-                <button type="button" class="btn btn-warning" id="btnDecrementBet" accesskey="d">
+                <button accesskey="d" class="btn btn-warning" id="btnDecrementBet" type="button">
                     (D)Bet-
                 </button>
             </div>
