@@ -4,6 +4,17 @@
     padding: .75em
 }
 
+
+#lblBalanceText {
+    font-size: 2em;
+}
+
+#btnIncrementBet, #btnDecrementBet {
+    font-size: 2em;
+    font-weight: bolder;
+    padding: .75em;
+}
+
 #blkDisplay {
     font-size: 150px;
     border: 1px solid gray;
@@ -15,12 +26,17 @@
     display: inline-block;
 }
 
-#lblBalanceText {
-    font-size: 2em;
+.animate-spin {
 }
 
-#btnIncrementBet, #btnDecrementBet {
-    font-size: 2em;
-    font-weight: bolder;
-    padding: .75em;
+.animate-spin #lblDisplay {
+    color: orange;
+}
+
+.animate-spin-loss #lblDisplay {
+    color: red;
+}
+
+.animate-spin-win #lblDisplay {
+    color: green;
 }
