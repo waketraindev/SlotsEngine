@@ -19,33 +19,51 @@ import wtd.slotsengine.slots.machines.records.SpinOutcome;
 import static wtd.slotsengine.utils.SlotUtils.now;
 
 /**
- * The ApiController class is responsible for handling API requests related to a slot machine application.
- * It provides endpoints for retrieving server version information, loading the slot machine state,
- * performing spin operations, and managing the user's balance through deposit and withdrawal actions.
- * Each method is mapped to a specific HTTP request type and URL path, enabling interaction with the slot machine.
+ * This class serves as a REST API controller to manage slot machine operations and related functionalities.
+ * It provides endpoints for viewing the server version, interacting with the slot machine (spinning, loading state),
+ * and managing account balance (deposit and withdrawal).
  * <p>
- * The controller ensures that each endpoint is appropriately logged and handles exceptions that may occur
- * during operations, such as insufficient funds for a spin or withdrawal.
- * <p>
- * The class leverages a SlotMachine instance to perform the core operations and depends on configuration
- * values for versioning information.
+ * The controller relies on SlotMachine for slot machine operations and RecordStatsService for managing statistics.
+ * Configuration properties, such as application version, are injected via @Value annotations.
  */
 @RestController
 public class RestApiController {
+    /**
+     * Logger instance for recording and tracking events, errors, and other
+     * significant information within the RestApiController class.
+     * Utilizes the LoggerFactory to ensure proper configuration and management
+     * of logging capabilities.
+     */
     private static final Logger log = LoggerFactory.getLogger(RestApiController.class);
+    /**
+     * Represents a slot machine instance used in the application.
+     * This variable is a final reference to a specific SlotMachine object,
+     * ensuring that the reference cannot be changed after initialization.
+     * <p>
+     * The SlotMachine class is likely to encapsulate functionality related
+     * to simulating a slot machine game, such as spinning reels, handling
+     * payouts, and maintaining state.
+     */
     private final SlotMachine machine;
+    /**
+     * A service object responsible for managing and retrieving
+     * statistical data related to records.
+     */
     private final RecordStatsService stats;
 
+    /**
+     * Represents the current version of the application.
+     * Retrieved from the configuration property `slots-engine.version`.
+     * This value is typically used to identify the software version during runtime.
+     */
     @Value("${slots-engine.version}")
     private String appVersion;
 
     /**
-     * Initializes an instance of ApiController.
-     * This constructor sets up the necessary configurations
-     * for managing slot machine operations through the SlotManager.
+     * Constructs a new RestApiController instance.
      *
-     * @param slotManagerService an instance of SlotManager that provides access
-     *                    to the slot machine used by the API controller
+     * @param slotManagerService the service responsible for managing slot machine operations
+     * @param stats              the service responsible for recording and managing statistics
      */
     public RestApiController(SlotManagerService slotManagerService, RecordStatsService stats) {
         log.info("API controller is initializing");
@@ -54,9 +72,9 @@ public class RestApiController {
     }
 
     /**
-     * Handles the HTTP GET request for the root API endpoint and provides the server version information.
+     * Handles HTTP GET requests to the "/api" endpoint and returns a server version message.
      *
-     * @return a {@link ServerVersionMessage} object containing the current version of the application.
+     * @return a {@code ServerVersionMessage} containing the application version.
      */
     @GetMapping("/api")
     public ServerVersionMessage indexAction() {
@@ -64,10 +82,10 @@ public class RestApiController {
     }
 
     /**
-     * Handles the HTTP GET request for loading the current state of the slot machine.
+     * Handles the HTTP GET request for loading the application state.
      *
-     * @return a {@link StateMessage} object containing the current timestamp,
-     * machine's return to player (RTP), bet amount, win amount, balance, and result.
+     * @return a StateMessage object containing the current application state, including
+     * app version, current time, machine RTP, state details, and balance information.
      */
     @GetMapping("/api/load")
     public StateMessage load() {
@@ -75,21 +93,22 @@ public class RestApiController {
     }
 
     /**
-     * Retrieves the current machine statistics, including the timestamp, bet statistics, and win statistics.
+     * Retrieves the current machine statistics, including RTP (Return to Player),
+     * bet statistics, and win statistics.
      *
-     * @return a MachineStatsMessage object containing the current timestamp, bet statistics, and win statistics.
+     * @return a SpinStatsMessage object containing the current machine statistics.
      */
     public @GetMapping("/api/machine-stats") SpinStatsMessage getMachineStats() {
         return new SpinStatsMessage(now(), machine.getMachineRtp(), stats.getBetStats(), stats.getWinStats());
     }
 
     /**
-     * Initiates a spin operation on the slot machine for the specified bet amount.
+     * Spins the machine with the specified bet amount and returns the result of the spin.
      *
-     * @param amount the amount to bet on the spin.
-     * @return a {@link BetResultMessage} object containing the timestamp, bet amount, win amount,
-     * balance after the spin, and the resulting symbol from the spin.
-     * @throws ResponseStatusException with HTTP status 400 if there are insufficient funds to perform the spin.
+     * @param amount the amount to bet for the spin
+     * @return a BetResultMessage containing details of the spin outcome, including bet amount,
+     * win amount, updated balance, and spin result symbols
+     * @throws ResponseStatusException when there are insufficient funds to complete the spin
      */
     @PostMapping("/api/spin/{amount}")
     public BetResultMessage spin(@PathVariable("amount") Long amount) {
@@ -110,11 +129,11 @@ public class RestApiController {
     }
 
     /**
-     * Handles the HTTP request to deposit a specified amount into the slot machine.
+     * Handles the deposit operation for the given amount.
      *
-     * @param amount a positive Long value representing the amount to deposit.
-     * @return a {@link BalanceMessage} object containing the updated balance after the deposit.
-     * @throws ResponseStatusException with HTTP status 400 if the specified amount is negative.
+     * @param amount the amount to be deposited; must be a positive number
+     * @return a BalanceMessage object containing the updated balance information
+     * @throws ResponseStatusException if the amount is negative
      */
     @PostMapping(value = "/api/deposit/{amount}")
     public BalanceMessage deposit(@PathVariable("amount") Long amount) {
@@ -126,11 +145,11 @@ public class RestApiController {
     }
 
     /**
-     * Handles the HTTP request to withdraw a specified amount from the slot machine's balance.
+     * Processes a withdrawal request with the specified amount.
      *
-     * @param amount the amount to withdraw from the balance. Must be a positive Long value.
-     * @return a {@link BalanceMessage} object containing the updated balance after the withdrawal.
-     * @throws ResponseStatusException with HTTP status 400 if there are insufficient funds to perform the withdrawal.
+     * @param amount the amount to be withdrawn.
+     * @return a {@code BalanceMessage} containing the updated balance after the withdrawal.
+     * @throws ResponseStatusException if there are insufficient funds to fulfill the withdrawal.
      */
     @PostMapping("/api/withdraw/{amount}")
     public BalanceMessage withdraw(@PathVariable("amount") Long amount) {

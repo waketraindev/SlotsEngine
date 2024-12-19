@@ -9,8 +9,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SlotsAppTest {
 
-    private final boolean testAssert;
     private static final Logger log = LoggerFactory.getLogger(SlotsAppTest.class.getName());
+    private final boolean testAssert;
 
     public SlotsAppTest() {
         this.testAssert = true;

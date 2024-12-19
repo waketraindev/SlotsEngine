@@ -8,6 +8,10 @@ import org.springframework.web.context.request.WebRequest;
 
 import java.io.IOException;
 
+/**
+ * A global exception handler for managing exceptions across the whole application.
+ * This class uses the @ControllerAdvice annotation to define a centralized exception-handling component.
+ */
 @ControllerAdvice
 public class GlobalExceptionHandler {
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
