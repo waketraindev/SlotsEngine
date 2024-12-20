@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * when a new best configuration is found. It is designed to handle parallel processing using an
  * internal thread pool.
  */
-public final class ReelOptimizer {
+public final class ReelOptimizer implements AutoCloseable {
     private final ExecutorService workPool = Executors.newWorkStealingPool();
     private final double[] history;
     private final int historySize;
@@ -35,6 +35,21 @@ public final class ReelOptimizer {
         this.historySize = historySize;
         this.history = new double[this.historySize];
         this.targetRtp = targetRtp;
+    }
+
+    /**
+     * Closes the ReelOptimizer by shutting down the associated work pool.
+     * <p>
+     * This method ensures that the thread pool used for reel generation and optimization
+     * is properly terminated, preventing resource leaks and allowing graceful cleanup
+     * of resources. It should be invoked when the optimization process is completed or
+     * when the ReelOptimizer instance is no longer in use.
+     *
+     * @throws Exception if an error occurs during the shutdown process of the work pool.
+     */
+    @Override
+    public void close() throws Exception {
+        workPool.shutdown();
     }
 
     /**
@@ -97,7 +112,6 @@ public final class ReelOptimizer {
             throw new RuntimeException(e);
         } finally {
             generatingThread.interrupt();
-            workPool.shutdown();
         }
     }
 

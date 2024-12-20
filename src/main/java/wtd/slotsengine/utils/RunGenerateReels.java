@@ -40,15 +40,18 @@ public class RunGenerateReels {
     public static void main(String[] args) {
         long startTime = System.currentTimeMillis();
         log.info("Starting ReelOptimizer");
-        ReelOptimizer op = new ReelOptimizer(1024, 0.98);
-        op.setFoundBestCallback((rtp, reel) -> log.info("RTP: {} tSize: {} = {}", rtp, reel.size(), reel));
-        op.run(new TimeStopCondition(1, TimeUnit.MINUTES));
-        VirtualReel best = op.getBestReel();
-        long deltaTime = System.currentTimeMillis() - startTime;
-        log.info("Optimizer run finished.");
-        log.info("Reel: {}", best.toString());
-        log.info("RTP: {}", op.getBestRtp());
-        log.info("Size: {}", best.size());
-        log.info("Elapsed time: {}", Duration.ofMillis(deltaTime));
+        try (ReelOptimizer op = new ReelOptimizer(1024, 0.98)) {
+            op.setFoundBestCallback((rtp, reel) -> log.info("RTP: {} tSize: {} = {}", rtp, reel.size(), reel));
+            op.run(new TimeStopCondition(1, TimeUnit.MINUTES));
+            VirtualReel best = op.getBestReel();
+            long deltaTime = System.currentTimeMillis() - startTime;
+            log.info("Optimizer run finished.");
+            log.info("Reel: {}", best.toString());
+            log.info("RTP: {}", op.getBestRtp());
+            log.info("Size: {}", best.size());
+            log.info("Elapsed time: {}", Duration.ofMillis(deltaTime));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
