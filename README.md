@@ -15,11 +15,9 @@ Provide a brief description of the project and the specific Spring component thi
 
 ## Prerequisites
 
-List any prerequisites needed to understand or work with this component:
-
-- Java version
-- Spring Framework version
-- Maven/Gradle version
+- Java version 17
+- Spring Framework version 3.4.0
+- Maven 3.9.9
 
 ## Installation
 
@@ -59,14 +57,6 @@ Start the app by running
 
 Frontend available on http://localhost:8080
 
-## Features
-
-List the main features or functionalities of the component.
-
-## Architecture
-
-Provide an overview of the component's architecture if necessary, detailing how different classes or modules interact.
-
 ## Testing
 
 Outline how to run tests for the component:
@@ -74,15 +64,3 @@ Outline how to run tests for the component:
 ```bash
 mvn test
 ```
-
-## Contributors
-
-List of contributors who worked on the project, with links to their GitHub profiles.
-
-## License
-
-Include the license information under which the project is distributed.
-
-## Contact
-
-Provide contact information for further queries or support.
