@@ -1,4 +1,13 @@
-# ⇛ ⇛ ⇛ SlotsEngine ⇛ ⇛ ⇛
+## Disclaimer
+
+This project is provided for demonstration and educational purposes only. It is not intended for production use, and no
+warranties or guarantees of any kind are provided, either express or implied. Use this software at your own risk.
+
+By using this project, you acknowledge that the authors and contributors are not liable for any direct, indirect,
+incidental, or consequential damages arising from the use or inability to use the software. Always ensure proper
+testing, validation, and security assessments before deploying or integrating it into any real-world application.
+
+# ⇛⇛⇛ SlotsEngine ⇚⇚⇚
 
 ## Overview
 
